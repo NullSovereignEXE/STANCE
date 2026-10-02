@@ -1,0 +1,71 @@
+<mujoco model="prosthetic_leg_2d">
+
+  <!-- 1 ms physics step. Euler is predictable when we inject our own forces. -->
+  <option timestep="0.001" gravity="0 0 -9.81" integrator="Euler"/>
+
+  <default>
+    <!-- contype/conaffinity = 0 means NOTHING collides. We supply ground forces ourselves.
+         To fall back on MuJoCo's native contact, set these to 1 on foot_geom and floor. -->
+    <geom contype="0" conaffinity="0" rgba="0.55 0.57 0.62 1"/>
+  </default>
+
+  <worldbody>
+    <light pos="0 0 2.5" dir="0 0 -1"/>
+    <camera name="side" pos="0.3 -2.2 0.6" xyaxes="1 0 0 0 0 1"/>
+
+    <!-- Visual only. Its z position is moved at render time to show the dent. -->
+    <geom name="floor" type="plane" size="3 1 0.1" pos="0 0 0" rgba="0.82 0.80 0.76 1"/>
+
+    <!-- ================= FLOATING BASE: THE FOOT (3 passive DOF) ================= -->
+    <!-- Nothing holds this up except the forces we apply. It can fall over. -->
+    <body name="foot" pos="0 0 0.05">
+      <joint name="foot_x"     type="slide" axis="1 0 0"/>
+      <joint name="foot_z"     type="slide" axis="0 0 1"/>
+      <joint name="foot_pitch" type="hinge" axis="0 1 0"/>
+
+      <!-- Foot origin sits at the ankle. Heel is behind it, toe ahead. -->
+      <geom name="foot_geom" type="box" size="0.13 0.04 0.02"
+            pos="0.06 0 -0.03" mass="1.0"/>
+
+      <!-- The two contact points. Ground forces are applied HERE. -->
+      <site name="heel_site" pos="-0.07 0 -0.05" size="0.012" rgba="0.85 0.35 0.19 1"/>
+      <site name="toe_site"  pos="0.19 0 -0.05" size="0.012" rgba="0.85 0.35 0.19 1"/>
+
+      <!-- ================= THE ANKLE: THE ONLY MOTOR ================= -->
+      <body name="shank" pos="0 0 0">
+        <joint name="ankle_hinge" type="hinge" axis="0 1 0"
+               range="-0.349 0.349" damping="0.1"/>
+        <geom name="shank_geom" type="capsule" fromto="0 0 0 0 0 0.45"
+              size="0.030" mass="2.0"/>
+
+        <!-- ================= PYLON: PASSIVE SPRING-DAMPER (1 DOF) ================= -->
+        <body name="upper" pos="0 0 0.45">
+          <joint name="pylon_slide" type="slide" axis="0 0 1" range="-0.06 0.005"
+                 stiffness="120000" damping="800" springref="0"/>
+          <geom name="upper_geom" type="capsule" fromto="0 0 0 0 0 0.40"
+                size="0.035" mass="0.5"/>
+
+          <!-- ================= BODY MASS ================= -->
+          <body name="body_mass" pos="0 0 0.40">
+            <geom name="body_geom" type="sphere" size="0.09" mass="70.0"
+                  rgba="0.35 0.42 0.52 1"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- We compute the impedance torque in Python and write it to data.ctrl[0]. -->
+    <motor name="ankle_motor" joint="ankle_hinge" gear="1" ctrlrange="-150 150"/>
+  </actuator>
+
+  <sensor>
+    <jointpos  name="ankle_pos" joint="ankle_hinge"/>
+    <jointvel  name="ankle_vel" joint="ankle_hinge"/>
+    <jointpos  name="pylon_pos" joint="pylon_slide"/>
+    <framepos  name="heel_pos" objtype="site" objname="heel_site"/>
+    <framepos  name="toe_pos"  objtype="site" objname="toe_site"/>
+  </sensor>
+
+</mujoco>
