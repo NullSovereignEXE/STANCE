@@ -8,7 +8,7 @@ import numpy as np
 import mujoco
 import pytest
 
-from stance_env.ground import normal_force, friction_force, D_REF
+from stance_env.ground import normal_force, friction_force, GroundModel, D_REF
 
 G = 9.81
 
@@ -116,3 +116,25 @@ def test_plastic_dent_persists():
         if extra is not None:
             surface -= extra
     assert surface < -1e-4, f"no permanent dent formed: {surface}"
+
+
+def test_dent_is_never_negative():
+    """Fast sinking at shallow depth can push force past yield while the spring
+    term is still below it. The surface must not RISE as a result."""
+    for rate in (0.0, 1.0, 5.0, 20.0):
+        f, extra = normal_force(0.001, rate, k0=5e4, c=400, alpha=0.0, f_yield=200.0)
+        if extra is not None:
+            assert extra >= 0.0, f"surface rose by {extra*1000:.2f} mm at rate {rate}"
+
+
+def test_ground_model_dent_only_deepens():
+    """Across a whole episode, surface_z must be monotonically non-increasing."""
+    g = GroundModel(split="train", n_points=2)
+    g.sample(np.random.default_rng(0))
+    prev = g.surface_z.copy()
+    for i in range(300):
+        pos = np.array([[0.0, 0.0, -0.001 * (i % 30)], [0.0, 0.0, 0.0]])
+        vel = np.array([[0.2, 0.0, -3.0], [0.2, 0.0, -3.0]])
+        g.forces(pos, vel)
+        assert np.all(g.surface_z <= prev + 1e-12), "surface rose"
+        prev = g.surface_z.copy()

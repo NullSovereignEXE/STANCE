@@ -12,10 +12,20 @@ rather than importing the class by hand. Registration is what makes it a
 first-class Gym environment: Stable-Baselines3, the env checker, and the
 vectorised wrappers all look environments up by their string id.
 """
+import os as _os
+import sys as _sys
+
+# Headless Linux (lab server, WSL, CI) has no X display and MuJoCo's default
+# GLFW backend fails with "no OpenGL platform library". EGL works without one.
+# This MUST run before mujoco is imported anywhere, which is why it sits at the
+# top of the package __init__ rather than in viz.py.
+if _sys.platform.startswith("linux") and not _os.environ.get("DISPLAY"):
+    _os.environ.setdefault("MUJOCO_GL", "egl")
+
 from gymnasium.envs.registration import register
 
 from stance_env.ankle_env import AnkleEnv          # noqa: F401
-from stance_env.ground import normal_force, friction_force   # noqa: F401
+from stance_env.ground import normal_force, friction_force, GroundModel  # noqa: F401
 
 # ---------------------------------------------------------------------------
 # Training distribution: ground the agent learns on.
@@ -38,4 +48,4 @@ register(
     kwargs={"ground_split": "test"},
 )
 
-__all__ = ["AnkleEnv", "normal_force", "friction_force"]
+__all__ = ["AnkleEnv", "GroundModel", "normal_force", "friction_force"]
