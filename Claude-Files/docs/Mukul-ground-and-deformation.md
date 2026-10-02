@@ -1,4 +1,4 @@
-# P2 — The ground and its deformation
+# Mukul — The ground and its deformation
 
 **You own:** `stance_env/ground.py`, `tests/test_ground.py`
 

@@ -1,4 +1,4 @@
-# P1 — The leg and its motion
+# Muthu — The leg and its motion
 
 **You own:** `model/leg.xml`, `stance_env/viz.py`, `tests/test_leg.py`
 

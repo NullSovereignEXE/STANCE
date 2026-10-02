@@ -1,4 +1,4 @@
-# P3 — The RL cast and Gymnasium
+# Vishal — The RL cast and Gymnasium
 
 **You own:** `stance_env/ankle_env.py`, `stance_env/__init__.py`,
 `tests/test_env.py`
