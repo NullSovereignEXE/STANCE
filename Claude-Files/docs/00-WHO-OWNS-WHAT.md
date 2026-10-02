@@ -5,9 +5,9 @@ else's file; if you need something from it, ask for a function.
 
 | Person | Owns | Also owns |
 |---|---|---|
-| **P1 — Leg & motion** | `model/leg.xml`, `stance_env/viz.py` | `tests/test_leg.py` |
-| **P2 — Ground & deformation** | `stance_env/ground.py` | `tests/test_ground.py` |
-| **P3 — RL cast & Gym** | `stance_env/ankle_env.py`, `stance_env/__init__.py` | `tests/test_env.py` |
+| **Muthu — Leg & motion** | `model/leg.xml`, `stance_env/viz.py` | `tests/test_leg.py` |
+| **Mukul — Ground & deformation** | `stance_env/ground.py` | `tests/test_ground.py` |
+| **Vishal — RL cast & Gym** | `stance_env/ankle_env.py`, `stance_env/__init__.py` | `tests/test_env.py` |
 | **Whoever finishes first** | `scripts/` — PPO, evaluation, the baseline controller | |
 
 ## Why it is cut this way
