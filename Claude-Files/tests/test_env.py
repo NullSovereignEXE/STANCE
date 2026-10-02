@@ -51,7 +51,7 @@ def test_different_seeds_give_different_ground():
     """Randomisation must actually randomise."""
     e1 = gym.make("StanceAnkle-v0"); e1.reset(seed=1)
     e2 = gym.make("StanceAnkle-v0"); e2.reset(seed=2)
-    assert not np.allclose(e1.unwrapped.k0, e2.unwrapped.k0)
+    assert not np.allclose(e1.unwrapped.ground.k0, e2.unwrapped.ground.k0)
 
 
 def test_train_and_test_ranges_are_disjoint():
@@ -59,9 +59,9 @@ def test_train_and_test_ranges_are_disjoint():
     train_k, test_k = [], []
     for s in range(60):
         e = gym.make("StanceAnkle-v0"); e.reset(seed=s)
-        train_k.extend(e.unwrapped.k0)
+        train_k.extend(e.unwrapped.ground.k0)
         t = gym.make("StanceAnkleTest-v0"); t.reset(seed=s)
-        test_k.extend(t.unwrapped.k0)
+        test_k.extend(t.unwrapped.ground.k0)
     train_k, test_k = np.array(train_k), np.array(test_k)
     # every test sample sits outside the training band
     assert np.all((test_k < 5e3 * 1.001) | (test_k > 1e5 * 0.999))

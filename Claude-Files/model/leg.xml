@@ -1,6 +1,10 @@
 <mujoco model="prosthetic_leg_2d">
 
   <!-- 1 ms physics step. Euler is predictable when we inject our own forces. -->
+  <!-- angle="radian": MuJoCo defaults to DEGREES. Without this, joint
+       ranges written in radians are silently read as degrees. -->
+  <compiler angle="radian"/>
+
   <option timestep="0.001" gravity="0 0 -9.81" integrator="Euler"/>
 
   <default>

@@ -8,7 +8,7 @@ compliant ground. Group 42 — Vishal, Mukul, Muthu.
 ```bash
 pip install -r requirements.txt
 pip install -e .
-pytest -q                       # expect: 16 passed
+pytest -q                       # expect: 27 passed
 ```
 
 ## Use
@@ -25,25 +25,21 @@ obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
 `StanceAnkleTest-v0` is the held-out distribution. **Evaluation only.**
 
 ```bash
-python scripts/record_video.py     # watch a rollout  (week 2)
-python scripts/smoke_train.py      # 50k-step sanity check (week 3)
+python scripts/record_video.py --track   # watch a rollout   (week 2)
+python scripts/smoke_train.py            # 50k sanity check  (week 3)
 ```
 
-## Layout and ownership
+## Who owns what
 
-| Path | Owner | What |
-|---|---|---|
-| `model/leg.xml` | A | the robot: 5 DOF, 1 motor |
-| `stance_env/ground.py` | A | the ground force law (pure functions) |
-| `stance_env/ankle_env.py` | B | the Gym environment — **the two TODOs are here** |
-| `stance_env/__init__.py` | B | registration |
-| `tests/test_ground.py` | A | closed-form physics checks |
-| `tests/test_env.py` | B | Gym API conformance |
-| `scripts/` | C | video + smoke training |
+| Person | Files |
+|---|---|
+| **P1 — leg & motion** | `model/leg.xml`, `stance_env/viz.py`, `tests/test_leg.py` |
+| **P2 — ground & deformation** | `stance_env/ground.py`, `tests/test_ground.py` |
+| **P3 — RL cast & Gym** | `stance_env/ankle_env.py`, `stance_env/__init__.py`, `tests/test_env.py` |
+| **first one free** | `scripts/` — PPO, baseline controller, evaluation |
 
-One file per person, so no merge conflicts in week 1.
-
-Each file has a plain-language explainer in `docs/`.
+One Python file each, no shared files. Start with `docs/00-WHO-OWNS-WHAT.md`,
+then your own `docs/P<n>-*.md`.
 
 ## Git, day one
 
@@ -60,7 +56,6 @@ Tuesday is the report paragraph you write on Friday.
 
 ## Outstanding
 
-Two TODOs in `ankle_env.py`: `_reward` and `_failed`. Working defaults are in
-place so the environment runs end to end, but the weights are a starting point,
-not an answer. These are where the project's argument lives — do not outsource
-them.
+`_reward` and `_failed` in `ankle_env.py`. Working defaults are in place so the
+environment runs end to end, but the weights are a starting point, not an
+answer. These are where the project's argument lives — do not outsource them.

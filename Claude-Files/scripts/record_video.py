@@ -2,63 +2,67 @@
 Record a rollout as an mp4.
 
 Use this in WEEK 2 with random actions, long before any policy exists. You are
-checking the physics, not the behaviour: does the foot pass through the floor,
-does the leg jitter, does the dent appear under the right contact point? Every
-one of those bugs is invisible in a reward curve and obvious in two seconds of
-video.
+checking the PHYSICS, not the behaviour: does the foot pass through the floor,
+does the leg jitter, does the dent appear under the right contact point, does
+the pylon spring explode? Every one of those is invisible in a reward curve and
+obvious in two seconds of video.
 
-    python scripts/record_video.py                    # random actions
-    python scripts/record_video.py runs/smoke_ppo     # a trained policy
+    python scripts/record_video.py                       # random actions
+    python scripts/record_video.py --policy runs/smoke_ppo
+    python scripts/record_video.py --split test --track  # held-out ground, camera follows
 """
-import sys
-import os
+import argparse
 
-# Headless machines (lab servers, WSL, CI) have no X display, and MuJoCo's
-# default GLFW backend will fail with "no OpenGL platform library". EGL works
-# without a display. Must be set BEFORE mujoco is imported. On a laptop with a
-# desktop session this is harmless.
-os.environ.setdefault("MUJOCO_GL", "egl")
-
-import numpy as np
-import imageio.v2 as imageio
-import gymnasium as gym
-
-import stance_env  # noqa: F401
 from stance_env.ankle_env import AnkleEnv
+from stance_env.viz import Recorder
 
 
-def record(policy=None, seed=0, env_id="StanceAnkle-v0", out="videos/rollout.mp4"):
-    env = AnkleEnv(
-        ground_split="test" if "Test" in env_id else "train",
-        render_mode="rgb_array",
-    )
+def record(policy=None, seed=0, split="train", track=False,
+           out="videos/rollout.mp4"):
+    env = AnkleEnv(ground_split=split)
     obs, _ = env.reset(seed=seed)
 
-    frames, done = [], False
+    rec = Recorder(env.model, track="body_mass" if track else None)
+
+    done = False
     while not done:
         if policy is None:
             action = env.action_space.sample()
         else:
-            action, _ = policy.predict(obs, deterministic=True)   # no exploration noise
+            # deterministic=True: no exploration noise, the policy's actual
+            # best guess rather than a sample around it
+            action, _ = policy.predict(obs, deterministic=True)
+
         obs, r, term, trunc, info = env.step(action)
-        frames.append(env.render())
+        env.ground.update_visual(env.model)      # drop the floor to show the dent
+        rec.capture(env.data)
         done = term or trunc
 
-    os.makedirs(os.path.dirname(out), exist_ok=True)
-    # 100 frames at 20 fps = 5 s of slow motion. Real time would be 0.5 s,
-    # far too fast to see an impact.
-    imageio.mimsave(out, frames, fps=20)
-    print(f"{len(frames)} frames -> {out}")
-    print(f"  ground k0   : {env.k0.round(0)} N/m")
-    print(f"  final dent  : {info['dent_mm'].round(1)} mm")
+    n = rec.save(out)
+    rec.close()
+
+    print(f"{n} frames -> {out}")
+    print(f"  split       : {split}")
+    print(f"  ground k0   : {info['k0']} N/m")
+    print(f"  friction mu : {info['mu']}")
+    print(f"  final dent  : {info['dent_mm']} mm")
     print(f"  leg tilt    : {info['leg_tilt_deg']:.1f} deg")
     print(f"  outcome     : {'FELL' if term else 'survived'}")
-    env.close()
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--policy", default=None, help="path to a saved SB3 model")
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--split", default="train", choices=["train", "test"])
+    ap.add_argument("--track", action="store_true",
+                    help="camera follows the body instead of a fixed side view")
+    ap.add_argument("--out", default="videos/rollout.mp4")
+    a = ap.parse_args()
+
     pol = None
-    if len(sys.argv) > 1:
+    if a.policy:
         from stable_baselines3 import PPO
-        pol = PPO.load(sys.argv[1])
-    record(pol)
+        pol = PPO.load(a.policy)
+
+    record(pol, seed=a.seed, split=a.split, track=a.track, out=a.out)
