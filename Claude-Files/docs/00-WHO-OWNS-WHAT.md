@@ -5,27 +5,10 @@ else's file; if you need something from it, ask for a function.
 
 | Person | Owns | Also owns |
 |---|---|---|
-| **P1 — Leg & motion** | `model/leg.xml`, `stance_env/viz.py` | `tests/test_leg.py` |
-| **P2 — Ground & deformation** | `stance_env/ground.py` | `tests/test_ground.py` |
-| **P3 — RL cast & Gym** | `stance_env/ankle_env.py`, `stance_env/__init__.py` | `tests/test_env.py` |
+| **Muthu — Leg & motion** | `model/leg.xml`, `stance_env/viz.py` | `tests/test_leg.py` |
+| **Mukul — Ground & deformation** | `stance_env/ground.py` | `tests/test_ground.py` |
+| **Vishal — RL cast & Gym** | `stance_env/ankle_env.py`, `stance_env/__init__.py` | `tests/test_env.py` |
 | **Whoever finishes first** | `scripts/` — PPO, evaluation, the baseline controller | |
-
-## Why it is cut this way
-
-The obvious split puts *all* rendering in one file, which collides: P1 wants
-the leg's visuals and P2 wants the ground's, but the renderer lived inside
-P3's environment file. So rendering was separated by **subject**:
-
-- **P1** owns how the leg looks and how motion is filmed — materials, lighting,
-  cameras and camera tracking (`leg.xml` + `viz.py`).
-- **P2** owns how the ground looks — `GroundModel.update_visual()` lives in
-  `ground.py`, so changing how deformation is drawn needs no one else's file.
-- **P3** owns none of it. `AnkleEnv.render()` is four lines that call the other
-  two.
-
-The ground's *state* moved too. `surface_z` (the dent) used to sit in the
-environment; it now lives in `GroundModel`, so P2 owns the ground's physics,
-its randomisation ranges, its memory and its appearance.
 
 ## The three interfaces — agree these, then stop coordinating
 

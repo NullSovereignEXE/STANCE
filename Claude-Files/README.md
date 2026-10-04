@@ -33,9 +33,9 @@ python scripts/smoke_train.py            # 50k sanity check  (week 3)
 
 | Person | Files |
 |---|---|
-| **P1 — leg & motion** | `model/leg.xml`, `stance_env/viz.py`, `tests/test_leg.py` |
-| **P2 — ground & deformation** | `stance_env/ground.py`, `tests/test_ground.py` |
-| **P3 — RL cast & Gym** | `stance_env/ankle_env.py`, `stance_env/__init__.py`, `tests/test_env.py` |
+| **Muthu — leg & motion** | `model/leg.xml`, `stance_env/viz.py`, `tests/test_leg.py` |
+| **Mukul — ground & deformation** | `stance_env/ground.py`, `tests/test_ground.py` |
+| **Vishal — RL cast & Gym** | `stance_env/ankle_env.py`, `stance_env/__init__.py`, `tests/test_env.py` |
 | **first one free** | `scripts/` — PPO, baseline controller, evaluation |
 
 One Python file each, no shared files. Start with `docs/00-WHO-OWNS-WHAT.md`,

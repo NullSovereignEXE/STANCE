@@ -1,0 +1,7 @@
+mujoco>=3.1
+gymnasium>=0.29
+stable-baselines3>=2.3
+torch
+numpy
+imageio[ffmpeg]
+pytest

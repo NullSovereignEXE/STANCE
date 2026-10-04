@@ -1,0 +1,18 @@
+[project]
+name = "stance-env"
+version = "0.1.0"
+description = "STANCE: powered prosthetic ankle on unknown compliant ground"
+requires-python = ">=3.10"
+dependencies = ["mujoco>=3.1", "gymnasium>=0.29", "numpy"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["stance_env"]
+
+[tool.pytest.ini_options]
+
+addopts = "-p no:launch_testing"
+testpaths = ["tests"]
