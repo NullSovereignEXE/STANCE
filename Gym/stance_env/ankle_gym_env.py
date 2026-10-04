@@ -45,9 +45,9 @@ STANDING_HEIGHT = 0.85         # ankle-to-mass length from leg.xml (check if thi
 COLLAPSE_FRACTION = 0.70       # The fraction of the standing height below which the episode is considered a failure (70% of standing height)
 
 # Reward weights for the environment
-W_IMPACT = 10.0 # weight for impact penalty
-W_SMOOTH = 0.5  # weight for smoothness penalty
-LAMBDA_BW = 2.0 # impact threshold given in multiples of body weights
+W_SMOOTH  = 0.5     # smoothness penalty weight
+W_IMPACT = 2.0      # weight for impact penalty. # This was set to 2.0 after running the smoke test, providing the longest survival time.
+LAMBDA_BW = 2.0     # impact threshold given in multiples of body weights
 '''
 # This is the threshold for the vertical ground reaction force (GRF) above which the agent is penalized. 
 # The GRF is normalized by the body weight of the leg, and if it exceeds this threshold, a penalty is applied to the reward function. 
@@ -71,9 +71,9 @@ class AnkleEnv(gym.Env):
         self.ground = GroundModel(split=ground_split, n_points=2)  # Initialize the ground model with the specified split (train or test) and number of contact points (2)
         self.history_len = history_len  # Set the history length for the observation space
 
-        S = mujoco.mjtObj.mjOBJ_SITE # Just giving a shorter name to the MuJoCo object type for sites
-        J = mujoco.mjtObj.mjOBJ_JOINT # Just giving a shorter name to the MuJoCo object type for joints
-        B = mujoco.mjtObj.mjOBJ_BODY # Just giving a shorter name to the MuJoCo object type for bodies
+        S = mujoco.mjtObj.mjOBJ_SITE    # Just giving a shorter name to the MuJoCo object type for sites
+        J = mujoco.mjtObj.mjOBJ_JOINT   # Just giving a shorter name to the MuJoCo object type for joints
+        B = mujoco.mjtObj.mjOBJ_BODY    # Just giving a shorter name to the MuJoCo object type for bodies
 
         nid = lambda t, n: mujoco.mj_name2id(self.model, t, n) # Helper function to get the ID of a MuJoCo object (site, joint, or body) by name
         self.sid = [nid(S, "heel_site"), nid(S, "toe_site")]
@@ -89,7 +89,8 @@ class AnkleEnv(gym.Env):
 
         self.ground.sample(self.np_random)
         self._set_initial_pose()
-        mujoco.mj_forward(self.model, self.data) # Compute the forward dynamics of the MuJoCo model to update the simulation state based on the current positions and velocities
+        mujoco.mj_forward(self.model, self.data) 
+        # Compute the forward dynamics of the MuJoCo model to update the simulation state based on the current positions and velocities
         
         '''
         We need to keep a history of the last N sensor readings to provide temporal context to the agent.
@@ -245,7 +246,7 @@ class AnkleEnv(gym.Env):
             d.qpos[self.IPITCH],          # 5  shank tilt         (IMU)
             d.qvel[self.IPITCH],          # 6  shank tilt rate    (IMU)
             d.qacc[self.IZ],              # 7  vertical accel     (IMU)
-            *self.prev_action,            # 8,9,10  previous action
+            *self.prev_action,            # 8,9,10  previous action (Memory)
         ], dtype=np.float64)
 
     def _get_obs(self):
@@ -287,7 +288,7 @@ class AnkleEnv(gym.Env):
         return self._recorder.capture(self.data)
 
     def close(self):
-        if self._recorder is not None:
+        if self._recorder is not None: 
             self._recorder.close()
             self._recorder = None
         
