@@ -69,14 +69,14 @@ GROUND_RANGES = {
     "train": dict(
         k0=[(5e3, 1e5)],
         zeta=(0.05, 0.30),                        # damping ratio, not c
-        alpha=(0.0, 15.0),
+        alpha=(0.0, 2.0),
         f_yield=(300.0, 3000.0),
         mu=(0.30, 0.90),
     ),
     "test": dict(
         k0=[(2e3, 5e3), (1e5, 2e5)],             # two disjoint bands
         zeta=(0.30, 0.60),                        # heavier, "dead" ground
-        alpha=(15.0, 25.0),
+        alpha=(2.0, 4.0),
         f_yield=(150.0, 300.0),
         mu=(0.15, 0.30),
     ),
