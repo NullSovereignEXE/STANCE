@@ -17,7 +17,9 @@ import numpy as np
 # --------------------------------------------------------------- constants
 D_REF = 0.02      # m, depth at which `alpha` reaches full effect
 V_EPS = 1e-3      # m/s, friction smoothing width
-
+M_REF = 73.5      # kg, total mass of model/leg.xml. Converts a sampled damping
+                  # ratio zeta into a damping coefficient: c = 2*zeta*sqrt(k0*M_REF).
+                  # Assumes one contact point carries the whole body (heel strike).
 
 # ===========================================================================
 # PURE FORCE LAW -- no state, no MuJoCo. Testable against hand arithmetic.
@@ -66,14 +68,14 @@ def friction_force(normal, tangential_velocity, mu):
 GROUND_RANGES = {
     "train": dict(
         k0=[(5e3, 1e5)],
-        c=(20.0, 400.0),
+        zeta=(0.05, 0.30),                        # damping ratio, not c
         alpha=(0.0, 15.0),
         f_yield=(300.0, 3000.0),
         mu=(0.30, 0.90),
     ),
     "test": dict(
         k0=[(2e3, 5e3), (1e5, 2e5)],             # two disjoint bands
-        c=(400.0, 800.0),
+        zeta=(0.30, 0.60),                        # heavier, "dead" ground
         alpha=(15.0, 25.0),
         f_yield=(150.0, 300.0),
         mu=(0.15, 0.30),
@@ -99,6 +101,7 @@ class GroundModel:
         self.split = split
         self.n = n_points
         self.k0 = np.zeros(n_points)
+        self.zeta = np.zeros(n_points)
         self.c = np.zeros(n_points)
         self.alpha = np.zeros(n_points)
         self.f_yield = np.zeros(n_points)
@@ -117,7 +120,12 @@ class GroundModel:
             10 ** rng.uniform(np.log10(bands[p][0]), np.log10(bands[p][1]))
             for p in pick
         ])
-        self.c = rng.uniform(*r["c"], self.n)
+
+        # Sample the damping RATIO, then derive c from it, so damping always
+        # scales with the stiffness just drawn.
+        self.zeta = rng.uniform(*r["zeta"], self.n)
+        self.c = 2.0 * self.zeta * np.sqrt(self.k0 * M_REF)
+        
         self.alpha = rng.uniform(*r["alpha"], self.n)
         self.f_yield = rng.uniform(*r["f_yield"], self.n)
         self.mu = rng.uniform(*r["mu"], self.n)

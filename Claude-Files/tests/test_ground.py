@@ -8,7 +8,7 @@ import numpy as np
 import mujoco
 import pytest
 
-from stance_env.ground import normal_force, friction_force, GroundModel, D_REF, GROUND_RANGES
+from stance_env.ground import normal_force, friction_force, GroundModel, D_REF, GROUND_RANGES, M_REF
 
 
 G = 9.81
@@ -146,7 +146,7 @@ def _bands(value):
     return value if isinstance(value, list) else [value]
 
 
-@pytest.mark.parametrize("param", ["k0", "c", "alpha", "f_yield", "mu"])
+@pytest.mark.parametrize("param", ["k0", "zeta", "alpha", "f_yield", "mu"])
 def test_train_and_test_ranges_are_disjoint(param):
     """No test band may overlap any train band (touching at an edge is allowed).
 
@@ -160,3 +160,13 @@ def test_train_and_test_ranges_are_disjoint(param):
             assert te_hi <= tr_lo or te_lo >= tr_hi, (
                 f"{param}: test band ({te_lo}, {te_hi}) overlaps "
                 f"train band ({tr_lo}, {tr_hi})")
+
+@pytest.mark.parametrize("split", ["train", "test"])
+def test_damping_derived_from_zeta(split):
+    """c must equal 2*zeta*sqrt(k0*M_REF), and zeta must stay inside its range."""
+    g = GroundModel(split=split, n_points=2)
+    for seed in range(60):
+        g.sample(np.random.default_rng(seed))
+        np.testing.assert_allclose(g.c, 2.0 * g.zeta * np.sqrt(g.k0 * M_REF))
+        lo, hi = GROUND_RANGES[split]["zeta"]
+        assert np.all((g.zeta >= lo) & (g.zeta <= hi))
