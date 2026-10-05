@@ -17,8 +17,17 @@
     <light pos="0 0 2.5" dir="0 0 -1"/>
     <camera name="side" pos="0.3 -2.2 0.6" xyaxes="1 0 0 0 0 1"/>
 
-    <!-- Visual only. Its z position is moved at render time to show the dent. -->
-    <geom name="floor" type="plane" size="3 1 0.1" pos="0 0 0" rgba="0.82 0.80 0.76 1"/>
+    <!-- Visual only. Sits BEHIND the leg (y from 0 to 2): MuJoCo never moves a
+         plane at runtime, so the ground in front is drawn by the cells below. -->
+    <geom name="floor" type="plane" size="3 1 0.1" pos="0 1 0" rgba="0.82 0.80 0.76 1"/>
+
+    <!-- Visual only: a cutaway strip of ground cells in front of the leg
+         (y from -1 to 0). GroundModel.update_visual moves them every frame so
+         the heel and toe dents show separately. Names: ground_cell000, 001, ... -->
+    <replicate count="200" offset="0.02 0 0">
+      <geom name="ground_cell" type="box" size="0.01 0.5 0.1" pos="-2 -0.5 -0.1"
+            rgba="0.72 0.66 0.56 1"/>
+    </replicate>
 
     <!-- ================= FLOATING BASE: THE FOOT (3 passive DOF) ================= -->
     <!-- Nothing holds this up except the forces we apply. It can fall over. -->
