@@ -17,6 +17,8 @@ import numpy as np
 # --------------------------------------------------------------- constants
 D_REF = 0.02      # m, depth at which `alpha` reaches full effect
 V_EPS = 1e-3      # m/s, friction smoothing width
+PATCH_HALF = 0.065   # m, half-length of the ground patch each contact point
+                     # represents (foot 0.26 m long, split between heel and toe)
 M_REF = 73.5      # kg, total mass of model/leg.xml. Converts a sampled damping
                   # ratio zeta into a damping coefficient: c = 2*zeta*sqrt(k0*M_REF).
                   # Assumes one contact point carries the whole body (heel strike).
@@ -102,6 +104,8 @@ class GroundModel:
         self.n = n_points
         self.k0 = np.zeros(n_points)
         self.zeta = np.zeros(n_points)
+        self.last_x = np.zeros(n_points)   # x of each point, for the visual
+        self._cells = None                 # visual cell geom ids, found on first draw
         self.c = np.zeros(n_points)
         self.alpha = np.zeros(n_points)
         self.f_yield = np.zeros(n_points)
@@ -144,6 +148,8 @@ class GroundModel:
         out = np.zeros((self.n, 3))
         total = 0.0
 
+        self.last_x = np.asarray(positions, dtype=float)[:, 0].copy()
+
         for i in range(self.n):
             depth = self.surface_z[i] - positions[i][2]
             Fn, extra_dent = normal_force(
@@ -161,16 +167,41 @@ class GroundModel:
         self.last_normal = total
         return out
 
-    # -------------------------------------------------------------- visual
     def update_visual(self, model):
         """Show the dent.
 
         MuJoCo's floor collision is off, so without this the leg appears to
-        stand on nothing and sink into empty space. Dropping the visual floor
-        to the deepest dent is the cheap version; a strip of per-cell boxes
-        would show heel and toe denting differently.
+        stand on nothing and sink into empty space.
+
+        model/leg.xml provides geoms named ground_cell*, drawn as a cutaway
+        strip in front of the leg. Each cell under a contact point drops to that
+        point's dented surface, so heel and toe dent separately. The strip
+        follows the foot, snapped to a fixed grid so it does not shimmer.
+
+        Note: MuJoCo never updates a plane's position at runtime, so moving the
+        floor plane (the previous approach) had no visible effect. If the cells
+        are missing, nothing is drawn.
         """
-        model.geom("floor").pos[2] = float(self.surface_z.min())
+        if self._cells is None:
+            self._cells = [i for i in range(model.ngeom)
+                           if (model.geom(i).name or "").startswith("ground_cell")]
+        if not self._cells:
+            return
+
+        n = len(self._cells)
+        w = 2.0 * model.geom_size[self._cells[0], 0]       # cell width
+        # Centre the strip on the foot, snapped to a fixed world grid so the
+        # cells do not shimmer as the foot moves.
+        centre = np.round(self.last_x.mean() / w) * w
+        xs = centre + (np.arange(n) - (n - 1) / 2.0) * w
+        for gid, x in zip(self._cells, xs):
+            top = 0.0
+            for i in range(self.n):
+                if abs(x - self.last_x[i]) <= PATCH_HALF:
+                    top = min(top, self.surface_z[i])
+            half_h = model.geom_size[gid, 2]
+            model.geom_pos[gid, 0] = x
+            model.geom_pos[gid, 2] = top - half_h
 
     # ------------------------------------------------------------- logging
     def describe(self):
