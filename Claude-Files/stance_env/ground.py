@@ -1,9 +1,8 @@
 """
-THE GROUND -- owned by Person 2.
+THE GROUND -- owned by Mukul Yadav.
 
 Everything about the surface lives here: the force law, the material sampling,
-the dent that persists, and how the dent is drawn. Person 2 can change any of
-it without touching anyone else's file.
+the dent that persists, and how the dent is drawn.
 
 The contract with the environment is one method:
 
