@@ -9,8 +9,8 @@ from gymnasium import spaces
 from stance_env.ground import GroundModel # This will be pulled from Mukul's work
 
 # Leg geometry is defined in the MuJoCo XML file, but we need to know some of the dimensions here for computing the ankle torque and leg tilt.
-HEEL_OFFSET = np.array([-0.07, -0.05])  # How far back the heel is from the ankle joint, in the world frame (x, y)
-TOE_OFFSET = np.array([0.19, -0.05])    # How far forward the toe is from the ankle joint, in the world frame (x, y)
+HEEL_OFFSET = np.array([-0.07, -0.05])  # heel position (x, z) in the FOOT's own frame
+TOE_OFFSET = np.array([0.19, -0.05])    # toe position (x, z) in the FOOT's own frame
 
 MODEL_PATH = Path(__file__).resolve().parent.parent / "model" / "leg.xml" # Path to the MuJoCo XML model file for the leg
 
@@ -21,7 +21,7 @@ B_RANGE = (0.5, 20.0)          # The damping range for the ankle joint, in N.m.s
 TAU_LIMIT = 150.0              # The maximum torque for the ankle joint, in N.m (150 N.m)
 
 # Episode information for the environment
-MAX_EPISODE_LENGTH = 1000  # The maximum number of steps per episode
+MAX_EPISODE_LENGTH = 100  # The maximum number of steps per episode
 HISTORY_LENGTH = 10        # The number of past observations to keep in the observation space
 FRAME_SKIP = 5             # The number of "physics simulation" steps per actual program environment step. T
                            # This is used to speed up the simulation and reduce the computational load.
@@ -41,12 +41,11 @@ Sensor inputs:
 
 # Episode failure conditions for the environment
 FALL_ANGLE = np.deg2rad(15.0)  # The maximum tilt angle for the leg before the episode is considered a failure, in radians (15 degrees or 0.262 radians)
-STANDING_HEIGHT = 0.85         # ankle-to-mass length from leg.xml (check if this is correct from Muthu's work)
 COLLAPSE_FRACTION = 0.70       # The fraction of the standing height below which the episode is considered a failure (70% of standing height)
 
 # Reward weights for the environment
 W_SMOOTH  = 0.5     # smoothness penalty weight
-W_IMPACT = 2.0      # weight for impact penalty. # This was set to 2.0 after running the smoke test, providing the longest survival time.
+W_IMPACT = 1.2     # weight for impact penalty. # This was set to 2.0 after running the smoke test, providing the longest survival time.
 LAMBDA_BW = 2.0     # impact threshold given in multiples of body weights
 '''
 LAMBDA_BW is the threshold for the vertical ground reaction force (GRF) above which the agent is penalized. 
@@ -97,6 +96,7 @@ class AnkleEnv(gym.Env):
 
         self.total_mass = float(self.model.body_subtreemass[self.foot_bid])
         self.body_weight = self.total_mass * G
+        self.standing_height = self._measure_standing_height() # Measure the standing height of the leg in the MuJoCo simulation directly.
 
         self.action_space = spaces.Box(-1.0, 1.0, (3,), np.float32)
         self.observation_space = spaces.Box(
@@ -104,6 +104,16 @@ class AnkleEnv(gym.Env):
 
         self.render_mode = render_mode
         self._recorder = None
+
+    def _measure_standing_height(self):
+        """
+        World height of the body mass in the model's neutral pose.
+        Uses a scratch MjData so the live simulation state is untouched.
+        """
+        scratch = mujoco.MjData(self.model)
+        mujoco.mj_resetData(self.model, scratch)
+        mujoco.mj_forward(self.model, scratch)
+        return float(scratch.xpos[self.body_bid][2])
 
 ### Reset function: This is where the environment is reset to its initial state at the beginning of each episode.
 
@@ -124,6 +134,7 @@ class AnkleEnv(gym.Env):
         self.history = collections.deque(
             [np.zeros(SENSOR_INPUTS)] * self.history_len, maxlen=self.history_len)
         self.step_count = 0
+        self.peak_force = 0.0
         self.prev_action = np.zeros(3)
         self.prev_site_xpos = np.array(
             [self.data.site_xpos[i].copy() for i in self.sid])
@@ -138,16 +149,21 @@ class AnkleEnv(gym.Env):
             The forward and downward velocities (v_fwd and v_down) are also randomly sampled to simulate different approach speeds.
             '''
             rng = self.np_random
-            phi = rng.uniform(np.deg2rad(-8), np.deg2rad(4))
+            phi     = rng.uniform(np.deg2rad(-8), np.deg2rad(4))
             ankle_q = rng.uniform(np.deg2rad(-5), np.deg2rad(5))
-            v_fwd = rng.uniform(0.8, 1.4)
-            v_down = rng.uniform(0.10, 0.50)
-            want_z = HEEL_OFFSET[0] * np.sin(phi) - HEEL_OFFSET[1] * np.cos(phi)
-            foot_z = want_z - self.model.body_pos[self.foot_bid][2] # Offset from XML 
-    
-            self.data.qpos[:] = [0.0, foot_z, phi, ankle_q, 0.0]
-            self.data.qvel[:] = [v_fwd, -v_down, 0.0, 0.0, 0.0]
+            v_fwd   = rng.uniform(0.8, 1.4)
+            v_down  = rng.uniform(0.10, 0.50)
 
+            # Height that puts the HEEL exactly on the ground, minus the foot
+            # body's own offset in the XML (slide qpos is relative, not absolute)
+            want_z = HEEL_OFFSET[0] * np.sin(phi) - HEEL_OFFSET[1] * np.cos(phi)
+            foot_z = want_z - self.model.body_pos[self.foot_bid][2]
+
+            self.data.qpos[self.IZ]     = foot_z
+            self.data.qpos[self.IPITCH] = phi
+            self.data.qpos[self.IANKLE] = ankle_q
+            self.data.qvel[self.VX]     = v_fwd
+            self.data.qvel[self.VZ]     = -v_down
 
 ### Step function: This is where the agent takes an action and the environment responds with the next state, reward, and done signal.
 
@@ -155,24 +171,17 @@ class AnkleEnv(gym.Env):
         action = np.clip(np.asarray(action, dtype=np.float64), -1.0, 1.0) # Clip the action values to be within the range [-1, 1]
         theta_d, K, B = self._rescale(action) # Rescaled using the _rescale function.
 
-        peak_force = 0.0 # Tracking the peak ground reaction force during the step for reward calculation and info logging.
-        for _ in range(FRAME_SKIP):
-            self._apply_ground_forces()
-            peak_force = max(peak_force, self.ground.last_normal)
-            ...
-            mujoco.mj_step(self.model, self.data)
-            self.data.qfrc_applied[:] = 0.0
-
-        self.peak_force = peak_force    # store for reward + info
-                
         '''
         For each environment step, we need to apply the ground forces and update the simulation state for a number of physics steps (FRAME_SKIP).
         This is done to simulate the dynamics of the system over a longer time period and to reduce the computational load by skipping some of the physics steps.
         The ankle torque is computed using an impedance control law based on the desired ankle angle (theta_d), stiffness (K), and damping (B). 
         The torque is clipped to be within the actuator limits (TAU_LIMIT) to ensure that the actuator does not exceed its maximum torque capacity. 
         '''
+        peak_force = 0.0 # Tracking the peak ground reaction force during the step for reward calculation and info logging.
+
         for _ in range(FRAME_SKIP):
             self._apply_ground_forces()
+            peak_force = max(peak_force, self.ground.last_normal) # Update the peak ground reaction force based on the last normal force computed by the ground model.
             q = self.data.qpos[self.IANKLE]
             qd = self.data.qvel[self.VANKLE]
             self.data.ctrl[0] = np.clip(K * (theta_d - q) - B * qd,
@@ -180,6 +189,7 @@ class AnkleEnv(gym.Env):
             mujoco.mj_step(self.model, self.data)
             self.data.qfrc_applied[:] = 0.0    # our forces are per-step, not sticky
 
+        self.peak_force = peak_force
         self.history.append(self._sensors())
         self.step_count += 1
 
@@ -194,10 +204,13 @@ class AnkleEnv(gym.Env):
         self.prev_action = action.copy()
 
         info = {
-            "normal_force_bw": self.ground.last_normal / self.body_weight, # Normalized vertical ground reaction force (GRF) in terms of body weights.
-            "body_height": float(self.data.xpos[self.body_bid][2]), # Current height of the body mass in the world frame (z-coordinate).
-            **self.ground.describe(), # Additional information about the ground model, such as the ground type and properties.
+            "normal_force_bw": self.peak_force / self.body_weight,
+            "leg_tilt_deg": float(np.rad2deg(self._leg_tilt())),
+            "body_height": float(self.data.xpos[self.body_bid][2]),
+            **self.ground.describe(),
         }
+        
+        truncated = (self.step_count >= MAX_EPISODE_LENGTH) and not terminated
         return self._get_obs(), reward, bool(terminated), bool(truncated), info
     
     @staticmethod
@@ -314,7 +327,7 @@ class AnkleEnv(gym.Env):
         '''
         toppled = abs(self._leg_tilt()) > FALL_ANGLE
         collapsed = (self.data.xpos[self.body_bid][2]
-                     < COLLAPSE_FRACTION * STANDING_HEIGHT)
+                     < COLLAPSE_FRACTION * self.standing_height)
         return toppled or collapsed
 
     # ===================================================== rendering
