@@ -82,8 +82,18 @@ class AnkleEnv(gym.Env):
         self.body_bid = nid(B, "body_mass")
         self.shank_bid = nid(B, "shank") 
 
-        # qpos/qvel indices, in leg.xml joint order
-        self.IX, self.IZ, self.IPITCH, self.IANKLE, self.IPYLON = 0, 1, 2, 3, 4
+        # Get the indices of the joint positions and velocities for the ankle joint and other relevant joints in the MuJoCo model.
+        def jadr(name):
+            jid = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, name)
+            if jid < 0:
+                raise ValueError(f"joint {name!r} not found in {MODEL_PATH.name}")
+            return int(self.model.jnt_qposadr[jid]), int(self.model.jnt_dofadr[jid])
+
+        self.IX,     self.VX     = jadr("foot_x")
+        self.IZ,     self.VZ     = jadr("foot_z")
+        self.IPITCH, self.VPITCH = jadr("foot_pitch")
+        self.IANKLE, self.VANKLE = jadr("ankle_hinge")
+        self.IPYLON, self.VPYLON = jadr("pylon_slide")
 
         self.total_mass = float(self.model.body_subtreemass[self.foot_bid])
         self.body_weight = self.total_mass * G
@@ -164,7 +174,7 @@ class AnkleEnv(gym.Env):
         for _ in range(FRAME_SKIP):
             self._apply_ground_forces()
             q = self.data.qpos[self.IANKLE]
-            qd = self.data.qvel[self.IANKLE]
+            qd = self.data.qvel[self.VANKLE]
             self.data.ctrl[0] = np.clip(K * (theta_d - q) - B * qd,
                                         -TAU_LIMIT, TAU_LIMIT)
             mujoco.mj_step(self.model, self.data)
@@ -259,7 +269,7 @@ class AnkleEnv(gym.Env):
         """
         Shank angular velocity about the pitch axis, rad/s.
         """
-        return self.data.qvel[self.IPITCH] + self.data.qvel[self.IANKLE]
+        return self.data.qvel[self.VPITCH] + self.data.qvel[self.VANKLE]
     
     def _sensors(self):    
         '''
@@ -269,13 +279,13 @@ class AnkleEnv(gym.Env):
         d = self.data
         return np.array([
             d.qpos[self.IANKLE],          # 0  ankle angle        (encoder)
-            d.qvel[self.IANKLE],          # 1  ankle rate         (encoder)
+            d.qvel[self.VANKLE],          # 1  ankle rate         (encoder)
             d.ctrl[0],                    # 2  ankle torque       (motor current)
             self.ground.last_normal,      # 3  vertical GRF       (pylon load cell)
             d.qpos[self.IPYLON],          # 4  pylon compression  (linear sensor)
             self._leg_tilt(),             # 5  shank tilt         (IMU)
             self._leg_tilt_rate(),        # 6  shank tilt rate    (IMU)
-            d.qacc[self.IZ],              # 7  vertical accel     (IMU)
+            d.qacc[self.VZ],              # 7  vertical accel     (IMU)
             *self.prev_action,            # 8,9,10  previous action (Memory)
         ], dtype=np.float64)
 
