@@ -19,9 +19,6 @@ D_REF = 0.02      # m, depth at which `alpha` reaches full effect
 V_EPS = 1e-3      # m/s, friction smoothing width
 PATCH_HALF = 0.065   # m, half-length of the ground patch each contact point
                      # represents (foot 0.26 m long, split between heel and toe)
-M_REF = 73.5      # kg, total mass of model/leg.xml. Converts a sampled damping
-                  # ratio zeta into a damping coefficient: c = 2*zeta*sqrt(k0*M_REF).
-                  # Assumes one contact point carries the whole body (heel strike).
 
 # ===========================================================================
 # PURE FORCE LAW -- no state, no MuJoCo. Testable against hand arithmetic.
@@ -97,11 +94,17 @@ class GroundModel:
     the mechanical link between unknown ground and falling.
     """
 
-    def __init__(self, split="train", n_points=2):
+    def __init__(self, split="train", n_points=2, total_mass=73.5):
         if split not in GROUND_RANGES:
             raise ValueError(f"split must be 'train' or 'test', got {split!r}")
         self.split = split
         self.n = n_points
+        # kg, total mass of the leg model. Converts a sampled damping ratio zeta
+        # into a damping coefficient: c = 2*zeta*sqrt(k0*total_mass). Assumes one
+        # contact point carries the whole body (heel strike). The environment
+        # should pass the real mass from the loaded MuJoCo model; 73.5 is only
+        # the default for standalone use and tests.
+        self.total_mass = total_mass
         self.k0 = np.zeros(n_points)
         self.zeta = np.zeros(n_points)
         self.last_x = np.zeros(n_points)   # x of each point, for the visual
@@ -128,7 +131,7 @@ class GroundModel:
         # Sample the damping RATIO, then derive c from it, so damping always
         # scales with the stiffness just drawn.
         self.zeta = rng.uniform(*r["zeta"], self.n)
-        self.c = 2.0 * self.zeta * np.sqrt(self.k0 * M_REF)
+        self.c = 2.0 * self.zeta * np.sqrt(self.k0 * self.total_mass)
         
         self.alpha = rng.uniform(*r["alpha"], self.n)
         self.f_yield = rng.uniform(*r["f_yield"], self.n)

@@ -27,7 +27,8 @@ Train and test ranges touch at shared edges but never overlap; this is enforced
 by `test_train_and_test_ranges_are_disjoint`.
 
 Damping is sampled as a ratio `zeta` and converted inside `sample()`:
-`c = 2 * zeta * sqrt(k0 * M_REF)`.
+`c = 2 * zeta * sqrt(k0 * total_mass)`, where `total_mass` is a
+`GroundModel` constructor argument (default 73.5 kg).
 
 ---
 
@@ -37,9 +38,10 @@ Damping is sampled as a ratio `zeta` and converted inside `sample()`:
   `TOE_OFFSET = 0.19 m` from the ankle). Each draws its own material.
 - **Contact area.** Foot is 0.26 m × 0.08 m = 0.0208 m². Each point is assumed to
   represent half: `A_point = 0.0104 m²` (a 0.08 m × 0.13 m patch). *Assumption.*
-- **Mass for damping.** `M_REF = 73.5 kg`, the total mass of `model/leg.xml`,
-  assuming one point carries the whole body at heel strike. *Assumption; must
-  be updated if the leg model's masses change.*
+- **Mass for damping.** `total_mass`, the total mass of the leg model, passed to
+  `GroundModel` by the environment from the loaded MuJoCo model (default 73.5 kg
+  for standalone use). Assumes one point carries the whole body at heel strike.
+  *Assumption.*
 - **Depth reference.** `D_REF = 0.02 m`.
 
 ---
@@ -202,7 +204,8 @@ friction data was found for gravel or loose soil.
    contact is softer than measured.
 3. **No coupling between heel and toe.** Load spreading through plate-like
    surfaces is not modelled; no data was found to calibrate it.
-4. **`M_REF` is tied to `leg.xml`.** If the leg masses change, damping drifts.
+4. **Mass must be passed in.** If the environment does not pass `total_mass`, the
+   73.5 kg default is used and drifts from the leg model if its masses change.
 5. **Damping from drop tests overstates real energy loss** [1]. The C4
    conversion is exact only for a linear spring-damper; stiffening and yield
    make it approximate.

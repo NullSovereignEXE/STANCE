@@ -8,7 +8,7 @@ import numpy as np
 import mujoco
 import pytest
 
-from stance_env.ground import normal_force, friction_force, GroundModel, D_REF, GROUND_RANGES, M_REF
+from stance_env.ground import normal_force, friction_force, GroundModel, D_REF, GROUND_RANGES
 
 
 G = 9.81
@@ -162,11 +162,20 @@ def test_train_and_test_ranges_are_disjoint(param):
                 f"train band ({tr_lo}, {tr_hi})")
 
 @pytest.mark.parametrize("split", ["train", "test"])
-def test_damping_derived_from_zeta(split):
-    """c must equal 2*zeta*sqrt(k0*M_REF), and zeta must stay inside its range."""
-    g = GroundModel(split=split, n_points=2)
+@pytest.mark.parametrize("mass", [73.5, 72.41, 60.0])
+def test_damping_derived_from_zeta(split, mass):
+    """c must equal 2*zeta*sqrt(k0*total_mass), and zeta must stay inside its range."""
+    g = GroundModel(split=split, n_points=2, total_mass=mass)
+    assert g.total_mass == mass
     for seed in range(60):
         g.sample(np.random.default_rng(seed))
-        np.testing.assert_allclose(g.c, 2.0 * g.zeta * np.sqrt(g.k0 * M_REF))
+        np.testing.assert_allclose(g.c, 2.0 * g.zeta * np.sqrt(g.k0 * mass))
         lo, hi = GROUND_RANGES[split]["zeta"]
         assert np.all((g.zeta >= lo) & (g.zeta <= hi))
+
+
+def test_default_constructor_still_works():
+    """The env contract: GroundModel(split=..., n_points=2) with no mass argument."""
+    g = GroundModel(split="train", n_points=2)
+    g.sample(np.random.default_rng(0))
+    assert g.total_mass == 73.5 and np.all(g.c > 0)
