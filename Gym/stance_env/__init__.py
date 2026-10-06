@@ -6,7 +6,7 @@ if _sys.platform.startswith("linux") and not _os.environ.get("DISPLAY"):
 
 from gymnasium.envs.registration import register
 
-from stance_env.ankle_env import AnkleEnv
+from stance_env.ankle_gym_env import AnkleEnv
 from stance_env.ground import normal_force, friction_force, GroundModel
 
 
