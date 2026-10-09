@@ -19,7 +19,7 @@ The agent should be trained on this environment, and evaluated on the test envir
 
 register(
     id="StanceAnkle-v0", # This is the training environment for the stance ankle environment. It is used to train the agent on a variety of ground conditions. The agent should be trained on this environment, and evaluated on the test environment.
-    entry_point="stance_env.ankle_env:AnkleEnv",
+    entry_point="stance_env.ankle_gym_env:AnkleEnv",
     max_episode_steps=100,  # If the leg doesn't fall in 100 steps, the episode is considered TRUNCATED and ends.
     kwargs={"ground_split": "train"},
 )
@@ -34,7 +34,7 @@ The agent should not be trained on this environment, only evaluated.
 
 register(
     id="StanceAnkleTest-v0", 
-    entry_point="stance_env.ankle_env:AnkleEnv",
+    entry_point="stance_env.ankle_gym_env:AnkleEnv",
     max_episode_steps=100,
     kwargs={"ground_split": "test"},
 )
