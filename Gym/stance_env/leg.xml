@@ -45,174 +45,17 @@
             xyaxes="1 0 0 0 0 1"/>
 
 
+
         <!-- =====================================================
-             DEFORMABLE GROUND VISUALIZATION (MUKUL INTERFACE)
-             40 non-colliding cells, 0.02 m each = 0.80 m.
-             ground.py update_visual() positions and lowers them.
-             Ground reaction forces are applied separately in Python.
+             VISUAL GROUND
              ===================================================== -->
-        <body name="ground_strip">
-            <geom name="ground_cell_00" type="box"
-                  size="0.010 0.30 0.02" pos="-0.390 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_01" type="box"
-                  size="0.010 0.30 0.02" pos="-0.370 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_02" type="box"
-                  size="0.010 0.30 0.02" pos="-0.350 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_03" type="box"
-                  size="0.010 0.30 0.02" pos="-0.330 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_04" type="box"
-                  size="0.010 0.30 0.02" pos="-0.310 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_05" type="box"
-                  size="0.010 0.30 0.02" pos="-0.290 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_06" type="box"
-                  size="0.010 0.30 0.02" pos="-0.270 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_07" type="box"
-                  size="0.010 0.30 0.02" pos="-0.250 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_08" type="box"
-                  size="0.010 0.30 0.02" pos="-0.230 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_09" type="box"
-                  size="0.010 0.30 0.02" pos="-0.210 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_10" type="box"
-                  size="0.010 0.30 0.02" pos="-0.190 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_11" type="box"
-                  size="0.010 0.30 0.02" pos="-0.170 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_12" type="box"
-                  size="0.010 0.30 0.02" pos="-0.150 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_13" type="box"
-                  size="0.010 0.30 0.02" pos="-0.130 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_14" type="box"
-                  size="0.010 0.30 0.02" pos="-0.110 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_15" type="box"
-                  size="0.010 0.30 0.02" pos="-0.090 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_16" type="box"
-                  size="0.010 0.30 0.02" pos="-0.070 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_17" type="box"
-                  size="0.010 0.30 0.02" pos="-0.050 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_18" type="box"
-                  size="0.010 0.30 0.02" pos="-0.030 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_19" type="box"
-                  size="0.010 0.30 0.02" pos="-0.010 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_20" type="box"
-                  size="0.010 0.30 0.02" pos="0.010 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_21" type="box"
-                  size="0.010 0.30 0.02" pos="0.030 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_22" type="box"
-                  size="0.010 0.30 0.02" pos="0.050 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_23" type="box"
-                  size="0.010 0.30 0.02" pos="0.070 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_24" type="box"
-                  size="0.010 0.30 0.02" pos="0.090 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_25" type="box"
-                  size="0.010 0.30 0.02" pos="0.110 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_26" type="box"
-                  size="0.010 0.30 0.02" pos="0.130 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_27" type="box"
-                  size="0.010 0.30 0.02" pos="0.150 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_28" type="box"
-                  size="0.010 0.30 0.02" pos="0.170 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_29" type="box"
-                  size="0.010 0.30 0.02" pos="0.190 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_30" type="box"
-                  size="0.010 0.30 0.02" pos="0.210 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_31" type="box"
-                  size="0.010 0.30 0.02" pos="0.230 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_32" type="box"
-                  size="0.010 0.30 0.02" pos="0.250 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_33" type="box"
-                  size="0.010 0.30 0.02" pos="0.270 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_34" type="box"
-                  size="0.010 0.30 0.02" pos="0.290 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_35" type="box"
-                  size="0.010 0.30 0.02" pos="0.310 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_36" type="box"
-                  size="0.010 0.30 0.02" pos="0.330 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_37" type="box"
-                  size="0.010 0.30 0.02" pos="0.350 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_38" type="box"
-                  size="0.010 0.30 0.02" pos="0.370 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-            <geom name="ground_cell_39" type="box"
-                  size="0.010 0.30 0.02" pos="0.390 0 -0.02"
-                  contype="0" conaffinity="0"
-                  rgba="0.75 0.72 0.68 1"/>
-        </body>
+
+        <geom
+            name="ground"
+            type="plane"
+            size="3 3 0.1"
+            pos="0 0 0"
+            rgba="0.8 0.8 0.8 1"/>
 
 
         <!-- =====================================================
@@ -276,7 +119,7 @@
 
             <site
                 name="heel_site"
-                pos="-0.07 0 -0.025"
+                pos="-0.07 0 -0.05"
                 size="0.008"
                 rgba="1 0 0 1"/>
 
@@ -285,7 +128,7 @@
 
             <site
                 name="toe_site"
-                pos="0.19 0 -0.025"
+                pos="0.19 0 -0.05"
                 size="0.008"
                 rgba="0 1 0 1"/>
 
@@ -439,7 +282,7 @@
 
         <motor
             name="ankle_motor"
-            joint="ankle_hinge"
+            joint="ankle_joint"
             gear="1"
             ctrlrange="-150 150"/>
 
@@ -472,11 +315,11 @@
 
         <jointpos
             name="ankle_pos"
-            joint="ankle_hinge"/>
+            joint="ankle_joint"/>
 
         <jointvel
             name="ankle_vel"
-            joint="ankle_hinge"/>
+            joint="ankle_joint"/>
 
 
         <!-- Pylon -->

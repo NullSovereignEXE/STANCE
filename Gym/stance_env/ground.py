@@ -1,9 +1,8 @@
 """
-THE GROUND -- owned by Person 2.
+THE GROUND -- owned by Mukul Yadav.
 
 Everything about the surface lives here: the force law, the material sampling,
-the dent that persists, and how the dent is drawn. Person 2 can change any of
-it without touching anyone else's file.
+the dent that persists, and how the dent is drawn.
 
 The contract with the environment is one method:
 
@@ -18,7 +17,8 @@ import numpy as np
 # --------------------------------------------------------------- constants
 D_REF = 0.02      # m, depth at which `alpha` reaches full effect
 V_EPS = 1e-3      # m/s, friction smoothing width
-
+PATCH_HALF = 0.065   # m, half-length of the ground patch each contact point
+                     # represents (foot 0.26 m long, split between heel and toe)
 
 # ===========================================================================
 # PURE FORCE LAW -- no state, no MuJoCo. Testable against hand arithmetic.
@@ -67,15 +67,15 @@ def friction_force(normal, tangential_velocity, mu):
 GROUND_RANGES = {
     "train": dict(
         k0=[(5e3, 1e5)],
-        c=(20.0, 400.0),
-        alpha=(0.0, 15.0),
+        zeta=(0.05, 0.30),                        # damping ratio, not c
+        alpha=(0.0, 2.0),
         f_yield=(300.0, 3000.0),
         mu=(0.30, 0.90),
     ),
     "test": dict(
         k0=[(2e3, 5e3), (1e5, 2e5)],             # two disjoint bands
-        c=(400.0, 800.0),
-        alpha=(15.0, 25.0),
+        zeta=(0.30, 0.60),                        # heavier, "dead" ground
+        alpha=(2.0, 4.0),
         f_yield=(150.0, 300.0),
         mu=(0.15, 0.30),
     ),
@@ -94,12 +94,21 @@ class GroundModel:
     the mechanical link between unknown ground and falling.
     """
 
-    def __init__(self, split="train", n_points=2):
+    def __init__(self, split="train", n_points=2, total_mass=73.5):
         if split not in GROUND_RANGES:
             raise ValueError(f"split must be 'train' or 'test', got {split!r}")
         self.split = split
         self.n = n_points
+        # kg, total mass of the leg model. Converts a sampled damping ratio zeta
+        # into a damping coefficient: c = 2*zeta*sqrt(k0*total_mass). Assumes one
+        # contact point carries the whole body (heel strike). The environment
+        # should pass the real mass from the loaded MuJoCo model; 73.5 is only
+        # the default for standalone use and tests.
+        self.total_mass = total_mass
         self.k0 = np.zeros(n_points)
+        self.zeta = np.zeros(n_points)
+        self.last_x = np.zeros(n_points)   # x of each point, for the visual
+        self._cells = None                 # visual cell geom ids, found on first draw
         self.c = np.zeros(n_points)
         self.alpha = np.zeros(n_points)
         self.f_yield = np.zeros(n_points)
@@ -118,7 +127,12 @@ class GroundModel:
             10 ** rng.uniform(np.log10(bands[p][0]), np.log10(bands[p][1]))
             for p in pick
         ])
-        self.c = rng.uniform(*r["c"], self.n)
+
+        # Sample the damping RATIO, then derive c from it, so damping always
+        # scales with the stiffness just drawn.
+        self.zeta = rng.uniform(*r["zeta"], self.n)
+        self.c = 2.0 * self.zeta * np.sqrt(self.k0 * self.total_mass)
+        
         self.alpha = rng.uniform(*r["alpha"], self.n)
         self.f_yield = rng.uniform(*r["f_yield"], self.n)
         self.mu = rng.uniform(*r["mu"], self.n)
@@ -137,6 +151,8 @@ class GroundModel:
         out = np.zeros((self.n, 3))
         total = 0.0
 
+        self.last_x = np.asarray(positions, dtype=float)[:, 0].copy()
+
         for i in range(self.n):
             depth = self.surface_z[i] - positions[i][2]
             Fn, extra_dent = normal_force(
@@ -154,16 +170,41 @@ class GroundModel:
         self.last_normal = total
         return out
 
-    # -------------------------------------------------------------- visual
     def update_visual(self, model):
         """Show the dent.
 
         MuJoCo's floor collision is off, so without this the leg appears to
-        stand on nothing and sink into empty space. Dropping the visual floor
-        to the deepest dent is the cheap version; a strip of per-cell boxes
-        would show heel and toe denting differently.
+        stand on nothing and sink into empty space.
+
+        model/leg.xml provides geoms named ground_cell*, drawn as a cutaway
+        strip in front of the leg. Each cell under a contact point drops to that
+        point's dented surface, so heel and toe dent separately. The strip
+        follows the foot, snapped to a fixed grid so it does not shimmer.
+
+        Note: MuJoCo never updates a plane's position at runtime, so moving the
+        floor plane (the previous approach) had no visible effect. If the cells
+        are missing, nothing is drawn.
         """
-        model.geom("floor").pos[2] = float(self.surface_z.min())
+        if self._cells is None:
+            self._cells = [i for i in range(model.ngeom)
+                           if (model.geom(i).name or "").startswith("ground_cell")]
+        if not self._cells:
+            return
+
+        n = len(self._cells)
+        w = 2.0 * model.geom_size[self._cells[0], 0]       # cell width
+        # Centre the strip on the foot, snapped to a fixed world grid so the
+        # cells do not shimmer as the foot moves.
+        centre = np.round(self.last_x.mean() / w) * w
+        xs = centre + (np.arange(n) - (n - 1) / 2.0) * w
+        for gid, x in zip(self._cells, xs):
+            top = 0.0
+            for i in range(self.n):
+                if abs(x - self.last_x[i]) <= PATCH_HALF:
+                    top = min(top, self.surface_z[i])
+            half_h = model.geom_size[gid, 2]
+            model.geom_pos[gid, 0] = x
+            model.geom_pos[gid, 2] = top - half_h
 
     # ------------------------------------------------------------- logging
     def describe(self):

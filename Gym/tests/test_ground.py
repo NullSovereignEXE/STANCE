@@ -8,7 +8,8 @@ import numpy as np
 import mujoco
 import pytest
 
-from stance_env.ground import normal_force, friction_force, GroundModel, D_REF
+from stance_env.ground import normal_force, friction_force, GroundModel, D_REF, GROUND_RANGES
+
 
 G = 9.81
 
@@ -138,3 +139,43 @@ def test_ground_model_dent_only_deepens():
         g.forces(pos, vel)
         assert np.all(g.surface_z <= prev + 1e-12), "surface rose"
         prev = g.surface_z.copy()
+
+# ================================================== material range design
+def _bands(value):
+    """k0 is a list of (lo, hi) bands; every other parameter is one (lo, hi)."""
+    return value if isinstance(value, list) else [value]
+
+
+@pytest.mark.parametrize("param", ["k0", "zeta", "alpha", "f_yield", "mu"])
+def test_train_and_test_ranges_are_disjoint(param):
+    """No test band may overlap any train band (touching at an edge is allowed).
+
+    This is the anti-memorisation guarantee: the agent is evaluated only on
+    grounds outside everything it trained on.
+    """
+    train = _bands(GROUND_RANGES["train"][param])
+    test = _bands(GROUND_RANGES["test"][param])
+    for tr_lo, tr_hi in train:
+        for te_lo, te_hi in test:
+            assert te_hi <= tr_lo or te_lo >= tr_hi, (
+                f"{param}: test band ({te_lo}, {te_hi}) overlaps "
+                f"train band ({tr_lo}, {tr_hi})")
+
+@pytest.mark.parametrize("split", ["train", "test"])
+@pytest.mark.parametrize("mass", [73.5, 72.41, 60.0])
+def test_damping_derived_from_zeta(split, mass):
+    """c must equal 2*zeta*sqrt(k0*total_mass), and zeta must stay inside its range."""
+    g = GroundModel(split=split, n_points=2, total_mass=mass)
+    assert g.total_mass == mass
+    for seed in range(60):
+        g.sample(np.random.default_rng(seed))
+        np.testing.assert_allclose(g.c, 2.0 * g.zeta * np.sqrt(g.k0 * mass))
+        lo, hi = GROUND_RANGES[split]["zeta"]
+        assert np.all((g.zeta >= lo) & (g.zeta <= hi))
+
+
+def test_default_constructor_still_works():
+    """The env contract: GroundModel(split=..., n_points=2) with no mass argument."""
+    g = GroundModel(split="train", n_points=2)
+    g.sample(np.random.default_rng(0))
+    assert g.total_mass == 73.5 and np.all(g.c > 0)
