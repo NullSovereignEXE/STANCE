@@ -1,10 +1,3 @@
-"""
-Run one 100-step STANCE episode (heel strike to mid-stance) in the MuJoCo viewer.
-
-    python demo.py             # fixed impedance policy, random episode
-    python demo.py --random    # random actions
-    python demo.py --seed 7    # replay a specific episode
-"""
 import argparse
 import time
 
@@ -23,8 +16,8 @@ FIXED_ACTION = np.array([-0.5, 1.0, 0.0], dtype=np.float32)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--random", action="store_true", help="use random actions")
-    parser.add_argument("--seed", type=int, default=None, help="episode seed (random if omitted)")
-    parser.add_argument("--split", choices=["train", "test"], default="train")
+    parser.add_argument("--seed", type=int, help="random seed for reproducibility")
+    parser.add_argument("--split", choices=["train", "test"], default="train") # designed for future use, but currently only train is supported
     parser.add_argument("--slowmo", type=float, default=10.0, help="playback slowdown factor")
     args = parser.parse_args()
     seed = args.seed if args.seed is not None else int(np.random.SeedSequence().entropy % 2**31)
