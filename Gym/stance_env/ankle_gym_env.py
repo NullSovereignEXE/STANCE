@@ -67,7 +67,6 @@ class AnkleEnv(gym.Env):
         self.model = mujoco.MjModel.from_xml_path(str(MODEL_PATH))
         self.data = mujoco.MjData(self.model)
         
-        self.ground = GroundModel(split=ground_split, n_points=2)  # Initialize the ground model with the specified split (train or test) and number of contact points (2)
         self.ground_split = ground_split
         self.history_len = history_len 
 
@@ -95,6 +94,7 @@ class AnkleEnv(gym.Env):
         self.IPYLON, self.VPYLON = jadr("pylon_slide")
 
         self.total_mass = float(self.model.body_subtreemass[self.foot_bid])
+        self.ground = GroundModel(split=ground_split, n_points=2, total_mass=self.total_mass)
         self.body_weight = self.total_mass * G
         self.standing_height = self._measure_standing_height() # Measure the standing height of the leg in the MuJoCo simulation directly.
 
@@ -138,6 +138,7 @@ class AnkleEnv(gym.Env):
         self.prev_action = np.zeros(3)
         self.prev_site_xpos = np.array(
             [self.data.site_xpos[i].copy() for i in self.sid])
+        self.history.append(self._sensors())
 
         return self._get_obs(), {}
     
