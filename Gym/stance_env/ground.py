@@ -91,13 +91,7 @@ GROUND_RANGES = {
 # THE GROUND MODEL -- this class remembers the episode's ground and its dents.
 # ===========================================================================
 class GroundModel:
-    """One patch of ground, chosen fresh at the start of each episode.
-
-    The heel and the toe each get their own material. If the heel lands on
-    softer ground than the toe, it sinks further, the foot tilts, the leg tilts
-    with it, and the body is pushed toward the edge of the foot. That mismatch
-    is how unknown ground ends up making the leg fall.
-    """
+    """One patch of ground, chosen fresh at the start of each episode."""
 
     def __init__(self, split="train", n_points=2, total_mass=73.5):
         if split not in GROUND_RANGES:
