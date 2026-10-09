@@ -17,8 +17,6 @@ import numpy as np
 # --------------------------------------------------------------- constants
 D_REF = 0.02      # m, depth at which `alpha` reaches full effect
 V_EPS = 1e-3      # m/s, friction smoothing width
-PATCH_HALF = 0.065   # m, half-length of the ground patch each contact point
-                     # represents (foot 0.26 m long, split between heel and toe)
 
 # ===========================================================================
 # PURE FORCE LAW -- no state, no MuJoCo. Testable against hand arithmetic.
@@ -108,7 +106,9 @@ class GroundModel:
         self.k0 = np.zeros(n_points)
         self.zeta = np.zeros(n_points)
         self.last_x = np.zeros(n_points)   # x of each point, for the visual
+        self.last_z = np.zeros(n_points)   # z of each point, for the visual
         self._cells = None                 # visual cell geom ids, found on first draw
+        self._cell_dent = None             # deepest permanent dent drawn per cell
         self.c = np.zeros(n_points)
         self.alpha = np.zeros(n_points)
         self.f_yield = np.zeros(n_points)
@@ -139,6 +139,7 @@ class GroundModel:
 
         self.surface_z = np.zeros(self.n)
         self.last_normal = 0.0
+        self._cell_dent = None
 
     # -------------------------------------------------------------- forces
     def forces(self, positions, velocities):
@@ -152,6 +153,7 @@ class GroundModel:
         total = 0.0
 
         self.last_x = np.asarray(positions, dtype=float)[:, 0].copy()
+        self.last_z = np.asarray(positions, dtype=float)[:, 2].copy()
 
         for i in range(self.n):
             depth = self.surface_z[i] - positions[i][2]
@@ -171,40 +173,30 @@ class GroundModel:
         return out
 
     def update_visual(self, model):
-        """Show the dent.
-
-        MuJoCo's floor collision is off, so without this the leg appears to
-        stand on nothing and sink into empty space.
-
-        model/leg.xml provides geoms named ground_cell*, drawn as a cutaway
-        strip in front of the leg. Each cell under a contact point drops to that
-        point's dented surface, so heel and toe dent separately. The strip
-        follows the foot, snapped to a fixed grid so it does not shimmer.
-
-        Note: MuJoCo never updates a plane's position at runtime, so moving the
-        floor plane (the previous approach) had no visible effect. If the cells
-        are missing, nothing is drawn.
-        """
+        """Show the ground sinking under the foot and the trench it leaves.
+        Cells under the sole drop to the springy contact depth; every cell keeps its deepest permanent dent."""
         if self._cells is None:
             self._cells = [i for i in range(model.ngeom)
                            if (model.geom(i).name or "").startswith("ground_cell")]
         if not self._cells:
             return
 
-        n = len(self._cells)
-        w = 2.0 * model.geom_size[self._cells[0], 0]       # cell width
-        # Centre the strip on the foot, snapped to a fixed world grid so the
-        # cells do not shimmer as the foot moves.
-        centre = np.round(self.last_x.mean() / w) * w
-        xs = centre + (np.arange(n) - (n - 1) / 2.0) * w
-        for gid, x in zip(self._cells, xs):
-            top = 0.0
-            for i in range(self.n):
-                if abs(x - self.last_x[i]) <= PATCH_HALF:
-                    top = min(top, self.surface_z[i])
-            half_h = model.geom_size[gid, 2]
-            model.geom_pos[gid, 0] = x
-            model.geom_pos[gid, 2] = top - half_h
+##      PLEASE CHECK THIS SO YOU UNDERSTAND
+
+        cell_x = model.geom_pos[self._cells, 0]
+        if self._cell_dent is None:
+            self._cell_dent = np.zeros(len(self._cells))
+
+        # Sole is a straight line from heel to toe, so interpolate between the two contact points.
+        order = np.argsort(self.last_x)
+        xs = self.last_x[order]
+        under = (cell_x >= xs[0]) & (cell_x <= xs[-1])
+        dent_now = np.interp(cell_x, xs, self.surface_z[order])
+        sink_now = np.interp(cell_x, xs, np.minimum(self.surface_z, self.last_z)[order])
+
+        self._cell_dent[under] = np.minimum(self._cell_dent[under], dent_now[under])
+        top = np.where(under, np.minimum(self._cell_dent, sink_now), self._cell_dent)
+        model.geom_pos[self._cells, 2] = top - model.geom_size[self._cells, 2]
 
     # ------------------------------------------------------------- logging
     def describe(self):

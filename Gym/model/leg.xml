@@ -54,8 +54,18 @@
             name="ground"
             type="plane"
             size="3 3 0.1"
-            pos="0 0 0"
-            rgba="0.8 0.8 0.8 1"/>
+            pos="0 0 -0.001"
+            rgba="0.8 0.8 0.8 0.3"/>
+
+        <!-- Deformable ground cells, moved by GroundModel.update_visual (visual only) -->
+        <replicate count="70" offset="0.02 0 0">
+            <geom
+                name="ground_cell"
+                type="box"
+                size="0.01 0.15 0.2"
+                pos="-0.39 0 -0.2"
+                rgba="0.55 0.45 0.33 1"/>
+        </replicate>
 
 
         <!-- =====================================================
@@ -110,7 +120,7 @@
                 name="foot_geom"
                 type="box"
                 size="0.13 0.04 0.025"
-                pos="0.06 0 0"
+                pos="0.06 0 -0.025"
                 mass="0.8"
                 rgba="0.2 0.3 0.8 1"/>
 
