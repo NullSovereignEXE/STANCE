@@ -25,11 +25,13 @@ TAU_LIMIT = 150.0
 # Episode information for the environment
 MAX_EPISODE_LENGTH = 100 
 HISTORY_LENGTH = 10       
-FRAME_SKIP = 5          
+FRAME_SKIP = 10          
 SENSOR_INPUTS = 11 # Individual sensor readings given in the _sensors() function
+SLIDE_FRACTION = 0.2 # Share of forward speed given to the foot as slide; the rest swings the leg over it
 
 # Episode failure conditions for the environment
-FALL_ANGLE = np.deg2rad(15.0)
+FALL_ANGLE_BACK = np.deg2rad(15.0) # Backward tilt limit
+FALL_ANGLE_FWD = np.deg2rad(35.0)  # Forward limit is larger since the shank naturally tilts forward in stance
 COLLAPSE_FRACTION = 0.70 
 
 # Reward weights for the environment
@@ -137,7 +139,8 @@ class AnkleEnv(gym.Env):
             self.data.qpos[self.IZ]     = foot_z
             self.data.qpos[self.IPITCH] = phi
             self.data.qpos[self.IANKLE] = ankle_q
-            self.data.qvel[self.VX]     = v_fwd
+            self.data.qvel[self.VX]     = SLIDE_FRACTION * v_fwd
+            self.data.qvel[self.VANKLE] = (1 - SLIDE_FRACTION) * v_fwd / self.standing_height
             self.data.qvel[self.VZ]     = -v_down
 
 ### Step function: This is where the agent takes an action and the environment responds with the next state, reward, and done signal.
@@ -264,7 +267,7 @@ class AnkleEnv(gym.Env):
         Terminal failure should return TERMINATED rather than TRUNCATED. Running out of steps is a time limit, not a failure condition. 
         This way the agent actually learns to avoid falling over, rather than just learning to survive for a fixed number of steps.
         '''
-        toppled = abs(self._leg_tilt()) > FALL_ANGLE
+        toppled = not -FALL_ANGLE_BACK <= self._leg_tilt() <= FALL_ANGLE_FWD
         collapsed = (self.data.xpos[self.body_bid][2]
                      < COLLAPSE_FRACTION * self.standing_height)
         return toppled or collapsed

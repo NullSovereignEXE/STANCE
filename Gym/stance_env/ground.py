@@ -93,14 +93,14 @@ GROUND_RANGES = {
 class GroundModel:
     """One patch of ground, chosen fresh at the start of each episode."""
 
-    def __init__(self, split="train", n_points=2, total_mass=73.5):
+    def __init__(self, split="train", n_points=2, total_mass=73.61):
         if split not in GROUND_RANGES:
             raise ValueError(f"split must be 'train' or 'test', got {split!r}")
         self.split = split
         self.n = n_points                  # contact points (heel and toe)
         # Total mass of the leg model, in kg. Needed to turn a damping ratio
         # into a real damping value: c = 2 * zeta * sqrt(k0 * total_mass).
-        # The environment passes the real mass from the loaded model; 73.5 is
+        # The environment passes the real mass from the loaded model; 73.61 is
         # only the default for standalone use and tests.
         self.total_mass = total_mass
 

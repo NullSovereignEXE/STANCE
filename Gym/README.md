@@ -47,7 +47,7 @@ F_t = \mu F_n \tanh(v_t / v_{\epsilon})
 Because the surface is a flat plane contacted at two points, penetration depth is a simple subtraction and each point's dent depth is stored as a state variable, so no mesh or finite-element modelling is required. Parameter ranges come from published terrain and prosthetic foot compliance data, and the model is verified against closed-form results: with the motor disabled the foot must settle at mg/k, oscillate at \sqrt{k/m}, and stay dented after yielding.
 
 **The episode:** 
-Starts at heel strike with randomized forward speed (0.8 - 1.4 m/s), downward speed (0.10 - 0.50 m/s), ankle angle and leg tilt. Each episode lasts 100 steps covering heel strike, weight acceptance and mid-stance. Episode ends if the leg tips past \pm15° from vertical, or the body drops below 70% of standing height.
+Starts at heel strike with randomized forward speed (0.8 - 1.4 m/s), downward speed (0.10 - 0.50 m/s), ankle angle and leg tilt. Each episode lasts 100 steps covering heel strike, weight acceptance and mid-stance. Episode ends if the leg tips more than 15° backward or 35° forward from vertical, or the body drops below 70% of standing height.
 
 **Randomization:** 
 Ground properties are randomized per episode. A separate range is reserved for testing only, so the agent cannot succeed by memorizing surfaces.

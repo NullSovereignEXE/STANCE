@@ -3,7 +3,7 @@
     <compiler angle="radian"/>
 
     <option
-        timestep="0.001"
+        timestep="0.0005"
         gravity="0 0 -9.81"/>
 
 
