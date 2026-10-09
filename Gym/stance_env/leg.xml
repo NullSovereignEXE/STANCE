@@ -1,0 +1,507 @@
+<mujoco model="stance_prosthetic_leg">
+
+    <compiler angle="radian"/>
+
+    <option
+        timestep="0.001"
+        gravity="0 0 -9.81"/>
+
+
+    <!--
+        Native MuJoCo collisions disabled.
+
+        Ground forces will be supplied externally by ground.py
+        at heel_site and toe_site.
+    -->
+    <default>
+
+        <geom
+            contype="0"
+            conaffinity="0"/>
+
+    </default>
+
+
+    <worldbody>
+
+        <!-- =====================================================
+            LIGHTING
+            ===================================================== -->
+
+        <light
+            name="main_light"
+            pos="0 -2 3"
+            dir="0 0 -1"
+            diffuse="0.9 0.9 0.9"/>
+
+
+        <!-- =====================================================
+            SIDE CAMERA
+            ===================================================== -->
+
+        <camera
+            name="side"
+            pos="0.40 -2.20 0.55"
+            xyaxes="1 0 0 0 0 1"/>
+
+
+        <!-- =====================================================
+             DEFORMABLE GROUND VISUALIZATION (MUKUL INTERFACE)
+             40 non-colliding cells, 0.02 m each = 0.80 m.
+             ground.py update_visual() positions and lowers them.
+             Ground reaction forces are applied separately in Python.
+             ===================================================== -->
+        <body name="ground_strip">
+            <geom name="ground_cell_00" type="box"
+                  size="0.010 0.30 0.02" pos="-0.390 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_01" type="box"
+                  size="0.010 0.30 0.02" pos="-0.370 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_02" type="box"
+                  size="0.010 0.30 0.02" pos="-0.350 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_03" type="box"
+                  size="0.010 0.30 0.02" pos="-0.330 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_04" type="box"
+                  size="0.010 0.30 0.02" pos="-0.310 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_05" type="box"
+                  size="0.010 0.30 0.02" pos="-0.290 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_06" type="box"
+                  size="0.010 0.30 0.02" pos="-0.270 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_07" type="box"
+                  size="0.010 0.30 0.02" pos="-0.250 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_08" type="box"
+                  size="0.010 0.30 0.02" pos="-0.230 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_09" type="box"
+                  size="0.010 0.30 0.02" pos="-0.210 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_10" type="box"
+                  size="0.010 0.30 0.02" pos="-0.190 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_11" type="box"
+                  size="0.010 0.30 0.02" pos="-0.170 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_12" type="box"
+                  size="0.010 0.30 0.02" pos="-0.150 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_13" type="box"
+                  size="0.010 0.30 0.02" pos="-0.130 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_14" type="box"
+                  size="0.010 0.30 0.02" pos="-0.110 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_15" type="box"
+                  size="0.010 0.30 0.02" pos="-0.090 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_16" type="box"
+                  size="0.010 0.30 0.02" pos="-0.070 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_17" type="box"
+                  size="0.010 0.30 0.02" pos="-0.050 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_18" type="box"
+                  size="0.010 0.30 0.02" pos="-0.030 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_19" type="box"
+                  size="0.010 0.30 0.02" pos="-0.010 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_20" type="box"
+                  size="0.010 0.30 0.02" pos="0.010 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_21" type="box"
+                  size="0.010 0.30 0.02" pos="0.030 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_22" type="box"
+                  size="0.010 0.30 0.02" pos="0.050 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_23" type="box"
+                  size="0.010 0.30 0.02" pos="0.070 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_24" type="box"
+                  size="0.010 0.30 0.02" pos="0.090 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_25" type="box"
+                  size="0.010 0.30 0.02" pos="0.110 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_26" type="box"
+                  size="0.010 0.30 0.02" pos="0.130 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_27" type="box"
+                  size="0.010 0.30 0.02" pos="0.150 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_28" type="box"
+                  size="0.010 0.30 0.02" pos="0.170 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_29" type="box"
+                  size="0.010 0.30 0.02" pos="0.190 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_30" type="box"
+                  size="0.010 0.30 0.02" pos="0.210 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_31" type="box"
+                  size="0.010 0.30 0.02" pos="0.230 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_32" type="box"
+                  size="0.010 0.30 0.02" pos="0.250 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_33" type="box"
+                  size="0.010 0.30 0.02" pos="0.270 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_34" type="box"
+                  size="0.010 0.30 0.02" pos="0.290 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_35" type="box"
+                  size="0.010 0.30 0.02" pos="0.310 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_36" type="box"
+                  size="0.010 0.30 0.02" pos="0.330 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_37" type="box"
+                  size="0.010 0.30 0.02" pos="0.350 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_38" type="box"
+                  size="0.010 0.30 0.02" pos="0.370 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+            <geom name="ground_cell_39" type="box"
+                  size="0.010 0.30 0.02" pos="0.390 0 -0.02"
+                  contype="0" conaffinity="0"
+                  rgba="0.75 0.72 0.68 1"/>
+        </body>
+
+
+        <!-- =====================================================
+             FOOT
+             ===================================================== -->
+
+        <body
+            name="foot"
+            pos="0 0 0.025">
+
+
+            <!-- DOF 1: horizontal translation -->
+
+            <joint
+                name="foot_x"
+                type="slide"
+                axis="1 0 0"
+                damping="0.1"/>
+
+
+            <!-- DOF 2: vertical translation -->
+
+            <joint
+                name="foot_z"
+                type="slide"
+                axis="0 0 1"
+                damping="1.0"/>
+
+
+            <!-- DOF 3: global leg / foot pitch -->
+
+            <joint
+                name="foot_pitch"
+                type="hinge"
+                axis="0 1 0"
+                damping="0.1"/>
+
+
+            <!--
+                Foot dimensions:
+
+                length    = 0.26 m
+                width     = 0.08 m
+                thickness = 0.05 m
+
+                ankle reference:
+                heel = -0.07 m
+                toe  = +0.19 m
+            -->
+
+            <geom
+                name="foot_geom"
+                type="box"
+                size="0.13 0.04 0.025"
+                pos="0.06 0 0"
+                mass="0.8"
+                rgba="0.2 0.3 0.8 1"/>
+
+
+            <!-- Heel ground-force application point -->
+
+            <site
+                name="heel_site"
+                pos="-0.07 0 -0.025"
+                size="0.008"
+                rgba="1 0 0 1"/>
+
+
+            <!-- Toe ground-force application point -->
+
+            <site
+                name="toe_site"
+                pos="0.19 0 -0.025"
+                size="0.008"
+                rgba="0 1 0 1"/>
+
+
+            <!-- =================================================
+                 SHANK
+                 ================================================= -->
+
+            <body
+                name="shank"
+                pos="0 0 0.025">
+
+
+                <!--
+                    DOF 4: powered ankle
+
+                    +/- 0.35 rad ≈ +/- 20 degrees
+                -->
+
+                <joint
+                    name="ankle_hinge"
+                    type="hinge"
+                    axis="0 1 0"
+                    range="-0.35 0.35"
+                    damping="0.1"/>
+
+
+                <!--
+                    Shank:
+                    length = 0.32 m
+                    mass   = 1.2 kg
+                -->
+
+                <geom
+                    name="shank_geom"
+                    type="capsule"
+                    fromto="0 0 0 0 0 0.32"
+                    size="0.03"
+                    mass="1.2"
+                    rgba="0.3 0.3 0.3 1"/>
+
+
+                <!-- =================================================
+                     PASSIVE PYLON
+                     ================================================= -->
+
+                <body
+                    name="pylon"
+                    pos="0 0 0.32">
+
+
+                    <!--
+                        DOF 5: passive axial compliance
+                    -->
+
+                    <joint
+                        name="pylon_slide"
+                        type="slide"
+                        axis="0 0 1"
+                        range="-0.06 0.005"
+                        stiffness="120000"
+                        damping="800"
+                        springref="0"/>
+
+
+                    <!--
+                        Pylon:
+                        length = 0.15 m
+                        mass   = 0.4 kg
+                    -->
+
+                    <geom
+                        name="pylon_geom"
+                        type="capsule"
+                        fromto="0 0 0 0 0 0.15"
+                        size="0.025"
+                        mass="0.4"
+                        rgba="0.6 0.6 0.6 1"/>
+
+
+                    <!-- =================================================
+                         UPPER LEG
+                         ================================================= -->
+
+                    <body
+                        name="upper_leg"
+                        pos="0 0 0.15">
+
+
+                        <!--
+                            Remaining nominal length:
+
+                            0.85 - 0.32 - 0.15
+                            = 0.38 m
+
+                            Small mass because the human is represented
+                            primarily by the 70 kg point mass.
+                        -->
+
+                        <geom
+                            name="upper_leg_geom"
+                            type="capsule"
+                            fromto="0 0 0 0 0 0.38"
+                            size="0.025"
+                            mass="0.01"
+                            rgba="0.45 0.45 0.45 1"/>
+
+
+                        <!-- =============================================
+                             HUMAN BODY POINT MASS
+                             ============================================= -->
+
+                        <body
+                            name="body_mass"
+                            pos="0 0 0.38">
+
+                            <geom
+                                name="body_mass_geom"
+                                type="sphere"
+                                size="0.10"
+                                mass="70.0"
+                                rgba="0.85 0.35 0.20 1"/>
+
+                        </body>
+
+                    </body>
+
+                </body>
+
+            </body>
+
+        </body>
+
+
+    </worldbody>
+
+
+    <!-- =========================================================
+         ACTUATOR
+         ========================================================= -->
+
+    <actuator>
+
+        <!--
+            Only actuated DOF.
+
+            Python/Gym calculates:
+
+            tau = K(theta_d - theta) - B theta_dot
+        -->
+
+        <motor
+            name="ankle_motor"
+            joint="ankle_hinge"
+            gear="1"
+            ctrlrange="-150 150"/>
+
+    </actuator>
+
+
+    <!-- =========================================================
+         SENSORS
+         ========================================================= -->
+
+    <sensor>
+
+
+        <!-- Floating base -->
+
+        <jointpos
+            name="foot_x_pos"
+            joint="foot_x"/>
+
+        <jointpos
+            name="foot_z_pos"
+            joint="foot_z"/>
+
+        <jointpos
+            name="foot_pitch_pos"
+            joint="foot_pitch"/>
+
+
+        <!-- Ankle -->
+
+        <jointpos
+            name="ankle_pos"
+            joint="ankle_hinge"/>
+
+        <jointvel
+            name="ankle_vel"
+            joint="ankle_hinge"/>
+
+
+        <!-- Pylon -->
+
+        <jointpos
+            name="pylon_pos"
+            joint="pylon_slide"/>
+
+        <jointvel
+            name="pylon_vel"
+            joint="pylon_slide"/>
+
+
+        <!-- Ground interface -->
+
+        <framepos
+            name="heel_pos"
+            objtype="site"
+            objname="heel_site"/>
+
+        <framepos
+            name="toe_pos"
+            objtype="site"
+            objname="toe_site"/>
+
+    </sensor>
+
+</mujoco>
