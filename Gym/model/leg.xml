@@ -282,7 +282,7 @@
 
         <motor
             name="ankle_motor"
-            joint="ankle_joint"
+            joint="ankle_hinge"
             gear="1"
             ctrlrange="-150 150"/>
 
@@ -315,11 +315,11 @@
 
         <jointpos
             name="ankle_pos"
-            joint="ankle_joint"/>
+            joint="ankle_hinge"/>
 
         <jointvel
             name="ankle_vel"
-            joint="ankle_joint"/>
+            joint="ankle_hinge"/>
 
 
         <!-- Pylon -->
