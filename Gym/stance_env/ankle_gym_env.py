@@ -161,11 +161,7 @@ class AnkleEnv(gym.Env):
         self.history.append(self._sensors())
         self.step_count += 1
 
-        '''
-        The reward is computed based on the current state of the simulation and the action taken by the agent.
-        Designed to encourage maintaining balance and avoiding falls.
-        Penalizes high impact forces and promotes smoothness in the ankle torque.
-        '''
+        # Explained later in the code 
         reward = self._reward(action) 
         terminated = self._failed()
         truncated = self.step_count >= MAX_EPISODE_LENGTH
