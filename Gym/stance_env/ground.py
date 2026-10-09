@@ -130,24 +130,21 @@ class GroundModel:
         """Pick a new ground. `rng` should be the env's seeded random generator."""
         r = GROUND_RANGES[self.split]
 
-        # Stiffness: choose a band for each point, then a value inside it.
+        # Stiffness: choose a band, then a value inside it, shared by heel and toe.
         # Sampling in log space spreads values evenly across orders of
         # magnitude, so soft grounds aren't squeezed out by hard ones.
         bands = r["k0"]
-        pick = rng.integers(0, len(bands), self.n)
-        self.k0 = np.array([
-            10 ** rng.uniform(np.log10(bands[p][0]), np.log10(bands[p][1]))
-            for p in pick
-        ])
+        lo, hi = bands[rng.integers(0, len(bands))]
+        self.k0 = np.full(self.n, 10 ** rng.uniform(np.log10(lo), np.log10(hi)))
 
         # Pick the damping ratio first and derive c from it, so the damping
         # always matches the stiffness we just drew.
-        self.zeta = rng.uniform(*r["zeta"], self.n)
+        self.zeta = np.full(self.n, rng.uniform(*r["zeta"]))
         self.c = 2.0 * self.zeta * np.sqrt(self.k0 * self.total_mass)
 
-        self.alpha = rng.uniform(*r["alpha"], self.n)
-        self.f_yield = rng.uniform(*r["f_yield"], self.n)
-        self.mu = rng.uniform(*r["mu"], self.n)
+        self.alpha = np.full(self.n, rng.uniform(*r["alpha"]))
+        self.f_yield = np.full(self.n, rng.uniform(*r["f_yield"]))
+        self.mu = np.full(self.n, rng.uniform(*r["mu"]))
 
         # Start the episode on untouched ground.
         self.surface_z = np.zeros(self.n)
