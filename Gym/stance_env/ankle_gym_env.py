@@ -80,7 +80,10 @@ class AnkleEnv(gym.Env):
         self.IPYLON, self.VPYLON = jadr("pylon_slide")
 
         self.total_mass = float(self.model.body_subtreemass[self.foot_bid])
-        self.ground = GroundModel(split=ground_split, n_points=2, total_mass=self.total_mass)
+        # BOUNCE-FIX[damp-clamp] start
+        self.ground = GroundModel(split=ground_split, n_points=2, total_mass=self.total_mass,
+                                  heel_mass=self._heel_mass(), timestep=self.model.opt.timestep)
+        # BOUNCE-FIX[damp-clamp] end
         self.body_weight = self.total_mass * G
         self.standing_height = self._measure_standing_height()
 
@@ -90,6 +93,17 @@ class AnkleEnv(gym.Env):
 
         self.render_mode = render_mode
         self._recorder = None
+
+    # BOUNCE-FIX[damp-clamp] start
+    def _heel_mass(self):
+        scratch = mujoco.MjData(self.model)
+        mujoco.mj_forward(self.model, scratch)
+        jac = np.zeros((3, self.model.nv))
+        mujoco.mj_jacSite(self.model, scratch, jac, None, self.sid[0])
+        x = np.zeros((1, self.model.nv))
+        mujoco.mj_solveM(self.model, scratch, x, jac[2:3])
+        return float(1.0 / (jac[2] @ x[0]))
+    # BOUNCE-FIX[damp-clamp] end
 
     def _measure_standing_height(self):
         """
@@ -196,19 +210,24 @@ class AnkleEnv(gym.Env):
 
     def _site_velocity(self, i):
         '''
-        Compute the velocity of a contact site (heel or toe) based on its current and previous positions.
-        This is used to compute the ground reaction forces (next def) based on the contact site velocities.
+        World-frame velocity of a contact site (heel or toe), used for the ground reaction forces (next def).
         '''
-        cur = self.data.site_xpos[self.sid[i]]
-        v = (cur - self.prev_site_xpos[i]) / self.model.opt.timestep
-        self.prev_site_xpos[i] = cur.copy()
-        return v
+        # BOUNCE-FIX[lag] start
+        v = np.zeros(6)
+        mujoco.mj_objectVelocity(self.model, self.data, mujoco.mjtObj.mjOBJ_SITE, self.sid[i], v, 0)
+        return v[3:].copy()
+        # BOUNCE-FIX[lag] end
 
     def _apply_ground_forces(self):
-#   Apply the ground reaction forces to the contact sites (heel and toe) 
+#   Apply the ground reaction forces to the contact sites (heel and toe)
         self.data.qfrc_applied[:] = 0.0
+        # BOUNCE-FIX[lag] start
+        mujoco.mj_kinematics(self.model, self.data)
+        mujoco.mj_comPos(self.model, self.data)
+        mujoco.mj_comVel(self.model, self.data)
 
-        positions = np.array([self.data.site_xpos[i] for i in self.sid])
+        positions = np.array([self.data.site_xpos[i].copy() for i in self.sid])
+        # BOUNCE-FIX[lag] end
         velocities = np.array([self._site_velocity(i) for i in range(len(self.sid))])
 
         forces = self.ground.forces(positions, velocities)
@@ -271,19 +290,4 @@ class AnkleEnv(gym.Env):
         collapsed = (self.data.xpos[self.body_bid][2]
                      < COLLAPSE_FRACTION * self.standing_height)
         return toppled or collapsed
-
-    # ===================================================== rendering
-    def render(self):
-        if self.render_mode != "rgb_array":
-            return None
-        if self._recorder is None:
-            from stance_env.viz import Recorder
-            self._recorder = Recorder(self.model)
-        self.ground.update_visual(self.model)
-        return self._recorder.capture(self.data)
-
-    def close(self):
-        if self._recorder is not None: 
-            self._recorder.close()
-            self._recorder = None
         
