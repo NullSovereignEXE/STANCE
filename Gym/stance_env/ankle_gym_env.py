@@ -19,7 +19,7 @@ MODEL_PATH = Path(__file__).resolve().parent.parent / "model" / "leg.xml"
 # Actuator limits for the ankle joint (The ankle joint is the only actuator in this environment)
 ANKLE_RANGE = (-np.deg2rad(20.0), np.deg2rad(20.0))
 K_RANGE = (5.0, 500.0)         
-B_RANGE = (0.5, 20.0)          
+B_RANGE = (0.5, 10.0) # Adjusted the B_RANGE to be more reasonable for the ankle joint. 
 TAU_LIMIT = 150.0              
 
 # Episode information for the environment
@@ -28,6 +28,7 @@ HISTORY_LENGTH = 10
 FRAME_SKIP = 10          
 SENSOR_INPUTS = 11 # Individual sensor readings given in the _sensors() function
 SLIDE_FRACTION = 0.2 # Share of forward speed given to the foot as slide; the rest swings the leg over it
+POSE_TRIES = 100 # Retries for a start pose with the centre of mass over the foot
 
 # Episode failure conditions for the environment
 FALL_ANGLE_BACK = np.deg2rad(15.0) # Backward tilt limit
@@ -36,8 +37,9 @@ COLLAPSE_FRACTION = 0.70
 
 # Reward weights for the environment
 W_SMOOTH  = 0.5   
-W_IMPACT = 1.2  
-LAMBDA_BW = 2.0 
+W_IMPACT = 2.94 # Weight on the squared toe-force excess
+LAMBDA_BW = 1.58 # Toe-force threshold in body weights
+FALL_PENALTY = 25.0 # Charged once when the leg tilts over or collapses
 
 G = 9.81 # Gravity constant in m/s^2
 
@@ -129,6 +131,7 @@ class AnkleEnv(gym.Env):
             [np.zeros(SENSOR_INPUTS)] * self.history_len, maxlen=self.history_len)
         self.step_count = 0
         self.peak_force = 0.0
+        self.peak_toe = 0.0
         self.prev_action = np.zeros(3)
         self.prev_site_xpos = np.array(
             [self.data.site_xpos[i].copy() for i in self.sid])
@@ -137,22 +140,37 @@ class AnkleEnv(gym.Env):
         return self._get_obs(), {}
     
     def _set_initial_pose(self):
-#   Place the leg with the heel ALREADY touching the ground but carrying approach velocity.
+#   Place the leg with the heel ALREADY touching the ground, weight over the foot, but carrying approach velocity.
   
             rng = self.np_random
-            phi     = rng.uniform(np.deg2rad(-8), np.deg2rad(4))
-            ankle_q = rng.uniform(np.deg2rad(-5), np.deg2rad(5))
-            v_fwd   = rng.uniform(0.8, 1.4)
+
+            for _ in range(POSE_TRIES):
+                phi     = rng.uniform(np.deg2rad(-8), np.deg2rad(4))
+                ankle_q = rng.uniform(np.deg2rad(-5), np.deg2rad(5))
+
+                # Height that puts the HEEL exactly on the ground, minus the foot
+                # body's own offset in the XML (slide qpos is relative, not absolute)
+                want_z = HEEL_OFFSET[0] * np.sin(phi) - HEEL_OFFSET[1] * np.cos(phi)
+                foot_z = want_z - self.model.body_pos[self.foot_bid][2]
+
+                self.data.qpos[self.IZ]     = foot_z
+                self.data.qpos[self.IPITCH] = phi
+                self.data.qpos[self.IANKLE] = ankle_q
+
+                # Keep the pose only if the centre of mass lies between heel and toe
+                mujoco.mj_kinematics(self.model, self.data)
+                mujoco.mj_comPos(self.model, self.data)
+                com_x = self.data.subtree_com[self.foot_bid][0]
+                if self.data.site_xpos[self.sid[0]][0] <= com_x <= self.data.site_xpos[self.sid[1]][0]:
+                    break
+            else:
+                raise RuntimeError(f"no initial pose with the centre of mass over the foot in {POSE_TRIES} tries")
+
+            # SPEED-FIX start
+            v_fwd   = rng.uniform(0.8, 1.2)
+            # SPEED-FIX end
             v_down  = rng.uniform(0.10, 0.50)
 
-            # Height that puts the HEEL exactly on the ground, minus the foot
-            # body's own offset in the XML (slide qpos is relative, not absolute)
-            want_z = HEEL_OFFSET[0] * np.sin(phi) - HEEL_OFFSET[1] * np.cos(phi)
-            foot_z = want_z - self.model.body_pos[self.foot_bid][2]
-
-            self.data.qpos[self.IZ]     = foot_z
-            self.data.qpos[self.IPITCH] = phi
-            self.data.qpos[self.IANKLE] = ankle_q
             self.data.qvel[self.VX]     = SLIDE_FRACTION * v_fwd
             self.data.qvel[self.VANKLE] = (1 - SLIDE_FRACTION) * v_fwd / self.standing_height
             self.data.qvel[self.VZ]     = -v_down
@@ -163,10 +181,12 @@ class AnkleEnv(gym.Env):
         action = np.clip(np.asarray(action, dtype=np.float64), -1.0, 1.0) # Clip the action values to be within the range [-1, 1]
         theta_d, K, B = self._rescale(action) # Rescaled using the _rescale function.
         peak_force = 0.0
+        peak_toe = 0.0
 
         for _ in range(FRAME_SKIP):
             self._apply_ground_forces()
             peak_force = max(peak_force, self.ground.last_normal)
+            peak_toe = max(peak_toe, self.toe_force)
             q = self.data.qpos[self.IANKLE]
             qd = self.data.qvel[self.VANKLE]
             self.data.ctrl[0] = np.clip(K * (theta_d - q) - B * qd,
@@ -175,17 +195,19 @@ class AnkleEnv(gym.Env):
             self.data.qfrc_applied[:] = 0.0 
 
         self.peak_force = peak_force
+        self.peak_toe = peak_toe
         self.history.append(self._sensors())
         self.step_count += 1
 
         # Explained later in the code 
-        reward = self._reward(action) 
         terminated = self._failed()
+        reward = self._reward(action, terminated) 
         truncated = self.step_count >= MAX_EPISODE_LENGTH
         self.prev_action = action.copy()
 
         info = {
             "normal_force_bw": self.peak_force / self.body_weight,
+            "toe_force_bw": self.peak_toe / self.body_weight,
             "leg_tilt_deg": float(np.rad2deg(self._leg_tilt())),
             "body_height": float(self.data.xpos[self.body_bid][2]),
             **self.ground.describe(),
@@ -231,6 +253,7 @@ class AnkleEnv(gym.Env):
         velocities = np.array([self._site_velocity(i) for i in range(len(self.sid))])
 
         forces = self.ground.forces(positions, velocities)
+        self.toe_force = forces[1][2] # Toe normal force, used by the impact term
 
         for i, f in enumerate(forces):
             if not np.any(f):
@@ -269,17 +292,22 @@ class AnkleEnv(gym.Env):
         return np.concatenate(list(self.history)).astype(np.float32)
 
     # ===================================================== reward / failure
-    def _reward(self, action):
+    def _reward(self, action, terminated):
         survival = 1.0
 
-        excess = max(0.0, self.peak_force / self.body_weight - LAMBDA_BW)
+        excess = max(0.0, self.peak_toe / self.body_weight - LAMBDA_BW)
         
-        impact = -W_IMPACT * excess ** 2 # Penalize the agent for exceeding the impact threshold (LAMBDA_BW) in terms of body weights. 
+        impact = -W_IMPACT * excess ** 2 # Penalize the agent for peak toe force above LAMBDA_BW, in body weights.
                                          # The penalty is quadratic to encourage the agent to avoid high impact forces.
         
         smooth = -W_SMOOTH * float(np.sum((action - self.prev_action) ** 2)) # Penalize the agent for large changes in the action values.
 
-        return survival + impact + smooth
+        if self.step_count == 1:
+            smooth = 0.0 # No penalty for the first step since there is no previous action to compare to.
+
+        fall = -FALL_PENALTY if terminated else 0.0 # Once, on tilt or collapse; never on the time limit
+
+        return survival + impact + smooth + fall
 
     def _failed(self):
         '''
