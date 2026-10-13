@@ -98,7 +98,7 @@ class GroundModel:
     """One patch of ground, chosen fresh at the start of each episode."""
 
     # BOUNCE-FIX[damp-clamp] start
-    def __init__(self, split="train", n_points=2, total_mass=73.61, heel_mass=None, timestep=None):
+    def __init__(self, split="train", n_points=2, total_mass=72.41, heel_mass=None, timestep=None):
     # BOUNCE-FIX[damp-clamp] end
         if split not in GROUND_RANGES:
             raise ValueError(f"split must be 'train' or 'test', got {split!r}")
@@ -106,7 +106,7 @@ class GroundModel:
         self.n = n_points                  # contact points (heel and toe)
         # Total mass of the leg model, in kg. Needed to turn a damping ratio
         # into a real damping value: c = 2 * zeta * sqrt(k0 * total_mass).
-        # The environment passes the real mass from the loaded model; 73.61 is
+        # The environment passes the real mass from the loaded model; 72.41 (leg.xml) is
         # only the default for standalone use and tests.
         self.total_mass = total_mass
         # BOUNCE-FIX[damp-clamp] start

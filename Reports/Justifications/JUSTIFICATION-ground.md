@@ -34,7 +34,7 @@ toe; this is checked by `test_heel_and_toe_share_one_material`.
 
 Damping is sampled as a ratio `zeta` and converted inside `sample()`:
 `c = 2 * zeta * sqrt(k0 * total_mass)`, where `total_mass` is a
-`GroundModel` constructor argument (default 73.61 kg; reason: to be confirmed with Vishal).
+`GroundModel` constructor argument (default 72.41 kg, the total mass of `leg.xml`).
 
 **Damping cap.** If `heel_mass` is passed to `GroundModel`, `c` is then capped:
 `c = min(c, DAMP_LIMIT * heel_mass / timestep)` with `DAMP_LIMIT = 0.75`.
@@ -60,7 +60,7 @@ below the sampled `zeta`.
   represent half: `A_point = 0.0104 m²` (a 0.08 m × 0.13 m patch). *Assumption.*
 - **Mass for damping.** `total_mass`, the total mass of the leg model, passed to
   `GroundModel` by the environment from the loaded MuJoCo model (default
-  73.61 kg for standalone use). Assumes one point carries the whole body at heel strike.
+  72.41 kg for standalone use). Assumes one point carries the whole body at heel strike.
   *Assumption.*
 - **Depth reference.** `D_REF = 0.02 m`.
 
@@ -186,8 +186,8 @@ sand failing in punching shear (`tanφ` reduced to 2/3) [9]. Unit weight
 | Medium dense | 32–34° | 156 – 212 N |
 | Dense | 36–38° | 318 – 440 N |
 
-Model body weight is about 710 N (72.41 kg as loaded by the environment;
-722 N at the 73.61 kg standalone default).
+Model body weight is about 710 N (72.41 kg, both as loaded by the environment
+and as the standalone default).
 
 - **Train 610 – 3,000:** the upper end represents surfaces that essentially do
   not yield under walking (floors, turf). The lower end is now above the
@@ -230,7 +230,7 @@ friction data was found for gravel or loose soil.
 3. **No coupling between heel and toe.** Load spreading through plate-like
    surfaces is not modelled; no data was found to calibrate it.
 4. **Mass must be passed in.** If the environment does not pass `total_mass`, the
-   73.61 kg default is used and drifts from the leg model if its masses change.
+   72.41 kg default is used and drifts from the leg model if its masses change.
 5. **Damping from drop tests overstates real energy loss** [1]. The C4
    conversion is exact only for a linear spring-damper; stiffening and yield
    make it approximate.

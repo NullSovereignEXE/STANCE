@@ -184,7 +184,7 @@ DEFAULT_MASS = inspect.signature(GroundModel.__init__).parameters["total_mass"].
 
 def test_default_constructor_still_works():
     """The env contract: GroundModel(split=..., n_points=2) with no mass argument."""
-    assert DEFAULT_MASS == 73.61
+    assert DEFAULT_MASS == 72.41
     g = GroundModel(split="train", n_points=2)
     g.sample(np.random.default_rng(0))
     assert g.total_mass == DEFAULT_MASS and np.all(g.c > 0)
