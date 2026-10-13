@@ -17,7 +17,7 @@ import numpy as np
 D_REF = 0.02      # m, used for k later. D_REF (2 cm) scales how quickly the stiffness rises with depth.
 V_EPS = 1e-3      # m/s, how gently friction switches direction near zero speed
 # BOUNCE-FIX[damp-clamp] start
-DAMP_LIMIT = 0.75
+DAMP_LIMIT = 0.75 # c is capped at DAMP_LIMIT * heel_mass / timestep so the explicit damping step can't overshoot
 # BOUNCE-FIX[damp-clamp] end
 
 # ===========================================================================
@@ -69,8 +69,9 @@ def friction_force(normal, tangential_velocity, mu):
 
 # ===========================================================================
 # WHAT KINDS OF GROUND WE CAN DRAW
-# The test ranges never overlap the training ranges, so the agent can't just
-# memorise the grounds it trained on.
+# The test ranges for k0, alpha, f_yield and mu never overlap the training
+# ranges, so the agent can't just memorise the grounds it trained on.
+# zeta currently uses the same range in both.
 # ===========================================================================
 GROUND_RANGES = {
     "train": dict(
@@ -97,7 +98,7 @@ class GroundModel:
     """One patch of ground, chosen fresh at the start of each episode."""
 
     # BOUNCE-FIX[damp-clamp] start
-    def __init__(self, split="train", n_points=2, total_mass=73.61, heel_mass=None, timestep=None):
+    def __init__(self, split="train", n_points=2, total_mass=72.41, heel_mass=None, timestep=None):
     # BOUNCE-FIX[damp-clamp] end
         if split not in GROUND_RANGES:
             raise ValueError(f"split must be 'train' or 'test', got {split!r}")
@@ -105,7 +106,7 @@ class GroundModel:
         self.n = n_points                  # contact points (heel and toe)
         # Total mass of the leg model, in kg. Needed to turn a damping ratio
         # into a real damping value: c = 2 * zeta * sqrt(k0 * total_mass).
-        # The environment passes the real mass from the loaded model; 73.61 is
+        # The environment passes the real mass from the loaded model; 72.41 (leg.xml) is
         # only the default for standalone use and tests.
         self.total_mass = total_mass
         # BOUNCE-FIX[damp-clamp] start
@@ -113,8 +114,8 @@ class GroundModel:
         self.timestep = timestep
         # BOUNCE-FIX[damp-clamp] end
 
-        # Per-point material is filled in by sample(); the rest is state that
-        # changes during an episode.
+        # The material (one draw per episode, copied to every contact point) is
+        # filled in by sample(); the rest is state that changes during an episode.
         self.k0 = np.zeros(n_points)
         self.zeta = np.zeros(n_points)
         self.last_x = np.zeros(n_points)   # x of each point at the last step (for drawing)
@@ -141,7 +142,7 @@ class GroundModel:
         self.k0 = np.full(self.n, 10 ** rng.uniform(np.log10(lo), np.log10(hi)))
 
         # Pick the damping ratio first and derive c from it, so the damping
-        # always matches the stiffness we just drew.
+        # matches the stiffness we just drew (unless the cap below lowers it).
         self.zeta = np.full(self.n, rng.uniform(*r["zeta"]))
         self.c = 2.0 * self.zeta * np.sqrt(self.k0 * self.total_mass)
         # BOUNCE-FIX[damp-clamp] start

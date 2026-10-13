@@ -1,0 +1,168 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=0.65in]{geometry}
+\usepackage{amsmath}
+\usepackage[scaled=0.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{sansmath}
+\AtBeginDocument{\sansmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{needspace}
+\usepackage{siunitx}
+
+\setlist{nosep,leftmargin=1.3em}
+\titlespacing*{\section}{0pt}{7pt}{3pt}
+\titlespacing*{\subsection}{0pt}{5pt}{2pt}
+\titleformat{\section}{\normalsize\bfseries}{\thesection}{0.5em}{}
+\titleformat{\subsection}{\small\bfseries}{\thesubsection}{0.5em}{}
+\setlength{\parskip}{2pt}
+\setlength{\parindent}{0pt}
+\renewcommand{\arraystretch}{1.12}
+\pagestyle{empty}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+
+\begin{document}
+
+\begin{center}
+{\large\bfseries STANCE: Environment Implementation Report}\\[2pt]
+{\small ME5418 Group 42 --- Vishal Mangla, Mukul Yadav, Muthaiah Mahadevan}
+\end{center}
+\vspace{-6pt}
+
+% ====================================================================
+\section{Overview}
+This submission contains the \textbf{simulation environment}: a planar MuJoCo leg with a custom deformable-ground model, wrapped as a Gymnasium environment and registered as \code{StanceAnkle-v0} (training ground) and \code{StanceAnkleTest-v0} (held-out ground). \textbf{To run:} see \code{README.md}
+
+% ====================================================================
+\section{Code explanation}
+
+\subsection{Organisation}
+One owner per file. These three files meet at three fixed interfaces:\\
+(\textbf{ground $\to$ environment}, \textbf{leg XML $\to$ environment} and \textbf{observation/action ordering}).
+
+\begin{center}\small
+\begin{tabular}{@{}l p{4.15in} l@{}}
+\toprule
+File & Responsibility & Author \\
+\midrule
+\code{model/leg.xml} & MuJoCo model: 3 passive foot DOF, actuated \code{ankle_hinge} ($\pm$20$^\circ$, $\pm$150\,N\,m), passive \code{pylon_slide} (spring + damper), 70\,kg point mass; native collisions off. & Muthu \\
+\code{stance_env/ground.py} & Force law, per-episode material sampling, persistent dent. & Mukul \\
+\code{stance_env/ankle_gym_env.py} & \code{AnkleEnv}: reset, step, observation, reward, termination, rendering. & Vishal \\
+\code{demo.py} & Demon file that can run visual renders of randomized episodes & All 3 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Leg model (\code{leg.xml})}
+A planar chain \code{foot} $\to$ \code{shank} $\to$ \code{pylon} $\to$ \code{upper_leg} $\to$ \code{body_mass} with five degrees of freedom: three passive foot DOF (\code{foot_x}, \code{foot_z}, \code{foot_pitch}), the actuated \code{ankle_hinge}, and the passive \code{pylon_slide}.
+
+\textbf{Mass and height differ from the proposal} (70\,kg, 0.85\,m $\to$ 72.41\,kg, 0.90\,m) so that the model is closer to real hardware. The human is a 70\,kg point mass, and each prosthetic part is given its own realistic mass. The 0.85\,m nominal length is extended to a 0.90\,m for standing height. % TODO: add citation(s) for the prosthetic component masses.
+
+\begin{center}
+\begin{tabular}{@{}l r l@{}}
+\toprule
+Component & Mass (kg) & Purpose \\
+\midrule
+Human body (\code{body_mass}) & 70.00 & Represents the user's body loading \\
+Foot (\code{foot_geom}) & 0.80 & Prosthetic foot \\
+Shank (\code{shank_geom}) & 1.20 & Lower prosthetic structure \\
+Pylon (\code{pylon_geom}) & 0.40 & Connecting shaft with passive compliance \\
+Upper link (\code{upper_leg_geom}) & 0.01 & Structural link from pylon to body mass \\
+\midrule
+\textbf{Total} & \textbf{72.41} & Combined simulation mass \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% We can add an image of the leg if we have space
+
+\subsection{Ground model (\code{ground.py})}
+MuJoCo's built-in contact is off. Instead, the heel and toe each act as a spring and damper that pushes back once sunk below the surface. At depth $d$ and sinking speed $\dot d$, the upward force $F_n$ and friction $F_t$ are
+\begin{equation*}
+F_n=\max\!\big(k(d)\,d+c\,\dot d,\,0\big),\qquad k(d)=k_0\big(1+\alpha\, d/d_{\mathrm{ref}}\big),\qquad F_t=-\mu F_n\tanh(v_t/v_\epsilon).
+\end{equation*}
+Here $k_0$ is the base stiffness, $\alpha$ how fast it stiffens with depth ($d_{\mathrm{ref}}=2$\,cm), $c$ the damping, $\mu$ the friction coefficient and $v_t$ the sliding speed; $\max(\cdot,0)$ stops the ground pulling, and $\tanh$ smooths friction near $v_t=0$ ($v_\epsilon=1$\,mm/s).
+\begin{itemize}
+\item \textbf{Permanent dents:} past a yield force $f_y$ the ground gives way, holding the force at $f_y$ and leaving a lasting dent.
+\item \textbf{A new ground every episode:} each reset draws one random set ($k_0$, $\alpha$, $f_y$, $\mu$ and a damping ratio $\zeta$) for heel and toe. Then $c=2\zeta\sqrt{k_0 m}$ ($m$: leg mass), so damping tracks stiffness, capped to stop bouncing (lesson~4).
+\item \textbf{Unseen test grounds:} test values of $k_0$, $\alpha$, $f_y$ and $\mu$ lie outside the training ranges (checked by a unit test).
+\end{itemize}
+\textbf{Changes:} damping $c$ was first drawn on its own, so hard grounds could be almost undamped and very bouncy while soft ones were damped far more; we now draw the ratio $\zeta$ and calculate $c$ from it. Heel and toe also now share one ground instead of two.
+
+\textbf{Limitations:} the foot touches the ground at only two independent points, unlike real soil. The damping cap leaves some grounds less damped than drawn; the softest test grounds and strongest stiffening have no published source.
+
+% ===================================================================
+\subsection{Environment Logic (\texttt{ankle\_gym\_env.py})}
+ 
+\texttt{AnkleEnv} exposes the MuJoCo leg (\texttt{leg.xml}) and our ground model (\texttt{ground.py}) as a Gymnasium environment. Each \texttt{step()} rescales the agent's three outputs to a target angle, stiffness and damping, then runs ten \SI{0.5}{ms} physics substeps (a \SI{200}{Hz} controller). Each substep refreshes the heel and toe states, applies their ground forces, sets the impedance torque $\tau = K(\theta_d-\theta)-B\dot{\theta}$ (limited to \SI{\pm150}{N.m}) and advances MuJoCo. The step then logs peak forces, appends the sensor reading to a 10-step history and returns the observation, reward and flags (Table below).
+
+\begin{center}\small
+\begin{tabular}{@{}l p{5.6in}@{}}
+\toprule
+Element & Implementation \\
+\midrule
+Action & $a\in[-1,1]^3\mapsto(\theta_d,K,B)$; $K\in[5,500]$\,N\,m/rad, $B\in[0.5,20]$\,N\,m\,s/rad, $\theta_d\in[-20^\circ,20^\circ]$. \\
+Observation & Last 10 sensor vectors, flattened to 110 values. Each vector: Ground parameters are never exposed. \\
+Reward & $r=1-w_1\max(0,F/mg-\lambda)^2-w_2\lVert a-a_{\mathrm{prev}}\rVert^2$, with $w_1=1.2$, $w_2=0.5$, $\lambda=2$ body weights. \\
+Termination & \emph{Terminated} if shank tilt $>15^\circ$ (tipping) or body height $<70\%$ of standing height (collapse); \emph{truncated} at 100 steps. \\
+Reset & New ground; heel exactly on the surface; forward speed 0.8--1.4\,m/s, downward speed 0.10--0.50\,m/s, leg tilt $-8^\circ$ to $4^\circ$, ankle angle $\pm5^\circ$. \\
+Info & Peak GRF (body weights), tilt, height, ground parameters and dent depth, so fall rate by failure type can be logged. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ====================================================================
+\section{Libraries Used in this Submission}
+\begin{center}\small
+\begin{tabular}{@{}l >{\raggedright\arraybackslash}p{2.3in} >{\raggedright\arraybackslash}p{3.3in}@{}}
+\toprule
+Library & Used for & What we did to make it work \\
+\midrule
+MuJoCo (\code{mujoco}) & Rigid-body dynamics, \code{mj_step}, \code{mj_applyFT}, rendering. & Native collisions disabled (\code{contype}, \code{conaffinity} set to 0) and replaced by our own contact law, since MuJoCo's contact model cannot represent depth-stiffening, permanent dents or yield. Headless rendering via EGL, set automatically on Linux without a display. \\
+Gymnasium & \code{Env} API, \code{Box} spaces, registration. & Two environment ids registered so training and held-out ground cannot be mixed up. \\
+NumPy & Sampling, vector maths. & --- \\
+imageio[ffmpeg] & MP4 video writing. & --- \\
+pytest & Test suite. & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ====================================================================
+\Needspace{10\baselineskip}
+\section{Reflections and lessons learned}
+
+\subsection{Changes from the proposal}
+\begin{center}\small
+\begin{tabular}{@{}l >{\raggedright\arraybackslash}p{2.3in} >{\raggedright\arraybackslash}p{3.3in}@{}}
+\toprule
+Item & Proposal & Implementation \\
+\midrule
+Action scaling & Ranges for $\theta_d$, $K$, $B$ (no scaling specified) & $K$ and $B$ mapped on a \emph{log} scale (a linear map leaves soft stiffnesses nearly unreachable); $\theta_d$ linear. \\
+Leg size & 70\,kg mass, 0.85\,m leg & Built model: 72.4\,kg total, 0.90\,m standing height (foot, shank and pylon add mass and height). \\
+Start pose & Random ankle angle and leg tilt & Heel placed on the surface. Center of mass is then rerolled such that it lies between the heel and toe. \\
+Forward speed & 0.8--1.4\,m/s & 0.8--1.2\,m/s. This is since if the movement is too fast, the leg collapses. \\
+Tilt limit & $\pm15^\circ$ from vertical & $15^\circ$ backward, $35^\circ$ forward, since the shank naturally tilts forward during stance. \\
+Impact penalty & Total ground force $F/mg$ & Peak \emph{toe} force, as total force barely responds to $K$; $\lambda = 1.58$\,BW, $w_1 = 2.94$. \\
+Fall penalty & None (episode just ends) & $-25$ once on a fall; otherwise falling early beat paying the impact penalty. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Lessons learned}
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{Terminated vs.\ truncated:} time-limit endings must be \emph{truncated}, or the critic learns that surviving is worthless.
+\item \textbf{Applied forces persist:} \code{qfrc_applied} is not automatically cleared by MuJoCo and must be zeroed every step.
+\item \textbf{Leg tilt:} needed to read data from the \textbf{shank's} world rotation, not from the foot's \code{foot_pitch}.
+\item \textbf{Bouncing was numerical:} contact forces relies on position but we were updating it with a one-step lag. The ground damping was also too strong for the light foot, so the simulation injected too much energy into the system. This lead to the foot bouncing around across the surface. Halving the timestep to \SI{0.5}{ms} and capping the damping, cut the bouncing from 14\% of episodes to near 0\%.
+\item \textbf{Unwinnable starts:} poses with the center of mass behind the heel almost always fell backward. We now reject those poses and limit forward speed to 0.8--1.2\,m/s.
+\item \textbf{Wrong impact measure:} total ground force barely changed with ankle stiffness. Toe force responds strongly to our changes in actions, so we measure that instead and plan to penalize large impacts on the toe.
+\item \textbf{Falling was too cheap:} a fall only cost about 20 steps of survival reward, so the agent learned to fall early to escape the impact penalty. Changed to a tentative $-25$ fall penalty (might change after further testing).
+\end{enumerate}
+
+% AI use disclosure 
+% WE DON'T NEED THIS IN THE REPORT. WE CAN INCLUDE THIS IN OUR SUBMISSION .MD FILE INSTEAD.
+%AI assistance (Claude, Anthropic) was used to explain concepts, help us correctly visualize our idea into latex, and help draft this report; the authors take responsibility for the content.
+\end{document}
