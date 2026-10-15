@@ -16,9 +16,7 @@ import numpy as np
 # --------------------------------------------------------------- constants
 D_REF = 0.02      # m, used for k later. D_REF (2 cm) scales how quickly the stiffness rises with depth.
 V_EPS = 1e-3      # m/s, how gently friction switches direction near zero speed
-# BOUNCE-FIX[damp-clamp] start
 DAMP_LIMIT = 0.75
-# BOUNCE-FIX[damp-clamp] end
 
 # ===========================================================================
 # THE FORCE LAW
@@ -96,9 +94,7 @@ GROUND_RANGES = {
 class GroundModel:
     """One patch of ground, chosen fresh at the start of each episode."""
 
-    # BOUNCE-FIX[damp-clamp] start
     def __init__(self, split="train", n_points=2, total_mass=73.61, heel_mass=None, timestep=None):
-    # BOUNCE-FIX[damp-clamp] end
         if split not in GROUND_RANGES:
             raise ValueError(f"split must be 'train' or 'test', got {split!r}")
         self.split = split
@@ -108,10 +104,8 @@ class GroundModel:
         # The environment passes the real mass from the loaded model; 73.61 is
         # only the default for standalone use and tests.
         self.total_mass = total_mass
-        # BOUNCE-FIX[damp-clamp] start
         self.heel_mass = heel_mass
         self.timestep = timestep
-        # BOUNCE-FIX[damp-clamp] end
 
         # Per-point material is filled in by sample(); the rest is state that
         # changes during an episode.
@@ -144,10 +138,8 @@ class GroundModel:
         # always matches the stiffness we just drew.
         self.zeta = np.full(self.n, rng.uniform(*r["zeta"]))
         self.c = 2.0 * self.zeta * np.sqrt(self.k0 * self.total_mass)
-        # BOUNCE-FIX[damp-clamp] start
         if self.heel_mass is not None:
             self.c = np.minimum(self.c, DAMP_LIMIT * self.heel_mass / self.timestep)
-        # BOUNCE-FIX[damp-clamp] end
 
         self.alpha = np.full(self.n, rng.uniform(*r["alpha"]))
         self.f_yield = np.full(self.n, rng.uniform(*r["f_yield"]))

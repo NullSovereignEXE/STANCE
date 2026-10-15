@@ -8,8 +8,6 @@ from gymnasium import spaces
 
 from stance_env.ground import GroundModel
 
-## A lot of the comments in this file have been removed for readability. The original file has far more detailed explanations of the code.
-
 # Leg geometry is defined in the MuJoCo XML file, but we need to know some of the dimensions here for computing the ankle torque and leg tilt.
 HEEL_OFFSET = np.array([-0.07, -0.05])
 TOE_OFFSET = np.array([0.19, -0.05])  
@@ -48,7 +46,7 @@ class AnkleEnv(gym.Env):
     Agent learning is independent of the ground model. 
     The agent is trained on a variety of ground conditions, and evaluated on a separate set of test specific ground conditions. 
     '''
-    metadata = {"render_modes": ["rgb_array"], "render_fps": 200}
+    metadata = {"render_modes": [], "render_fps": 200}  # No render(); demo.py draws with the MuJoCo viewer
 
     def __init__(self, ground_split="train", render_mode=None, history_len=HISTORY_LENGTH):
 
@@ -82,10 +80,8 @@ class AnkleEnv(gym.Env):
         self.IPYLON, self.VPYLON = jadr("pylon_slide")
 
         self.total_mass = float(self.model.body_subtreemass[self.foot_bid])
-        # BOUNCE-FIX[damp-clamp] start
         self.ground = GroundModel(split=ground_split, n_points=2, total_mass=self.total_mass,
                                   heel_mass=self._heel_mass(), timestep=self.model.opt.timestep)
-        # BOUNCE-FIX[damp-clamp] end
         self.body_weight = self.total_mass * G
         self.standing_height = self._measure_standing_height()
 
@@ -94,9 +90,7 @@ class AnkleEnv(gym.Env):
             -np.inf, np.inf, (history_len * SENSOR_INPUTS,), np.float32)
 
         self.render_mode = render_mode
-        self._recorder = None
 
-    # BOUNCE-FIX[damp-clamp] start
     def _heel_mass(self):
         scratch = mujoco.MjData(self.model)
         mujoco.mj_forward(self.model, scratch)
@@ -105,7 +99,6 @@ class AnkleEnv(gym.Env):
         x = np.zeros((1, self.model.nv))
         mujoco.mj_solveM(self.model, scratch, x, jac[2:3])
         return float(1.0 / (jac[2] @ x[0]))
-    # BOUNCE-FIX[damp-clamp] end
 
     def _measure_standing_height(self):
         """
@@ -166,9 +159,7 @@ class AnkleEnv(gym.Env):
             else:
                 raise RuntimeError(f"no initial pose with the centre of mass over the foot in {POSE_TRIES} tries")
 
-            # SPEED-FIX start
             v_fwd   = rng.uniform(0.8, 1.2)
-            # SPEED-FIX end
             v_down  = rng.uniform(0.10, 0.50)
 
             self.data.qvel[self.VX]     = SLIDE_FRACTION * v_fwd
@@ -234,22 +225,18 @@ class AnkleEnv(gym.Env):
         '''
         World-frame velocity of a contact site (heel or toe), used for the ground reaction forces (next def).
         '''
-        # BOUNCE-FIX[lag] start
         v = np.zeros(6)
         mujoco.mj_objectVelocity(self.model, self.data, mujoco.mjtObj.mjOBJ_SITE, self.sid[i], v, 0)
         return v[3:].copy()
-        # BOUNCE-FIX[lag] end
 
     def _apply_ground_forces(self):
 #   Apply the ground reaction forces to the contact sites (heel and toe)
         self.data.qfrc_applied[:] = 0.0
-        # BOUNCE-FIX[lag] start
         mujoco.mj_kinematics(self.model, self.data)
         mujoco.mj_comPos(self.model, self.data)
         mujoco.mj_comVel(self.model, self.data)
 
         positions = np.array([self.data.site_xpos[i].copy() for i in self.sid])
-        # BOUNCE-FIX[lag] end
         velocities = np.array([self._site_velocity(i) for i in range(len(self.sid))])
 
         forces = self.ground.forces(positions, velocities)
