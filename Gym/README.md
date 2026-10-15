@@ -90,10 +90,10 @@ Starts at heel strike with randomized forward speed (0.8 - 1.2 m/s), downward sp
 Ground properties are randomized per episode. A separate range is reserved for testing only, so the agent cannot succeed by memorizing surfaces. The test ranges lie outside the training ranges for $k_0$, $\alpha$, yield force and friction; the damping ratio is shared between the two splits.
 
 ## Assumptions:
-(i) Joint damping: leg.xml gives foot_x and foot_pitch a damping of 0.1, foot_z 1.0, and the ankle 0.1. That’s why the item says “0.1–1.0”. I also mentioned the ankle. Take it out if you only want the foot joints.
-(ii) Approximate yield depth: ground.py computes f_yield / k using the stiffness at the current depth. It doesn’t solve k(d)·d = f_yield, so the dent is exact only when α = 0.
-(iii) Test grounds yield easily: body weight is 72.4 kg × 9.81 ≈ 710 N, which matches your figure.
-(iv) Test shifts several parameters at once: the test split changes k₀, α, f_yield and μ together. Only ζ keeps the same range as training, so the item says that.
+(i) Joint damping: leg.xml gives foot_x and foot_pitch a damping of 0.1, foot_z 1.0, and the ankle 0.1. That’s why the item says “0.1–1.0”. I also mentioned the ankle. Take it out if you only want the foot joints.  
+(ii) Approximate yield depth: ground.py computes f_yield / k using the stiffness at the current depth. It doesn’t solve k(d)·d = f_yield, so the dent is exact only when α = 0.  
+(iii) Test grounds yield easily: body weight is 72.4 kg × 9.81 ≈ 710 N, which matches your figure.  
+(iv) Test shifts several parameters at once: the test split changes k₀, α, f_yield and μ together. Only ζ keeps the same range as training, so the item says that.  
 
 ## AI Declaration
 We used Claude Opus 5 (Anthropic) to evaluate ideas, explain concepts/bugs and help resolve inter-file conflicts and help with our report's LaTeX syntax. 
