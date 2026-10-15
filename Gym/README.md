@@ -1,4 +1,4 @@
-# Gym
+# Gym & Environment Submission
 
 The simulation environment the STANCE agent trains in, built on the Gym/Gymnasium interface and uses MuJoCo for visualization.
 
@@ -35,15 +35,7 @@ python -m pytest            # Run the test suite
 Expected console output: a line with the episode seed, the heel/toe base stiffness `k0`, friction `mu` and yield force `f_yield`, followed after the episode by a summary of the form
 `completed after N steps | return R | tilt T deg | peak GRF G BW` (or `fell after ...` if the leg tipped or collapsed).
 
-# Extra info from our Proposal
-## Registered environments
-
-| Gym ID | Ground | Use |
-|---|---|---|
-| `StanceAnkle-v0` | Training ranges | Train the agent here |
-| `StanceAnkleTest-v0` | Held-out test ranges | Evaluate only, never train |
-
-Both are limited to 100 steps per episode.
+# Extra info (Based on our Proposal and Changes)
 
 ## Action and observation layout
 
@@ -103,6 +95,6 @@ Ground properties are randomized per episode. A separate range is reserved for t
 (iii) Test grounds yield easily: body weight is 72.4 kg × 9.81 ≈ 710 N, which matches your figure.
 (iv) Test shifts several parameters at once: the test split changes k₀, α, f_yield and μ together. Only ζ keeps the same range as training, so the item says that.
 
-# AI Declaration
+## AI Declaration
 We used Claude Opus 5 (Anthropic) to evaluate ideas, explain concepts/bugs and help resolve inter-file conflicts and help with our report's LaTeX syntax. 
 We are completely responsible for the content and quality of the submitted work.
