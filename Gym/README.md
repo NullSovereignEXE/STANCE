@@ -11,10 +11,6 @@ This folder holds:
 - The ground contact and terrain models
 - The reward function, which penalises both over-stiff impacts and leg collapse
 
-## Requirements
-
-Tested on Ubuntu (dual boot) with Python 3.10 and a display available. Windows and macOS are not supported.
-
 ## Running
 
 Run from this `Gym/` folder:
@@ -25,9 +21,7 @@ conda activate stance
 python demo.py              # Fixed impedance policy, new random episode each run
 python demo.py --random     # Random actions instead
 python demo.py --seed 7     # Replay a specific episode (seed is printed each run)
-python demo.py --split test # Run on the held-out test ground instead of the training ground
 python demo.py --slowmo 1   # Real-time playback (default is 10x slow motion)
-python -m pytest            # Run the test suite
 ```
 
 `demo.py` opens the MuJoCo viewer and plays the episode at 10x slow motion. Close the window to exit. If ROS is sourced in your shell, run pytest as `env -u PYTHONPATH python -m pytest`.
