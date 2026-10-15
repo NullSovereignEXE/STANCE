@@ -1,22 +1,24 @@
 # Gym & Environment Submission
 
-The simulation environment the STANCE agent trains in, built on the Gym/Gymnasium interface and uses MuJoCo for visualization.
+The simulation environment the STANCE agent trains in, built on the Gym/Gymnasium interface and uses MuJoCo for the physics simulation and visualization.
 
 The environment models a powered ankle walking on compliant ground (for example concrete, wet grass,
 gravel, and sand). Each surface compresses, damps, and grips differently, and some stay deformed after
 contact. The focus is the weight-acceptance window, the 100–200 ms after heel strike.
 
 This folder holds:
-- The environment definition (observation space, action space, step/reset)
-- The ground contact and terrain models
-- The reward function, which penalises both over-stiff impacts and leg collapse
+- `stance_env/ankle_gym_env.py`: the environment definition (observation space, action space, step/reset) and the reward function, which penalises high toe impact forces, abrupt action changes and falls
+- `stance_env/ground.py`: the ground contact and terrain models
+- `model/leg.xml`: the MuJoCo model of the leg
+- `demo.py`: runs one episode in the MuJoCo viewer
+- `environment.yml`: the conda environment
 
 ## Running
 
 Run from this `Gym/` folder:
 
 ```bash
-conda env create -f environment.yml # Note that we are installing the CPU-only version of Torch to speed up the download. In actual training we will use the GPU.
+conda env create -f environment.yml # Installs the CPU-only version of Torch to speed up the download. Torch and Stable-Baselines3 are for training and are not needed by the demo; in actual training we will use the GPU.
 conda activate stance
 python demo.py              # Fixed impedance policy, new random episode each run
 python demo.py --random     # Random actions instead
@@ -24,12 +26,12 @@ python demo.py --seed 7     # Replay a specific episode (seed is printed each ru
 python demo.py --slowmo 1   # Real-time playback (default is 10x slow motion)
 ```
 
-`demo.py` opens the MuJoCo viewer and plays the episode at 10x slow motion. Close the window to exit. If ROS is sourced in your shell, run pytest as `env -u PYTHONPATH python -m pytest`.
+`demo.py` opens the MuJoCo viewer and plays the episode at 10x slow motion. Close the window to exit. If ROS is sourced in your shell, its `PYTHONPATH` can shadow the conda packages; run the demo as `env -u PYTHONPATH python demo.py`.
 
 Expected console output: a line with the episode seed, the heel/toe base stiffness `k0`, friction `mu` and yield force `f_yield`, followed after the episode by a summary of the form
 `completed after N steps | return R | tilt T deg | peak GRF G BW` (or `fell after ...` if the leg tipped or collapsed).
 
-# Extra info (Based on our Proposal and Changes)
+## Extra info (Based on our Proposal and Changes)
 
 ## Action and observation layout
 
@@ -50,6 +52,8 @@ Expected console output: a line with the episode seed, the heel/toe base stiffne
 | 8–10 | Previous action |
 
 Ground parameters are never exposed to the agent.
+
+**Reward (per step):** $r = 1 - 2.94\,\max(0,\ F_{toe}/BW - 1.58)^2 - 0.5\,\lVert a_t - a_{t-1} \rVert^2 - 25\,[\text{fall}]$, i.e. a survival bonus, a penalty on peak toe force above 1.58 body weights, a smoothness penalty on action changes (skipped on the first step), and a one-off penalty when the leg tips over or collapses.
 
 ## Problem Model (From Project Proposal)
 
@@ -75,19 +79,19 @@ Grip is modeled with velocity-regularized Coulomb friction, using a tanh instead
 $$F_t = -\mu F_n \tanh\left(\frac{v_t}{v_{\epsilon}}\right)$$
 
 **Physics Verification:**
-Because the surface is a flat plane contacted at two points, penetration depth is a simple subtraction and each point's dent depth is stored as a state variable, so no mesh or finite-element modelling is required. Parameter ranges come from published terrain and prosthetic foot compliance data, and the model is verified against closed-form results: with the motor disabled the foot must settle at $mg/k$ (exact for $\alpha = 0$), oscillate at $\sqrt{k/m}$, and stay dented after yielding.
+Because the surface is a flat plane contacted at two points, penetration depth is a simple subtraction and each point's dent depth is stored as a state variable, so no mesh or finite-element modelling is required. Parameter ranges come from published terrain and prosthetic foot compliance data, and the model was verified against closed-form results: with the motor disabled the foot must settle at $mg/k$ (exact for $\alpha = 0$), oscillate at $\sqrt{k/m}$, and stay dented after yielding.
 
 **The episode:**
-Starts at heel strike with randomized forward speed (0.8 - 1.2 m/s), downward speed (0.10 - 0.50 m/s), ankle angle and leg tilt. Each episode lasts 100 steps covering heel strike, weight acceptance and mid-stance. Episode ends if the leg tips more than 15° backward or 35° forward from vertical, or the body drops below 70% of standing height.
+Starts at heel strike with randomized forward speed (0.8 - 1.2 m/s), downward speed (0.10 - 0.50 m/s), ankle angle and leg tilt. Each episode lasts up to 100 steps (0.5 s: each step is 10 physics steps of 0.5 ms) covering heel strike, weight acceptance and mid-stance. Episode ends if the leg tips more than 15° backward or 35° forward from vertical, or the body drops below 70% of standing height.
 
 **Randomization:**
 Ground properties are randomized per episode. A separate range is reserved for testing only, so the agent cannot succeed by memorizing surfaces. The test ranges lie outside the training ranges for $k_0$, $\alpha$, yield force and friction; the damping ratio is shared between the two splits.
 
-## Assumptions:
-(i) Joint damping: leg.xml gives foot_x and foot_pitch a damping of 0.1, foot_z 1.0, and the ankle 0.1. That’s why the item says “0.1–1.0”. I also mentioned the ankle. Take it out if you only want the foot joints.  
-(ii) Approximate yield depth: ground.py computes f_yield / k using the stiffness at the current depth. It doesn’t solve k(d)·d = f_yield, so the dent is exact only when α = 0.  
-(iii) Test grounds yield easily: body weight is 72.4 kg × 9.81 ≈ 710 N, which matches your figure.  
-(iv) Test shifts several parameters at once: the test split changes k₀, α, f_yield and μ together. Only ζ keeps the same range as training, so the item says that.  
+## Assumptions
+(i) Joint damping: `leg.xml` gives small passive damping to the foot and ankle joints (0.1 for `foot_x`, `foot_pitch` and `ankle_hinge`; 1.0 for `foot_z`).  
+(ii) Approximate yield depth: `ground.py` computes the elastic depth as $f_{yield}/k$ using the stiffness at the current depth. It does not solve $k(d)\,d = f_{yield}$, so the dent is exact only when $\alpha = 0$.  
+(iii) Test grounds yield easily: body weight is 72.41 kg × 9.81 ≈ 710 N, while test yield forces are 400–590 N, so test grounds dent under body weight alone.  
+(iv) Test shifts several parameters at once: the test split changes $k_0$, $\alpha$, $f_{yield}$ and $\mu$ together; only the damping ratio $\zeta$ keeps the training range.  
 
 ## AI Declaration
 We used Claude Opus 5 (Anthropic) to evaluate ideas, explain concepts/bugs and help resolve inter-file conflicts and help with our report's LaTeX syntax. 
