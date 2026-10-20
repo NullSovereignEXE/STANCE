@@ -1,0 +1,241 @@
+===== START resid_in_1m_s0 2026-10-20 17:18:35 sets: residual=True anchor=[-14.0,250.6,6.38] total_steps=1000000
+===== START resid_in_1m_s1 2026-10-20 17:18:35 sets: residual=True anchor=[-14.0,250.6,6.38] total_steps=1000000
+[resid_in_1m_s1] networkA_mlp/resid_in_1m_s1: 221,575 parameters, 1,000,000 steps
+[resid_in_1m_s1]   curve: {'timesteps': 20000, 'minutes': 0.4, 'survival_pct': 76.0, 'mean_return': 85.3, 'toe_peak_bw': 1.668, 'mean_K': 282.1, 'mean_theta_deg': -14.64}
+[resid_in_1m_s1]   curve: {'timesteps': 40000, 'minutes': 0.83, 'survival_pct': 80.0, 'mean_return': 86.88, 'toe_peak_bw': 1.691, 'mean_K': 303.6, 'mean_theta_deg': -15.21}
+[resid_in_1m_s1]   curve: {'timesteps': 60000, 'minutes': 1.24, 'survival_pct': 82.0, 'mean_return': 86.07, 'toe_peak_bw': 1.73, 'mean_K': 326.9, 'mean_theta_deg': -15.56}
+[resid_in_1m_s1]   curve: {'timesteps': 80000, 'minutes': 1.67, 'survival_pct': 84.0, 'mean_return': 87.07, 'toe_peak_bw': 1.763, 'mean_K': 354.4, 'mean_theta_deg': -16.39}
+[resid_in_1m_s1]   curve: {'timesteps': 100000, 'minutes': 2.07, 'survival_pct': 84.0, 'mean_return': 87.29, 'toe_peak_bw': 1.789, 'mean_K': 372.2, 'mean_theta_deg': -17.1}
+[resid_in_1m_s1]   curve: {'timesteps': 120000, 'minutes': 2.51, 'survival_pct': 88.0, 'mean_return': 88.46, 'toe_peak_bw': 1.741, 'mean_K': 397.0, 'mean_theta_deg': -17.51}
+[resid_in_1m_s1]   curve: {'timesteps': 140000, 'minutes': 2.93, 'survival_pct': 92.0, 'mean_return': 89.78, 'toe_peak_bw': 1.747, 'mean_K': 433.8, 'mean_theta_deg': -18.05}
+[resid_in_1m_s1]   curve: {'timesteps': 160000, 'minutes': 3.38, 'survival_pct': 92.0, 'mean_return': 89.42, 'toe_peak_bw': 1.783, 'mean_K': 442.9, 'mean_theta_deg': -18.14}
+[resid_in_1m_s1]   curve: {'timesteps': 180000, 'minutes': 3.8, 'survival_pct': 94.0, 'mean_return': 89.98, 'toe_peak_bw': 1.808, 'mean_K': 453.9, 'mean_theta_deg': -18.14}
+[resid_in_1m_s1]   curve: {'timesteps': 200000, 'minutes': 4.21, 'survival_pct': 94.0, 'mean_return': 89.92, 'toe_peak_bw': 1.805, 'mean_K': 453.2, 'mean_theta_deg': -17.98}
+[resid_in_1m_s1]   curve: {'timesteps': 220000, 'minutes': 4.65, 'survival_pct': 92.0, 'mean_return': 89.37, 'toe_peak_bw': 1.738, 'mean_K': 449.6, 'mean_theta_deg': -17.71}
+[resid_in_1m_s1]   curve: {'timesteps': 240000, 'minutes': 5.11, 'survival_pct': 92.0, 'mean_return': 89.93, 'toe_peak_bw': 1.752, 'mean_K': 456.0, 'mean_theta_deg': -17.84}
+[resid_in_1m_s1]   curve: {'timesteps': 260000, 'minutes': 5.55, 'survival_pct': 94.0, 'mean_return': 90.29, 'toe_peak_bw': 1.759, 'mean_K': 461.3, 'mean_theta_deg': -17.91}
+[resid_in_1m_s1]   curve: {'timesteps': 280000, 'minutes': 6.0, 'survival_pct': 92.0, 'mean_return': 89.91, 'toe_peak_bw': 1.796, 'mean_K': 462.7, 'mean_theta_deg': -18.02}
+[resid_in_1m_s1]   curve: {'timesteps': 300000, 'minutes': 6.49, 'survival_pct': 94.0, 'mean_return': 90.36, 'toe_peak_bw': 1.765, 'mean_K': 457.7, 'mean_theta_deg': -18.03}
+[resid_in_1m_s1]   curve: {'timesteps': 320000, 'minutes': 6.93, 'survival_pct': 94.0, 'mean_return': 90.48, 'toe_peak_bw': 1.735, 'mean_K': 459.3, 'mean_theta_deg': -18.18}
+[resid_in_1m_s1]   curve: {'timesteps': 340000, 'minutes': 7.39, 'survival_pct': 94.0, 'mean_return': 90.55, 'toe_peak_bw': 1.749, 'mean_K': 462.8, 'mean_theta_deg': -18.37}
+[resid_in_1m_s1]   curve: {'timesteps': 360000, 'minutes': 7.82, 'survival_pct': 92.0, 'mean_return': 89.21, 'toe_peak_bw': 1.776, 'mean_K': 463.5, 'mean_theta_deg': -18.22}
+[resid_in_1m_s1]   curve: {'timesteps': 380000, 'minutes': 8.29, 'survival_pct': 92.0, 'mean_return': 89.39, 'toe_peak_bw': 1.784, 'mean_K': 461.8, 'mean_theta_deg': -18.26}
+[resid_in_1m_s1]   curve: {'timesteps': 400000, 'minutes': 8.74, 'survival_pct': 92.0, 'mean_return': 88.28, 'toe_peak_bw': 1.789, 'mean_K': 459.2, 'mean_theta_deg': -18.0}
+[resid_in_1m_s1]   curve: {'timesteps': 420000, 'minutes': 9.19, 'survival_pct': 92.0, 'mean_return': 89.22, 'toe_peak_bw': 1.806, 'mean_K': 464.0, 'mean_theta_deg': -18.21}
+[resid_in_1m_s1]   curve: {'timesteps': 440000, 'minutes': 9.6, 'survival_pct': 90.0, 'mean_return': 87.84, 'toe_peak_bw': 1.792, 'mean_K': 458.5, 'mean_theta_deg': -18.04}
+[resid_in_1m_s1]   curve: {'timesteps': 460000, 'minutes': 10.02, 'survival_pct': 92.0, 'mean_return': 89.43, 'toe_peak_bw': 1.786, 'mean_K': 462.8, 'mean_theta_deg': -18.15}
+[resid_in_1m_s1]   curve: {'timesteps': 480000, 'minutes': 10.46, 'survival_pct': 92.0, 'mean_return': 88.75, 'toe_peak_bw': 1.764, 'mean_K': 464.5, 'mean_theta_deg': -18.18}
+[resid_in_1m_s1]   curve: {'timesteps': 500000, 'minutes': 10.92, 'survival_pct': 94.0, 'mean_return': 89.71, 'toe_peak_bw': 1.752, 'mean_K': 472.6, 'mean_theta_deg': -18.53}
+[resid_in_1m_s1]   curve: {'timesteps': 520000, 'minutes': 11.46, 'survival_pct': 90.0, 'mean_return': 89.41, 'toe_peak_bw': 1.729, 'mean_K': 460.7, 'mean_theta_deg': -18.2}
+[resid_in_1m_s1]   curve: {'timesteps': 540000, 'minutes': 11.96, 'survival_pct': 92.0, 'mean_return': 89.42, 'toe_peak_bw': 1.749, 'mean_K': 467.8, 'mean_theta_deg': -18.35}
+[resid_in_1m_s1]   curve: {'timesteps': 560000, 'minutes': 12.44, 'survival_pct': 90.0, 'mean_return': 88.27, 'toe_peak_bw': 1.763, 'mean_K': 465.2, 'mean_theta_deg': -18.07}
+[resid_in_1m_s1]   curve: {'timesteps': 580000, 'minutes': 12.88, 'survival_pct': 94.0, 'mean_return': 89.63, 'toe_peak_bw': 1.761, 'mean_K': 466.9, 'mean_theta_deg': -18.24}
+[resid_in_1m_s1]   curve: {'timesteps': 600000, 'minutes': 13.31, 'survival_pct': 90.0, 'mean_return': 88.04, 'toe_peak_bw': 1.778, 'mean_K': 464.9, 'mean_theta_deg': -18.14}
+[resid_in_1m_s1]   curve: {'timesteps': 620000, 'minutes': 13.77, 'survival_pct': 92.0, 'mean_return': 89.54, 'toe_peak_bw': 1.745, 'mean_K': 468.9, 'mean_theta_deg': -18.2}
+[resid_in_1m_s1]   curve: {'timesteps': 640000, 'minutes': 14.22, 'survival_pct': 92.0, 'mean_return': 89.02, 'toe_peak_bw': 1.736, 'mean_K': 464.7, 'mean_theta_deg': -18.06}
+[resid_in_1m_s1]   curve: {'timesteps': 660000, 'minutes': 14.66, 'survival_pct': 94.0, 'mean_return': 89.62, 'toe_peak_bw': 1.735, 'mean_K': 463.4, 'mean_theta_deg': -17.89}
+[resid_in_1m_s1]   curve: {'timesteps': 680000, 'minutes': 15.11, 'survival_pct': 92.0, 'mean_return': 89.32, 'toe_peak_bw': 1.724, 'mean_K': 466.1, 'mean_theta_deg': -18.09}
+[resid_in_1m_s1]   curve: {'timesteps': 700000, 'minutes': 15.55, 'survival_pct': 90.0, 'mean_return': 87.51, 'toe_peak_bw': 1.728, 'mean_K': 459.1, 'mean_theta_deg': -17.81}
+[resid_in_1m_s1]   curve: {'timesteps': 720000, 'minutes': 16.04, 'survival_pct': 90.0, 'mean_return': 87.99, 'toe_peak_bw': 1.726, 'mean_K': 458.5, 'mean_theta_deg': -17.89}
+[resid_in_1m_s1]   curve: {'timesteps': 740000, 'minutes': 16.47, 'survival_pct': 90.0, 'mean_return': 88.18, 'toe_peak_bw': 1.718, 'mean_K': 453.0, 'mean_theta_deg': -17.61}
+[resid_in_1m_s1]   curve: {'timesteps': 760000, 'minutes': 16.92, 'survival_pct': 92.0, 'mean_return': 88.2, 'toe_peak_bw': 1.728, 'mean_K': 454.0, 'mean_theta_deg': -17.65}
+[resid_in_1m_s1]   curve: {'timesteps': 780000, 'minutes': 17.44, 'survival_pct': 92.0, 'mean_return': 88.33, 'toe_peak_bw': 1.733, 'mean_K': 453.0, 'mean_theta_deg': -17.8}
+[resid_in_1m_s1]   curve: {'timesteps': 800000, 'minutes': 17.86, 'survival_pct': 88.0, 'mean_return': 88.27, 'toe_peak_bw': 1.727, 'mean_K': 450.4, 'mean_theta_deg': -17.73}
+[resid_in_1m_s1]   curve: {'timesteps': 820000, 'minutes': 18.3, 'survival_pct': 88.0, 'mean_return': 87.95, 'toe_peak_bw': 1.699, 'mean_K': 446.2, 'mean_theta_deg': -17.58}
+[resid_in_1m_s1]   curve: {'timesteps': 840000, 'minutes': 18.76, 'survival_pct': 92.0, 'mean_return': 88.82, 'toe_peak_bw': 1.711, 'mean_K': 450.9, 'mean_theta_deg': -17.65}
+[resid_in_1m_s1]   curve: {'timesteps': 860000, 'minutes': 19.24, 'survival_pct': 88.0, 'mean_return': 87.91, 'toe_peak_bw': 1.704, 'mean_K': 447.9, 'mean_theta_deg': -17.67}
+[resid_in_1m_s1]   curve: {'timesteps': 880000, 'minutes': 19.74, 'survival_pct': 90.0, 'mean_return': 88.84, 'toe_peak_bw': 1.725, 'mean_K': 457.5, 'mean_theta_deg': -17.9}
+[resid_in_1m_s1]   curve: {'timesteps': 900000, 'minutes': 20.2, 'survival_pct': 88.0, 'mean_return': 87.85, 'toe_peak_bw': 1.747, 'mean_K': 450.4, 'mean_theta_deg': -17.66}
+[resid_in_1m_s1]   curve: {'timesteps': 920000, 'minutes': 20.67, 'survival_pct': 90.0, 'mean_return': 87.8, 'toe_peak_bw': 1.743, 'mean_K': 460.0, 'mean_theta_deg': -17.98}
+[resid_in_1m_s1]   curve: {'timesteps': 940000, 'minutes': 21.13, 'survival_pct': 94.0, 'mean_return': 89.73, 'toe_peak_bw': 1.738, 'mean_K': 463.7, 'mean_theta_deg': -18.1}
+[resid_in_1m_s1]   curve: {'timesteps': 960000, 'minutes': 21.62, 'survival_pct': 92.0, 'mean_return': 88.53, 'toe_peak_bw': 1.749, 'mean_K': 460.9, 'mean_theta_deg': -18.0}
+[resid_in_1m_s1]   curve: {'timesteps': 980000, 'minutes': 22.23, 'survival_pct': 94.0, 'mean_return': 89.54, 'toe_peak_bw': 1.741, 'mean_K': 461.8, 'mean_theta_deg': -17.89}
+[resid_in_1m_s1]   curve: {'timesteps': 1000000, 'minutes': 22.83, 'survival_pct': 92.0, 'mean_return': 88.71, 'toe_peak_bw': 1.75, 'mean_K': 461.9, 'mean_theta_deg': -17.77}
+[resid_in_1m_s1] trained in 22.9 min
+[resid_in_1m_s1] 
+[resid_in_1m_s1] == networkA_mlp/resid_in_1m_s1 [train] (200 episodes) ==
+[resid_in_1m_s1]   survival_pct       85.500
+[resid_in_1m_s1]   survival_ci        [80.0, 89.7]
+[resid_in_1m_s1]   falls_by_reason    forward:29
+[resid_in_1m_s1]   mean_steps         98.670
+[resid_in_1m_s1]   toe_peak_bw        1.703
+[resid_in_1m_s1]   total_peak_bw      2.009
+[resid_in_1m_s1]   mean_theta_deg     -17.858
+[resid_in_1m_s1]   mean_K             459.137
+[resid_in_1m_s1]   mean_B             7.846
+[resid_in_1m_s1]   mean_return        88.118
+[resid_in_1m_s1]   return_ci          [85.74, 90.49]
+[resid_in_1m_s1]   ceiling_pct        13.500
+[resid_in_1m_s1]   minus_reference    +0.22 [-2.04, +2.48]
+===== END resid_in_1m_s1 rc=0 seconds=1399 2026-10-20 17:41:54
+[resid_in_1m_s0] networkA_mlp/resid_in_1m_s0: 221,575 parameters, 1,000,000 steps
+[resid_in_1m_s0]   curve: {'timesteps': 20000, 'minutes': 0.4, 'survival_pct': 80.0, 'mean_return': 85.95, 'toe_peak_bw': 1.671, 'mean_K': 296.1, 'mean_theta_deg': -14.25}
+[resid_in_1m_s0]   curve: {'timesteps': 40000, 'minutes': 0.84, 'survival_pct': 84.0, 'mean_return': 87.73, 'toe_peak_bw': 1.667, 'mean_K': 371.6, 'mean_theta_deg': -14.31}
+[resid_in_1m_s0]   curve: {'timesteps': 60000, 'minutes': 1.25, 'survival_pct': 86.0, 'mean_return': 88.31, 'toe_peak_bw': 1.727, 'mean_K': 410.9, 'mean_theta_deg': -14.77}
+[resid_in_1m_s0]   curve: {'timesteps': 80000, 'minutes': 1.68, 'survival_pct': 92.0, 'mean_return': 90.63, 'toe_peak_bw': 1.716, 'mean_K': 428.1, 'mean_theta_deg': -15.63}
+[resid_in_1m_s0]   curve: {'timesteps': 100000, 'minutes': 2.09, 'survival_pct': 90.0, 'mean_return': 89.76, 'toe_peak_bw': 1.707, 'mean_K': 437.4, 'mean_theta_deg': -16.15}
+[resid_in_1m_s0]   curve: {'timesteps': 120000, 'minutes': 2.54, 'survival_pct': 92.0, 'mean_return': 90.42, 'toe_peak_bw': 1.685, 'mean_K': 426.6, 'mean_theta_deg': -16.14}
+[resid_in_1m_s0]   curve: {'timesteps': 140000, 'minutes': 2.97, 'survival_pct': 92.0, 'mean_return': 90.22, 'toe_peak_bw': 1.692, 'mean_K': 424.3, 'mean_theta_deg': -16.31}
+[resid_in_1m_s0]   curve: {'timesteps': 160000, 'minutes': 3.41, 'survival_pct': 94.0, 'mean_return': 90.01, 'toe_peak_bw': 1.689, 'mean_K': 430.0, 'mean_theta_deg': -16.57}
+[resid_in_1m_s0]   curve: {'timesteps': 180000, 'minutes': 3.82, 'survival_pct': 94.0, 'mean_return': 90.21, 'toe_peak_bw': 1.701, 'mean_K': 446.7, 'mean_theta_deg': -16.95}
+[resid_in_1m_s0]   curve: {'timesteps': 200000, 'minutes': 4.25, 'survival_pct': 94.0, 'mean_return': 88.95, 'toe_peak_bw': 1.698, 'mean_K': 438.0, 'mean_theta_deg': -16.7}
+[resid_in_1m_s0]   curve: {'timesteps': 220000, 'minutes': 4.69, 'survival_pct': 94.0, 'mean_return': 89.08, 'toe_peak_bw': 1.739, 'mean_K': 463.1, 'mean_theta_deg': -16.8}
+[resid_in_1m_s0]   curve: {'timesteps': 240000, 'minutes': 5.15, 'survival_pct': 94.0, 'mean_return': 89.35, 'toe_peak_bw': 1.725, 'mean_K': 455.1, 'mean_theta_deg': -16.89}
+[resid_in_1m_s0]   curve: {'timesteps': 260000, 'minutes': 5.6, 'survival_pct': 94.0, 'mean_return': 88.85, 'toe_peak_bw': 1.755, 'mean_K': 465.5, 'mean_theta_deg': -17.23}
+[resid_in_1m_s0]   curve: {'timesteps': 280000, 'minutes': 6.04, 'survival_pct': 94.0, 'mean_return': 88.16, 'toe_peak_bw': 1.8, 'mean_K': 473.9, 'mean_theta_deg': -17.57}
+[resid_in_1m_s0]   curve: {'timesteps': 300000, 'minutes': 6.54, 'survival_pct': 94.0, 'mean_return': 87.13, 'toe_peak_bw': 1.813, 'mean_K': 465.8, 'mean_theta_deg': -17.28}
+[resid_in_1m_s0]   curve: {'timesteps': 320000, 'minutes': 6.98, 'survival_pct': 92.0, 'mean_return': 87.8, 'toe_peak_bw': 1.804, 'mean_K': 458.1, 'mean_theta_deg': -17.02}
+[resid_in_1m_s0]   curve: {'timesteps': 340000, 'minutes': 7.45, 'survival_pct': 94.0, 'mean_return': 87.93, 'toe_peak_bw': 1.779, 'mean_K': 457.7, 'mean_theta_deg': -16.76}
+[resid_in_1m_s0]   curve: {'timesteps': 360000, 'minutes': 7.89, 'survival_pct': 94.0, 'mean_return': 87.36, 'toe_peak_bw': 1.765, 'mean_K': 466.2, 'mean_theta_deg': -16.68}
+[resid_in_1m_s0]   curve: {'timesteps': 380000, 'minutes': 8.36, 'survival_pct': 94.0, 'mean_return': 87.88, 'toe_peak_bw': 1.768, 'mean_K': 472.4, 'mean_theta_deg': -16.62}
+[resid_in_1m_s0]   curve: {'timesteps': 400000, 'minutes': 8.81, 'survival_pct': 94.0, 'mean_return': 87.92, 'toe_peak_bw': 1.794, 'mean_K': 472.3, 'mean_theta_deg': -16.97}
+[resid_in_1m_s0]   curve: {'timesteps': 420000, 'minutes': 9.27, 'survival_pct': 94.0, 'mean_return': 88.36, 'toe_peak_bw': 1.794, 'mean_K': 465.0, 'mean_theta_deg': -16.81}
+[resid_in_1m_s0]   curve: {'timesteps': 440000, 'minutes': 9.67, 'survival_pct': 94.0, 'mean_return': 88.24, 'toe_peak_bw': 1.788, 'mean_K': 461.0, 'mean_theta_deg': -17.17}
+[resid_in_1m_s0]   curve: {'timesteps': 460000, 'minutes': 10.09, 'survival_pct': 94.0, 'mean_return': 86.86, 'toe_peak_bw': 1.822, 'mean_K': 460.5, 'mean_theta_deg': -17.19}
+[resid_in_1m_s0]   curve: {'timesteps': 480000, 'minutes': 10.55, 'survival_pct': 94.0, 'mean_return': 87.43, 'toe_peak_bw': 1.807, 'mean_K': 464.5, 'mean_theta_deg': -17.49}
+[resid_in_1m_s0]   curve: {'timesteps': 500000, 'minutes': 11.07, 'survival_pct': 94.0, 'mean_return': 88.06, 'toe_peak_bw': 1.803, 'mean_K': 461.6, 'mean_theta_deg': -17.28}
+[resid_in_1m_s0]   curve: {'timesteps': 520000, 'minutes': 11.62, 'survival_pct': 94.0, 'mean_return': 89.05, 'toe_peak_bw': 1.778, 'mean_K': 461.5, 'mean_theta_deg': -17.33}
+[resid_in_1m_s0]   curve: {'timesteps': 540000, 'minutes': 12.11, 'survival_pct': 94.0, 'mean_return': 89.03, 'toe_peak_bw': 1.765, 'mean_K': 462.1, 'mean_theta_deg': -17.38}
+[resid_in_1m_s0]   curve: {'timesteps': 560000, 'minutes': 12.57, 'survival_pct': 94.0, 'mean_return': 88.95, 'toe_peak_bw': 1.752, 'mean_K': 459.5, 'mean_theta_deg': -17.34}
+[resid_in_1m_s0]   curve: {'timesteps': 580000, 'minutes': 13.02, 'survival_pct': 94.0, 'mean_return': 89.25, 'toe_peak_bw': 1.765, 'mean_K': 465.7, 'mean_theta_deg': -17.57}
+[resid_in_1m_s0]   curve: {'timesteps': 600000, 'minutes': 13.47, 'survival_pct': 94.0, 'mean_return': 89.31, 'toe_peak_bw': 1.745, 'mean_K': 462.1, 'mean_theta_deg': -17.41}
+[resid_in_1m_s0]   curve: {'timesteps': 620000, 'minutes': 13.91, 'survival_pct': 94.0, 'mean_return': 89.75, 'toe_peak_bw': 1.755, 'mean_K': 460.8, 'mean_theta_deg': -17.69}
+[resid_in_1m_s0]   curve: {'timesteps': 640000, 'minutes': 14.35, 'survival_pct': 94.0, 'mean_return': 88.67, 'toe_peak_bw': 1.753, 'mean_K': 466.2, 'mean_theta_deg': -17.37}
+[resid_in_1m_s0]   curve: {'timesteps': 660000, 'minutes': 14.8, 'survival_pct': 94.0, 'mean_return': 89.1, 'toe_peak_bw': 1.757, 'mean_K': 463.2, 'mean_theta_deg': -17.54}
+[resid_in_1m_s0]   curve: {'timesteps': 680000, 'minutes': 15.25, 'survival_pct': 94.0, 'mean_return': 88.55, 'toe_peak_bw': 1.755, 'mean_K': 462.8, 'mean_theta_deg': -17.27}
+[resid_in_1m_s0]   curve: {'timesteps': 700000, 'minutes': 15.68, 'survival_pct': 94.0, 'mean_return': 88.58, 'toe_peak_bw': 1.765, 'mean_K': 466.9, 'mean_theta_deg': -17.25}
+[resid_in_1m_s0]   curve: {'timesteps': 720000, 'minutes': 16.15, 'survival_pct': 94.0, 'mean_return': 88.69, 'toe_peak_bw': 1.761, 'mean_K': 466.7, 'mean_theta_deg': -17.43}
+[resid_in_1m_s0]   curve: {'timesteps': 740000, 'minutes': 16.59, 'survival_pct': 94.0, 'mean_return': 88.33, 'toe_peak_bw': 1.767, 'mean_K': 462.4, 'mean_theta_deg': -17.3}
+[resid_in_1m_s0]   curve: {'timesteps': 760000, 'minutes': 17.06, 'survival_pct': 94.0, 'mean_return': 87.56, 'toe_peak_bw': 1.776, 'mean_K': 467.5, 'mean_theta_deg': -17.7}
+[resid_in_1m_s0]   curve: {'timesteps': 780000, 'minutes': 17.56, 'survival_pct': 94.0, 'mean_return': 88.37, 'toe_peak_bw': 1.77, 'mean_K': 462.2, 'mean_theta_deg': -17.28}
+[resid_in_1m_s0]   curve: {'timesteps': 800000, 'minutes': 17.97, 'survival_pct': 94.0, 'mean_return': 86.9, 'toe_peak_bw': 1.775, 'mean_K': 464.4, 'mean_theta_deg': -17.31}
+[resid_in_1m_s0]   curve: {'timesteps': 820000, 'minutes': 18.43, 'survival_pct': 94.0, 'mean_return': 87.75, 'toe_peak_bw': 1.76, 'mean_K': 464.9, 'mean_theta_deg': -17.26}
+[resid_in_1m_s0]   curve: {'timesteps': 840000, 'minutes': 18.86, 'survival_pct': 94.0, 'mean_return': 87.92, 'toe_peak_bw': 1.757, 'mean_K': 463.8, 'mean_theta_deg': -17.38}
+[resid_in_1m_s0]   curve: {'timesteps': 860000, 'minutes': 19.35, 'survival_pct': 94.0, 'mean_return': 87.71, 'toe_peak_bw': 1.756, 'mean_K': 457.3, 'mean_theta_deg': -17.29}
+[resid_in_1m_s0]   curve: {'timesteps': 880000, 'minutes': 19.84, 'survival_pct': 94.0, 'mean_return': 87.96, 'toe_peak_bw': 1.755, 'mean_K': 460.1, 'mean_theta_deg': -17.3}
+[resid_in_1m_s0]   curve: {'timesteps': 900000, 'minutes': 20.28, 'survival_pct': 94.0, 'mean_return': 88.63, 'toe_peak_bw': 1.763, 'mean_K': 452.8, 'mean_theta_deg': -17.14}
+[resid_in_1m_s0]   curve: {'timesteps': 920000, 'minutes': 20.74, 'survival_pct': 94.0, 'mean_return': 88.64, 'toe_peak_bw': 1.754, 'mean_K': 454.0, 'mean_theta_deg': -16.93}
+[resid_in_1m_s0]   curve: {'timesteps': 940000, 'minutes': 21.19, 'survival_pct': 94.0, 'mean_return': 88.9, 'toe_peak_bw': 1.751, 'mean_K': 446.9, 'mean_theta_deg': -17.04}
+[resid_in_1m_s0]   curve: {'timesteps': 960000, 'minutes': 21.69, 'survival_pct': 94.0, 'mean_return': 88.91, 'toe_peak_bw': 1.759, 'mean_K': 449.6, 'mean_theta_deg': -17.03}
+[resid_in_1m_s0]   curve: {'timesteps': 980000, 'minutes': 22.33, 'survival_pct': 94.0, 'mean_return': 88.53, 'toe_peak_bw': 1.765, 'mean_K': 449.9, 'mean_theta_deg': -17.31}
+[resid_in_1m_s0]   curve: {'timesteps': 1000000, 'minutes': 22.88, 'survival_pct': 94.0, 'mean_return': 88.04, 'toe_peak_bw': 1.769, 'mean_K': 449.1, 'mean_theta_deg': -17.09}
+[resid_in_1m_s0] trained in 22.9 min
+[resid_in_1m_s0] 
+[resid_in_1m_s0] == networkA_mlp/resid_in_1m_s0 [train] (200 episodes) ==
+[resid_in_1m_s0]   survival_pct       90.000
+[resid_in_1m_s0]   survival_ci        [85.1, 93.4]
+[resid_in_1m_s0]   falls_by_reason    forward:20
+[resid_in_1m_s0]   mean_steps         99.315
+[resid_in_1m_s0]   toe_peak_bw        1.759
+[resid_in_1m_s0]   total_peak_bw      2.016
+[resid_in_1m_s0]   mean_theta_deg     -17.694
+[resid_in_1m_s0]   mean_K             459.463
+[resid_in_1m_s0]   mean_B             6.708
+[resid_in_1m_s0]   mean_return        88.041
+[resid_in_1m_s0]   return_ci          [85.39, 90.69]
+[resid_in_1m_s0]   ceiling_pct        15.500
+[resid_in_1m_s0]   minus_reference    +0.14 [-1.58, +1.86]
+===== END resid_in_1m_s0 rc=0 seconds=1402 2026-10-20 17:41:57
+===== START resid_in_std_s0 2026-10-20 17:41:57 sets: residual=True anchor=[-14.0,250.6,6.38] log_std_init=-1.0
+===== START resid_in_std_s1 2026-10-20 17:41:57 sets: residual=True anchor=[-14.0,250.6,6.38] log_std_init=-1.0
+[resid_in_std_s0] networkA_mlp/resid_in_std_s0: 221,575 parameters, 300,000 steps
+[resid_in_std_s0]   curve: {'timesteps': 20000, 'minutes': 0.52, 'survival_pct': 72.0, 'mean_return': 85.53, 'toe_peak_bw': 1.605, 'mean_K': 255.6, 'mean_theta_deg': -14.24}
+[resid_in_std_s0]   curve: {'timesteps': 40000, 'minutes': 1.02, 'survival_pct': 72.0, 'mean_return': 85.92, 'toe_peak_bw': 1.628, 'mean_K': 262.7, 'mean_theta_deg': -14.31}
+[resid_in_std_s0]   curve: {'timesteps': 60000, 'minutes': 1.62, 'survival_pct': 74.0, 'mean_return': 86.28, 'toe_peak_bw': 1.626, 'mean_K': 262.4, 'mean_theta_deg': -14.42}
+[resid_in_std_s0]   curve: {'timesteps': 80000, 'minutes': 2.21, 'survival_pct': 74.0, 'mean_return': 86.77, 'toe_peak_bw': 1.62, 'mean_K': 265.7, 'mean_theta_deg': -14.39}
+[resid_in_std_s0]   curve: {'timesteps': 100000, 'minutes': 2.79, 'survival_pct': 76.0, 'mean_return': 86.77, 'toe_peak_bw': 1.63, 'mean_K': 276.0, 'mean_theta_deg': -14.48}
+[resid_in_std_s0]   curve: {'timesteps': 120000, 'minutes': 3.32, 'survival_pct': 74.0, 'mean_return': 85.84, 'toe_peak_bw': 1.639, 'mean_K': 280.7, 'mean_theta_deg': -14.63}
+[resid_in_std_s0]   curve: {'timesteps': 140000, 'minutes': 3.81, 'survival_pct': 78.0, 'mean_return': 87.05, 'toe_peak_bw': 1.69, 'mean_K': 298.2, 'mean_theta_deg': -14.69}
+[resid_in_std_s0]   curve: {'timesteps': 160000, 'minutes': 4.26, 'survival_pct': 88.0, 'mean_return': 88.91, 'toe_peak_bw': 1.671, 'mean_K': 320.0, 'mean_theta_deg': -14.73}
+[resid_in_std_s0]   curve: {'timesteps': 180000, 'minutes': 4.69, 'survival_pct': 88.0, 'mean_return': 88.92, 'toe_peak_bw': 1.676, 'mean_K': 328.0, 'mean_theta_deg': -15.02}
+[resid_in_std_s0]   curve: {'timesteps': 200000, 'minutes': 5.15, 'survival_pct': 88.0, 'mean_return': 88.63, 'toe_peak_bw': 1.694, 'mean_K': 340.0, 'mean_theta_deg': -15.01}
+[resid_in_std_s0]   curve: {'timesteps': 220000, 'minutes': 5.65, 'survival_pct': 90.0, 'mean_return': 89.37, 'toe_peak_bw': 1.7, 'mean_K': 345.2, 'mean_theta_deg': -14.95}
+[resid_in_std_s0]   curve: {'timesteps': 240000, 'minutes': 6.09, 'survival_pct': 90.0, 'mean_return': 88.88, 'toe_peak_bw': 1.701, 'mean_K': 350.6, 'mean_theta_deg': -15.16}
+[resid_in_std_s0]   curve: {'timesteps': 260000, 'minutes': 6.53, 'survival_pct': 88.0, 'mean_return': 88.61, 'toe_peak_bw': 1.716, 'mean_K': 352.7, 'mean_theta_deg': -15.01}
+[resid_in_std_s0]   curve: {'timesteps': 280000, 'minutes': 7.02, 'survival_pct': 88.0, 'mean_return': 88.19, 'toe_peak_bw': 1.713, 'mean_K': 351.3, 'mean_theta_deg': -15.19}
+[resid_in_std_s0]   curve: {'timesteps': 300000, 'minutes': 7.5, 'survival_pct': 88.0, 'mean_return': 88.43, 'toe_peak_bw': 1.703, 'mean_K': 356.2, 'mean_theta_deg': -15.22}
+[resid_in_std_s0] trained in 7.5 min
+[resid_in_std_s0] 
+[resid_in_std_s0] == networkA_mlp/resid_in_std_s0 [train] (200 episodes) ==
+[resid_in_std_s0]   survival_pct       84.500
+[resid_in_std_s0]   survival_ci        [78.8, 88.9]
+[resid_in_std_s0]   falls_by_reason    forward:31
+[resid_in_std_s0]   mean_steps         98.775
+[resid_in_std_s0]   toe_peak_bw        1.665
+[resid_in_std_s0]   total_peak_bw      2.146
+[resid_in_std_s0]   mean_theta_deg     -15.424
+[resid_in_std_s0]   mean_K             365.075
+[resid_in_std_s0]   mean_B             6.328
+[resid_in_std_s0]   mean_return        88.643
+[resid_in_std_s0]   return_ci          [86.30, 90.99]
+[resid_in_std_s0]   ceiling_pct        40.500
+[resid_in_std_s0]   minus_reference    +0.74 [-1.63, +3.11]
+===== END resid_in_std_s0 rc=0 seconds=480 2026-10-20 17:49:57
+===== START resid_in_std_s2 2026-10-20 17:49:57 sets: residual=True anchor=[-14.0,250.6,6.38] log_std_init=-1.0
+[resid_in_std_s1] networkA_mlp/resid_in_std_s1: 221,575 parameters, 300,000 steps
+[resid_in_std_s1]   curve: {'timesteps': 20000, 'minutes': 0.55, 'survival_pct': 74.0, 'mean_return': 85.79, 'toe_peak_bw': 1.609, 'mean_K': 260.5, 'mean_theta_deg': -14.28}
+[resid_in_std_s1]   curve: {'timesteps': 40000, 'minutes': 1.06, 'survival_pct': 74.0, 'mean_return': 86.67, 'toe_peak_bw': 1.607, 'mean_K': 260.1, 'mean_theta_deg': -14.23}
+[resid_in_std_s1]   curve: {'timesteps': 60000, 'minutes': 1.64, 'survival_pct': 74.0, 'mean_return': 86.29, 'toe_peak_bw': 1.609, 'mean_K': 269.2, 'mean_theta_deg': -14.11}
+[resid_in_std_s1]   curve: {'timesteps': 80000, 'minutes': 2.24, 'survival_pct': 74.0, 'mean_return': 86.06, 'toe_peak_bw': 1.617, 'mean_K': 268.3, 'mean_theta_deg': -14.22}
+[resid_in_std_s1]   curve: {'timesteps': 100000, 'minutes': 2.84, 'survival_pct': 76.0, 'mean_return': 86.27, 'toe_peak_bw': 1.662, 'mean_K': 270.9, 'mean_theta_deg': -14.27}
+[resid_in_std_s1]   curve: {'timesteps': 120000, 'minutes': 3.36, 'survival_pct': 76.0, 'mean_return': 86.21, 'toe_peak_bw': 1.669, 'mean_K': 270.7, 'mean_theta_deg': -14.29}
+[resid_in_std_s1]   curve: {'timesteps': 140000, 'minutes': 3.84, 'survival_pct': 74.0, 'mean_return': 85.6, 'toe_peak_bw': 1.672, 'mean_K': 268.8, 'mean_theta_deg': -14.36}
+[resid_in_std_s1]   curve: {'timesteps': 160000, 'minutes': 4.31, 'survival_pct': 74.0, 'mean_return': 85.53, 'toe_peak_bw': 1.677, 'mean_K': 269.7, 'mean_theta_deg': -14.44}
+[resid_in_std_s1]   curve: {'timesteps': 180000, 'minutes': 4.76, 'survival_pct': 76.0, 'mean_return': 86.27, 'toe_peak_bw': 1.689, 'mean_K': 273.1, 'mean_theta_deg': -14.38}
+[resid_in_std_s1]   curve: {'timesteps': 200000, 'minutes': 5.22, 'survival_pct': 76.0, 'mean_return': 85.88, 'toe_peak_bw': 1.711, 'mean_K': 271.8, 'mean_theta_deg': -14.38}
+[resid_in_std_s1]   curve: {'timesteps': 220000, 'minutes': 5.7, 'survival_pct': 74.0, 'mean_return': 85.32, 'toe_peak_bw': 1.692, 'mean_K': 270.2, 'mean_theta_deg': -14.47}
+[resid_in_std_s1]   curve: {'timesteps': 240000, 'minutes': 6.12, 'survival_pct': 78.0, 'mean_return': 86.56, 'toe_peak_bw': 1.691, 'mean_K': 272.0, 'mean_theta_deg': -14.46}
+[resid_in_std_s1]   curve: {'timesteps': 260000, 'minutes': 6.57, 'survival_pct': 76.0, 'mean_return': 85.71, 'toe_peak_bw': 1.692, 'mean_K': 269.8, 'mean_theta_deg': -14.6}
+[resid_in_std_s1]   curve: {'timesteps': 280000, 'minutes': 7.06, 'survival_pct': 74.0, 'mean_return': 85.17, 'toe_peak_bw': 1.666, 'mean_K': 271.7, 'mean_theta_deg': -14.5}
+[resid_in_std_s1]   curve: {'timesteps': 300000, 'minutes': 7.54, 'survival_pct': 74.0, 'mean_return': 85.27, 'toe_peak_bw': 1.66, 'mean_K': 273.6, 'mean_theta_deg': -14.49}
+[resid_in_std_s1] trained in 7.6 min
+[resid_in_std_s1] 
+[resid_in_std_s1] == networkA_mlp/resid_in_std_s1 [train] (200 episodes) ==
+[resid_in_std_s1]   survival_pct       73.500
+[resid_in_std_s1]   survival_ci        [67.0, 79.1]
+[resid_in_std_s1]   falls_by_reason    forward:53
+[resid_in_std_s1]   mean_steps         97.055
+[resid_in_std_s1]   toe_peak_bw        1.622
+[resid_in_std_s1]   total_peak_bw      2.093
+[resid_in_std_s1]   mean_theta_deg     -14.578
+[resid_in_std_s1]   mean_K             275.249
+[resid_in_std_s1]   mean_B             7.193
+[resid_in_std_s1]   mean_return        84.314
+[resid_in_std_s1]   return_ci          [81.55, 87.08]
+[resid_in_std_s1]   ceiling_pct        10.000
+[resid_in_std_s1]   minus_reference    -3.59 [-6.40, -0.77]
+===== END resid_in_std_s1 rc=0 seconds=482 2026-10-20 17:49:59
+[resid_in_std_s2] networkA_mlp/resid_in_std_s2: 221,575 parameters, 300,000 steps
+[resid_in_std_s2]   curve: {'timesteps': 20000, 'minutes': 0.33, 'survival_pct': 70.0, 'mean_return': 84.47, 'toe_peak_bw': 1.599, 'mean_K': 257.6, 'mean_theta_deg': -14.19}
+[resid_in_std_s2]   curve: {'timesteps': 40000, 'minutes': 0.66, 'survival_pct': 72.0, 'mean_return': 84.77, 'toe_peak_bw': 1.613, 'mean_K': 257.7, 'mean_theta_deg': -14.08}
+[resid_in_std_s2]   curve: {'timesteps': 60000, 'minutes': 0.98, 'survival_pct': 74.0, 'mean_return': 85.69, 'toe_peak_bw': 1.621, 'mean_K': 264.0, 'mean_theta_deg': -14.01}
+[resid_in_std_s2]   curve: {'timesteps': 80000, 'minutes': 1.31, 'survival_pct': 74.0, 'mean_return': 86.47, 'toe_peak_bw': 1.609, 'mean_K': 264.8, 'mean_theta_deg': -14.14}
+[resid_in_std_s2]   curve: {'timesteps': 100000, 'minutes': 1.63, 'survival_pct': 74.0, 'mean_return': 86.37, 'toe_peak_bw': 1.629, 'mean_K': 267.4, 'mean_theta_deg': -14.23}
+[resid_in_std_s2]   curve: {'timesteps': 120000, 'minutes': 1.96, 'survival_pct': 74.0, 'mean_return': 86.19, 'toe_peak_bw': 1.639, 'mean_K': 269.4, 'mean_theta_deg': -14.39}
+[resid_in_std_s2]   curve: {'timesteps': 140000, 'minutes': 2.3, 'survival_pct': 72.0, 'mean_return': 85.73, 'toe_peak_bw': 1.668, 'mean_K': 274.5, 'mean_theta_deg': -14.24}
+[resid_in_std_s2]   curve: {'timesteps': 160000, 'minutes': 2.63, 'survival_pct': 74.0, 'mean_return': 86.33, 'toe_peak_bw': 1.667, 'mean_K': 275.1, 'mean_theta_deg': -14.35}
+[resid_in_std_s2]   curve: {'timesteps': 180000, 'minutes': 2.96, 'survival_pct': 74.0, 'mean_return': 86.58, 'toe_peak_bw': 1.682, 'mean_K': 275.8, 'mean_theta_deg': -14.42}
+[resid_in_std_s2]   curve: {'timesteps': 200000, 'minutes': 3.28, 'survival_pct': 76.0, 'mean_return': 86.69, 'toe_peak_bw': 1.659, 'mean_K': 278.2, 'mean_theta_deg': -14.53}
+[resid_in_std_s2]   curve: {'timesteps': 220000, 'minutes': 3.61, 'survival_pct': 76.0, 'mean_return': 86.92, 'toe_peak_bw': 1.648, 'mean_K': 279.0, 'mean_theta_deg': -14.29}
+[resid_in_std_s2]   curve: {'timesteps': 240000, 'minutes': 3.94, 'survival_pct': 74.0, 'mean_return': 85.83, 'toe_peak_bw': 1.657, 'mean_K': 279.7, 'mean_theta_deg': -14.24}
+[resid_in_std_s2]   curve: {'timesteps': 260000, 'minutes': 4.24, 'survival_pct': 76.0, 'mean_return': 86.16, 'toe_peak_bw': 1.652, 'mean_K': 279.4, 'mean_theta_deg': -14.35}
+[resid_in_std_s2]   curve: {'timesteps': 280000, 'minutes': 4.54, 'survival_pct': 74.0, 'mean_return': 85.59, 'toe_peak_bw': 1.671, 'mean_K': 284.9, 'mean_theta_deg': -14.35}
+[resid_in_std_s2]   curve: {'timesteps': 300000, 'minutes': 4.83, 'survival_pct': 76.0, 'mean_return': 86.24, 'toe_peak_bw': 1.656, 'mean_K': 283.9, 'mean_theta_deg': -14.4}
+[resid_in_std_s2] trained in 4.8 min
+[resid_in_std_s2] 
+[resid_in_std_s2] == networkA_mlp/resid_in_std_s2 [train] (200 episodes) ==
+[resid_in_std_s2]   survival_pct       75.000
+[resid_in_std_s2]   survival_ci        [68.6, 80.5]
+[resid_in_std_s2]   falls_by_reason    forward:50
+[resid_in_std_s2]   mean_steps         97.100
+[resid_in_std_s2]   toe_peak_bw        1.618
+[resid_in_std_s2]   total_peak_bw      2.129
+[resid_in_std_s2]   mean_theta_deg     -14.539
+[resid_in_std_s2]   mean_K             289.856
+[resid_in_std_s2]   mean_B             6.561
+[resid_in_std_s2]   mean_return        85.442
+[resid_in_std_s2]   return_ci          [82.63, 88.26]
+[resid_in_std_s2]   ceiling_pct        26.500
+[resid_in_std_s2]   minus_reference    -2.46 [-5.30, +0.38]
+===== END resid_in_std_s2 rc=0 seconds=309 2026-10-20 17:55:06
+===== ALL DONE 2026-10-20 17:55:06

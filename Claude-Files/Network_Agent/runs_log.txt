@@ -36,3 +36,308 @@ trained in 5.1 min
 ===== HALT: base survival 88.5000 far from 26
 ===== START base_s1 2026-10-20 16:01:47 sets: 
 ===== START base_s2 2026-10-20 16:01:47 sets: 
+[base_s2] networkA_mlp/base_s2: 221,575 parameters, 300,000 steps
+[base_s2]   curve: {'timesteps': 20000, 'minutes': 0.46, 'survival_pct': 18.0, 'mean_return': 58.7, 'toe_peak_bw': 1.302, 'mean_K': 73.2, 'mean_theta_deg': -1.56}
+[base_s2]   curve: {'timesteps': 40000, 'minutes': 0.9, 'survival_pct': 16.0, 'mean_return': 56.6, 'toe_peak_bw': 1.591, 'mean_K': 131.1, 'mean_theta_deg': -1.75}
+[base_s2]   curve: {'timesteps': 60000, 'minutes': 1.34, 'survival_pct': 18.0, 'mean_return': 57.31, 'toe_peak_bw': 1.7, 'mean_K': 167.3, 'mean_theta_deg': 0.25}
+[base_s2]   curve: {'timesteps': 80000, 'minutes': 1.78, 'survival_pct': 18.0, 'mean_return': 56.81, 'toe_peak_bw': 1.647, 'mean_K': 144.4, 'mean_theta_deg': 4.07}
+[base_s2]   curve: {'timesteps': 100000, 'minutes': 2.55, 'survival_pct': 22.0, 'mean_return': 57.09, 'toe_peak_bw': 1.65, 'mean_K': 174.5, 'mean_theta_deg': 2.93}
+[base_s2]   curve: {'timesteps': 120000, 'minutes': 2.98, 'survival_pct': 24.0, 'mean_return': 56.4, 'toe_peak_bw': 1.682, 'mean_K': 188.5, 'mean_theta_deg': 1.97}
+[base_s2]   curve: {'timesteps': 140000, 'minutes': 3.42, 'survival_pct': 24.0, 'mean_return': 57.07, 'toe_peak_bw': 1.655, 'mean_K': 199.3, 'mean_theta_deg': 2.11}
+[base_s2]   curve: {'timesteps': 160000, 'minutes': 4.01, 'survival_pct': 22.0, 'mean_return': 57.14, 'toe_peak_bw': 1.67, 'mean_K': 206.4, 'mean_theta_deg': 1.8}
+[base_s2]   curve: {'timesteps': 180000, 'minutes': 5.19, 'survival_pct': 24.0, 'mean_return': 57.05, 'toe_peak_bw': 1.66, 'mean_K': 208.9, 'mean_theta_deg': 1.7}
+[base_s2]   curve: {'timesteps': 200000, 'minutes': 6.23, 'survival_pct': 22.0, 'mean_return': 57.09, 'toe_peak_bw': 1.673, 'mean_K': 213.9, 'mean_theta_deg': 1.35}
+[base_s2]   curve: {'timesteps': 220000, 'minutes': 6.76, 'survival_pct': 24.0, 'mean_return': 57.69, 'toe_peak_bw': 1.671, 'mean_K': 216.5, 'mean_theta_deg': 1.17}
+[base_s2]   curve: {'timesteps': 240000, 'minutes': 7.23, 'survival_pct': 24.0, 'mean_return': 57.63, 'toe_peak_bw': 1.675, 'mean_K': 217.0, 'mean_theta_deg': 1.42}
+[base_s2]   curve: {'timesteps': 260000, 'minutes': 7.77, 'survival_pct': 26.0, 'mean_return': 57.17, 'toe_peak_bw': 1.67, 'mean_K': 217.7, 'mean_theta_deg': 1.43}
+[base_s2]   curve: {'timesteps': 280000, 'minutes': 8.28, 'survival_pct': 26.0, 'mean_return': 59.2, 'toe_peak_bw': 1.654, 'mean_K': 219.1, 'mean_theta_deg': 1.83}
+[base_s2]   curve: {'timesteps': 300000, 'minutes': 8.79, 'survival_pct': 24.0, 'mean_return': 58.84, 'toe_peak_bw': 1.65, 'mean_K': 220.7, 'mean_theta_deg': 1.7}
+[base_s2] trained in 8.8 min
+[base_s2] 
+[base_s2] == networkA_mlp/base_s2 [train] (200 episodes) ==
+[base_s2]   survival_pct       17.000
+[base_s2]   survival_ci        [12.4, 22.8]
+[base_s2]   falls_by_reason    forward:166
+[base_s2]   mean_steps         87.020
+[base_s2]   toe_peak_bw        1.604
+[base_s2]   total_peak_bw      2.172
+[base_s2]   mean_theta_deg     1.716
+[base_s2]   mean_K             222.148
+[base_s2]   mean_B             4.063
+[base_s2]   mean_return        58.710
+[base_s2]   return_ci          [55.92, 61.51]
+[base_s2]   ceiling_pct        0.000
+[base_s2]   minus_reference    -29.19 [-32.43, -25.95]
+===== END base_s2 rc=0 seconds=554 2026-10-20 16:11:01
+===== START nonr_s0 2026-10-20 16:11:01 sets: norm_reward=False
+[base_s1] networkA_mlp/base_s1: 221,575 parameters, 300,000 steps
+[base_s1]   curve: {'timesteps': 20000, 'minutes': 0.46, 'survival_pct': 18.0, 'mean_return': 58.44, 'toe_peak_bw': 1.334, 'mean_K': 53.5, 'mean_theta_deg': 1.38}
+[base_s1]   curve: {'timesteps': 40000, 'minutes': 0.9, 'survival_pct': 22.0, 'mean_return': 56.71, 'toe_peak_bw': 1.692, 'mean_K': 113.1, 'mean_theta_deg': -0.03}
+[base_s1]   curve: {'timesteps': 60000, 'minutes': 1.33, 'survival_pct': 26.0, 'mean_return': 57.5, 'toe_peak_bw': 1.644, 'mean_K': 159.8, 'mean_theta_deg': -1.29}
+[base_s1]   curve: {'timesteps': 80000, 'minutes': 1.78, 'survival_pct': 36.0, 'mean_return': 60.23, 'toe_peak_bw': 1.699, 'mean_K': 185.6, 'mean_theta_deg': -4.42}
+[base_s1]   curve: {'timesteps': 100000, 'minutes': 2.56, 'survival_pct': 48.0, 'mean_return': 63.46, 'toe_peak_bw': 1.711, 'mean_K': 213.5, 'mean_theta_deg': -5.8}
+[base_s1]   curve: {'timesteps': 120000, 'minutes': 2.99, 'survival_pct': 54.0, 'mean_return': 66.83, 'toe_peak_bw': 1.688, 'mean_K': 212.5, 'mean_theta_deg': -4.11}
+[base_s1]   curve: {'timesteps': 140000, 'minutes': 3.43, 'survival_pct': 52.0, 'mean_return': 66.04, 'toe_peak_bw': 1.707, 'mean_K': 235.3, 'mean_theta_deg': -6.31}
+[base_s1]   curve: {'timesteps': 160000, 'minutes': 4.03, 'survival_pct': 54.0, 'mean_return': 66.85, 'toe_peak_bw': 1.69, 'mean_K': 258.5, 'mean_theta_deg': -7.67}
+[base_s1]   curve: {'timesteps': 180000, 'minutes': 5.2, 'survival_pct': 56.0, 'mean_return': 68.17, 'toe_peak_bw': 1.63, 'mean_K': 269.8, 'mean_theta_deg': -7.22}
+[base_s1]   curve: {'timesteps': 200000, 'minutes': 6.3, 'survival_pct': 58.0, 'mean_return': 70.92, 'toe_peak_bw': 1.685, 'mean_K': 303.2, 'mean_theta_deg': -8.89}
+[base_s1]   curve: {'timesteps': 220000, 'minutes': 6.81, 'survival_pct': 52.0, 'mean_return': 68.09, 'toe_peak_bw': 1.654, 'mean_K': 301.5, 'mean_theta_deg': -8.87}
+[base_s1]   curve: {'timesteps': 240000, 'minutes': 7.29, 'survival_pct': 60.0, 'mean_return': 69.62, 'toe_peak_bw': 1.649, 'mean_K': 295.8, 'mean_theta_deg': -7.87}
+[base_s1]   curve: {'timesteps': 260000, 'minutes': 7.84, 'survival_pct': 58.0, 'mean_return': 68.34, 'toe_peak_bw': 1.668, 'mean_K': 304.7, 'mean_theta_deg': -8.33}
+[base_s1]   curve: {'timesteps': 280000, 'minutes': 8.33, 'survival_pct': 52.0, 'mean_return': 67.89, 'toe_peak_bw': 1.68, 'mean_K': 305.8, 'mean_theta_deg': -8.68}
+[base_s1]   curve: {'timesteps': 300000, 'minutes': 8.83, 'survival_pct': 60.0, 'mean_return': 71.56, 'toe_peak_bw': 1.668, 'mean_K': 302.7, 'mean_theta_deg': -9.43}
+[base_s1] trained in 8.9 min
+[base_s1] 
+[base_s1] == networkA_mlp/base_s1 [train] (200 episodes) ==
+[base_s1]   survival_pct       57.500
+[base_s1]   survival_ci        [50.6, 64.1]
+[base_s1]   falls_by_reason    forward:85
+[base_s1]   mean_steps         93.360
+[base_s1]   toe_peak_bw        1.604
+[base_s1]   total_peak_bw      2.187
+[base_s1]   mean_theta_deg     -8.462
+[base_s1]   mean_K             299.615
+[base_s1]   mean_B             6.088
+[base_s1]   mean_return        73.561
+[base_s1]   return_ci          [70.30, 76.83]
+[base_s1]   ceiling_pct        0.000
+[base_s1]   minus_reference    -14.34 [-17.82, -10.86]
+===== END base_s1 rc=0 seconds=558 2026-10-20 16:11:05
+===== START g995_s0 2026-10-20 16:11:05 sets: gamma=0.995
+[g995_s0] networkA_mlp/g995_s0: 221,575 parameters, 300,000 steps
+[g995_s0]   curve: {'timesteps': 20000, 'minutes': 0.46, 'survival_pct': 16.0, 'mean_return': 58.01, 'toe_peak_bw': 1.232, 'mean_K': 56.5, 'mean_theta_deg': 0.01}
+[g995_s0]   curve: {'timesteps': 40000, 'minutes': 0.89, 'survival_pct': 28.0, 'mean_return': 60.92, 'toe_peak_bw': 1.755, 'mean_K': 143.0, 'mean_theta_deg': -5.32}
+[g995_s0]   curve: {'timesteps': 60000, 'minutes': 1.31, 'survival_pct': 50.0, 'mean_return': 66.68, 'toe_peak_bw': 1.776, 'mean_K': 254.0, 'mean_theta_deg': -10.62}
+[g995_s0]   curve: {'timesteps': 80000, 'minutes': 1.76, 'survival_pct': 64.0, 'mean_return': 71.2, 'toe_peak_bw': 1.792, 'mean_K': 299.1, 'mean_theta_deg': -14.8}
+[g995_s0]   curve: {'timesteps': 100000, 'minutes': 2.21, 'survival_pct': 74.0, 'mean_return': 76.15, 'toe_peak_bw': 1.788, 'mean_K': 304.8, 'mean_theta_deg': -14.34}
+[g995_s0]   curve: {'timesteps': 120000, 'minutes': 2.67, 'survival_pct': 82.0, 'mean_return': 75.7, 'toe_peak_bw': 1.784, 'mean_K': 328.8, 'mean_theta_deg': -14.79}
+[g995_s0]   curve: {'timesteps': 140000, 'minutes': 3.14, 'survival_pct': 86.0, 'mean_return': 78.35, 'toe_peak_bw': 1.776, 'mean_K': 360.2, 'mean_theta_deg': -13.32}
+[g995_s0]   curve: {'timesteps': 160000, 'minutes': 3.57, 'survival_pct': 80.0, 'mean_return': 76.31, 'toe_peak_bw': 1.795, 'mean_K': 379.6, 'mean_theta_deg': -13.49}
+[g995_s0]   curve: {'timesteps': 180000, 'minutes': 4.04, 'survival_pct': 88.0, 'mean_return': 79.45, 'toe_peak_bw': 1.808, 'mean_K': 391.9, 'mean_theta_deg': -14.28}
+[g995_s0]   curve: {'timesteps': 200000, 'minutes': 4.52, 'survival_pct': 84.0, 'mean_return': 80.77, 'toe_peak_bw': 1.783, 'mean_K': 384.3, 'mean_theta_deg': -12.73}
+[g995_s0]   curve: {'timesteps': 220000, 'minutes': 4.97, 'survival_pct': 88.0, 'mean_return': 79.17, 'toe_peak_bw': 1.784, 'mean_K': 429.5, 'mean_theta_deg': -16.03}
+[g995_s0]   curve: {'timesteps': 240000, 'minutes': 5.39, 'survival_pct': 88.0, 'mean_return': 79.09, 'toe_peak_bw': 1.783, 'mean_K': 411.3, 'mean_theta_deg': -14.42}
+[g995_s0]   curve: {'timesteps': 260000, 'minutes': 5.8, 'survival_pct': 90.0, 'mean_return': 79.35, 'toe_peak_bw': 1.781, 'mean_K': 422.6, 'mean_theta_deg': -15.49}
+[g995_s0]   curve: {'timesteps': 280000, 'minutes': 6.23, 'survival_pct': 86.0, 'mean_return': 81.01, 'toe_peak_bw': 1.771, 'mean_K': 417.8, 'mean_theta_deg': -14.9}
+[g995_s0]   curve: {'timesteps': 300000, 'minutes': 6.66, 'survival_pct': 90.0, 'mean_return': 81.14, 'toe_peak_bw': 1.776, 'mean_K': 447.2, 'mean_theta_deg': -17.01}
+[g995_s0] trained in 6.7 min
+[g995_s0] 
+[g995_s0] == networkA_mlp/g995_s0 [train] (200 episodes) ==
+[g995_s0]   survival_pct       85.500
+[g995_s0]   survival_ci        [80.0, 89.7]
+[g995_s0]   falls_by_reason    forward:29
+[g995_s0]   mean_steps         98.195
+[g995_s0]   toe_peak_bw        1.745
+[g995_s0]   total_peak_bw      2.030
+[g995_s0]   mean_theta_deg     -17.122
+[g995_s0]   mean_K             449.485
+[g995_s0]   mean_B             2.364
+[g995_s0]   mean_return        81.323
+[g995_s0]   return_ci          [77.56, 85.08]
+[g995_s0]   ceiling_pct        0.000
+[g995_s0]   minus_reference    -6.58 [-8.34, -4.82]
+===== END g995_s0 rc=0 seconds=427 2026-10-20 16:18:12
+===== START lowlr_s0 2026-10-20 16:18:12 sets: learning_rate=1e-4 n_epochs=5
+[nonr_s0] networkA_mlp/nonr_s0: 221,575 parameters, 300,000 steps
+[nonr_s0]   curve: {'timesteps': 20000, 'minutes': 0.49, 'survival_pct': 18.0, 'mean_return': 60.45, 'toe_peak_bw': 1.165, 'mean_K': 37.2, 'mean_theta_deg': 2.89}
+[nonr_s0]   curve: {'timesteps': 40000, 'minutes': 0.91, 'survival_pct': 56.0, 'mean_return': 75.09, 'toe_peak_bw': 1.606, 'mean_K': 231.6, 'mean_theta_deg': -5.18}
+[nonr_s0]   curve: {'timesteps': 60000, 'minutes': 1.34, 'survival_pct': 76.0, 'mean_return': 77.6, 'toe_peak_bw': 1.712, 'mean_K': 368.9, 'mean_theta_deg': -12.76}
+[nonr_s0]   curve: {'timesteps': 80000, 'minutes': 1.77, 'survival_pct': 60.0, 'mean_return': 75.3, 'toe_peak_bw': 1.654, 'mean_K': 299.4, 'mean_theta_deg': -7.47}
+[nonr_s0]   curve: {'timesteps': 100000, 'minutes': 2.23, 'survival_pct': 64.0, 'mean_return': 76.58, 'toe_peak_bw': 1.65, 'mean_K': 314.7, 'mean_theta_deg': -8.57}
+[nonr_s0]   curve: {'timesteps': 120000, 'minutes': 2.7, 'survival_pct': 66.0, 'mean_return': 79.42, 'toe_peak_bw': 1.681, 'mean_K': 330.7, 'mean_theta_deg': -10.31}
+[nonr_s0]   curve: {'timesteps': 140000, 'minutes': 3.16, 'survival_pct': 74.0, 'mean_return': 81.85, 'toe_peak_bw': 1.765, 'mean_K': 380.5, 'mean_theta_deg': -14.45}
+[nonr_s0]   curve: {'timesteps': 160000, 'minutes': 3.59, 'survival_pct': 76.0, 'mean_return': 80.77, 'toe_peak_bw': 1.806, 'mean_K': 385.9, 'mean_theta_deg': -14.78}
+[nonr_s0]   curve: {'timesteps': 180000, 'minutes': 4.12, 'survival_pct': 78.0, 'mean_return': 81.14, 'toe_peak_bw': 1.809, 'mean_K': 386.7, 'mean_theta_deg': -14.78}
+[nonr_s0]   curve: {'timesteps': 200000, 'minutes': 4.62, 'survival_pct': 80.0, 'mean_return': 82.55, 'toe_peak_bw': 1.805, 'mean_K': 401.0, 'mean_theta_deg': -15.55}
+[nonr_s0]   curve: {'timesteps': 220000, 'minutes': 5.08, 'survival_pct': 82.0, 'mean_return': 83.6, 'toe_peak_bw': 1.796, 'mean_K': 410.1, 'mean_theta_deg': -16.23}
+[nonr_s0]   curve: {'timesteps': 240000, 'minutes': 5.5, 'survival_pct': 84.0, 'mean_return': 82.83, 'toe_peak_bw': 1.806, 'mean_K': 412.9, 'mean_theta_deg': -16.52}
+[nonr_s0]   curve: {'timesteps': 260000, 'minutes': 5.92, 'survival_pct': 88.0, 'mean_return': 83.65, 'toe_peak_bw': 1.808, 'mean_K': 444.3, 'mean_theta_deg': -18.56}
+[nonr_s0]   curve: {'timesteps': 280000, 'minutes': 6.37, 'survival_pct': 88.0, 'mean_return': 83.06, 'toe_peak_bw': 1.808, 'mean_K': 442.9, 'mean_theta_deg': -18.41}
+[nonr_s0]   curve: {'timesteps': 300000, 'minutes': 6.81, 'survival_pct': 86.0, 'mean_return': 83.38, 'toe_peak_bw': 1.805, 'mean_K': 431.2, 'mean_theta_deg': -17.83}
+[nonr_s0] trained in 6.8 min
+[nonr_s0] 
+[nonr_s0] == networkA_mlp/nonr_s0 [train] (200 episodes) ==
+[nonr_s0]   survival_pct       84.000
+[nonr_s0]   survival_ci        [78.3, 88.4]
+[nonr_s0]   falls_by_reason    forward:32
+[nonr_s0]   mean_steps         96.625
+[nonr_s0]   toe_peak_bw        1.766
+[nonr_s0]   total_peak_bw      2.178
+[nonr_s0]   mean_theta_deg     -17.632
+[nonr_s0]   mean_K             431.410
+[nonr_s0]   mean_B             9.291
+[nonr_s0]   mean_return        82.094
+[nonr_s0]   return_ci          [78.42, 85.76]
+[nonr_s0]   ceiling_pct        15.000
+[nonr_s0]   minus_reference    -5.81 [-7.60, -4.02]
+===== END nonr_s0 rc=0 seconds=436 2026-10-20 16:18:17
+===== START ent_s0 2026-10-20 16:18:17 sets: ent_coef=0.01
+[lowlr_s0] networkA_mlp/lowlr_s0: 221,575 parameters, 300,000 steps
+[lowlr_s0]   curve: {'timesteps': 20000, 'minutes': 0.39, 'survival_pct': 14.0, 'mean_return': 59.57, 'toe_peak_bw': 1.16, 'mean_K': 50.7, 'mean_theta_deg': 0.35}
+[lowlr_s0]   curve: {'timesteps': 40000, 'minutes': 0.77, 'survival_pct': 18.0, 'mean_return': 60.35, 'toe_peak_bw': 1.219, 'mean_K': 41.0, 'mean_theta_deg': 3.04}
+[lowlr_s0]   curve: {'timesteps': 60000, 'minutes': 1.16, 'survival_pct': 84.0, 'mean_return': 81.56, 'toe_peak_bw': 1.83, 'mean_K': 387.0, 'mean_theta_deg': -13.14}
+[lowlr_s0]   curve: {'timesteps': 80000, 'minutes': 1.54, 'survival_pct': 66.0, 'mean_return': 71.23, 'toe_peak_bw': 1.741, 'mean_K': 328.0, 'mean_theta_deg': -7.2}
+[lowlr_s0]   curve: {'timesteps': 100000, 'minutes': 1.92, 'survival_pct': 60.0, 'mean_return': 70.83, 'toe_peak_bw': 1.687, 'mean_K': 295.5, 'mean_theta_deg': -3.91}
+[lowlr_s0]   curve: {'timesteps': 120000, 'minutes': 2.3, 'survival_pct': 56.0, 'mean_return': 69.64, 'toe_peak_bw': 1.666, 'mean_K': 263.4, 'mean_theta_deg': -1.09}
+[lowlr_s0]   curve: {'timesteps': 140000, 'minutes': 2.68, 'survival_pct': 62.0, 'mean_return': 71.09, 'toe_peak_bw': 1.688, 'mean_K': 284.3, 'mean_theta_deg': -2.76}
+[lowlr_s0]   curve: {'timesteps': 160000, 'minutes': 3.06, 'survival_pct': 62.0, 'mean_return': 71.2, 'toe_peak_bw': 1.701, 'mean_K': 285.6, 'mean_theta_deg': -2.89}
+[lowlr_s0]   curve: {'timesteps': 180000, 'minutes': 3.45, 'survival_pct': 58.0, 'mean_return': 69.34, 'toe_peak_bw': 1.712, 'mean_K': 272.5, 'mean_theta_deg': -1.81}
+[lowlr_s0]   curve: {'timesteps': 200000, 'minutes': 3.86, 'survival_pct': 60.0, 'mean_return': 69.48, 'toe_peak_bw': 1.677, 'mean_K': 267.1, 'mean_theta_deg': -1.36}
+[lowlr_s0]   curve: {'timesteps': 220000, 'minutes': 4.28, 'survival_pct': 60.0, 'mean_return': 69.95, 'toe_peak_bw': 1.694, 'mean_K': 270.0, 'mean_theta_deg': -1.59}
+[lowlr_s0]   curve: {'timesteps': 240000, 'minutes': 4.7, 'survival_pct': 56.0, 'mean_return': 68.52, 'toe_peak_bw': 1.666, 'mean_K': 263.0, 'mean_theta_deg': -1.03}
+[lowlr_s0]   curve: {'timesteps': 260000, 'minutes': 5.11, 'survival_pct': 60.0, 'mean_return': 70.08, 'toe_peak_bw': 1.706, 'mean_K': 274.6, 'mean_theta_deg': -1.96}
+[lowlr_s0]   curve: {'timesteps': 280000, 'minutes': 5.54, 'survival_pct': 60.0, 'mean_return': 70.01, 'toe_peak_bw': 1.695, 'mean_K': 271.9, 'mean_theta_deg': -1.73}
+[lowlr_s0]   curve: {'timesteps': 300000, 'minutes': 5.95, 'survival_pct': 60.0, 'mean_return': 70.3, 'toe_peak_bw': 1.706, 'mean_K': 287.4, 'mean_theta_deg': -2.95}
+[lowlr_s0] trained in 6.0 min
+[lowlr_s0] 
+[lowlr_s0] == networkA_mlp/lowlr_s0 [train] (200 episodes) ==
+[lowlr_s0]   survival_pct       60.000
+[lowlr_s0]   survival_ci        [53.1, 66.5]
+[lowlr_s0]   falls_by_reason    forward:80
+[lowlr_s0]   mean_steps         90.625
+[lowlr_s0]   toe_peak_bw        1.659
+[lowlr_s0]   total_peak_bw      2.338
+[lowlr_s0]   mean_theta_deg     -4.056
+[lowlr_s0]   mean_K             300.355
+[lowlr_s0]   mean_B             6.164
+[lowlr_s0]   mean_return        69.072
+[lowlr_s0]   return_ci          [65.38, 72.76]
+[lowlr_s0]   ceiling_pct        0.500
+[lowlr_s0]   minus_reference    -18.83 [-21.92, -15.74]
+===== END lowlr_s0 rc=0 seconds=384 2026-10-20 16:24:36
+===== START std_s0 2026-10-20 16:24:36 sets: log_std_init=-1.0
+[ent_s0] networkA_mlp/ent_s0: 221,575 parameters, 300,000 steps
+[ent_s0]   curve: {'timesteps': 20000, 'minutes': 0.42, 'survival_pct': 12.0, 'mean_return': 55.56, 'toe_peak_bw': 1.193, 'mean_K': 38.4, 'mean_theta_deg': 2.76}
+[ent_s0]   curve: {'timesteps': 40000, 'minutes': 0.82, 'survival_pct': 34.0, 'mean_return': 62.1, 'toe_peak_bw': 1.616, 'mean_K': 188.6, 'mean_theta_deg': -5.59}
+[ent_s0]   curve: {'timesteps': 60000, 'minutes': 1.23, 'survival_pct': 44.0, 'mean_return': 64.46, 'toe_peak_bw': 1.663, 'mean_K': 228.6, 'mean_theta_deg': -6.74}
+[ent_s0]   curve: {'timesteps': 80000, 'minutes': 1.63, 'survival_pct': 40.0, 'mean_return': 61.87, 'toe_peak_bw': 1.671, 'mean_K': 241.1, 'mean_theta_deg': -4.42}
+[ent_s0]   curve: {'timesteps': 100000, 'minutes': 2.02, 'survival_pct': 38.0, 'mean_return': 59.92, 'toe_peak_bw': 1.675, 'mean_K': 238.9, 'mean_theta_deg': -3.67}
+[ent_s0]   curve: {'timesteps': 120000, 'minutes': 2.42, 'survival_pct': 48.0, 'mean_return': 64.21, 'toe_peak_bw': 1.68, 'mean_K': 263.0, 'mean_theta_deg': -4.58}
+[ent_s0]   curve: {'timesteps': 140000, 'minutes': 2.82, 'survival_pct': 50.0, 'mean_return': 65.59, 'toe_peak_bw': 1.713, 'mean_K': 288.8, 'mean_theta_deg': -5.73}
+[ent_s0]   curve: {'timesteps': 160000, 'minutes': 3.22, 'survival_pct': 56.0, 'mean_return': 66.75, 'toe_peak_bw': 1.705, 'mean_K': 297.3, 'mean_theta_deg': -6.6}
+[ent_s0]   curve: {'timesteps': 180000, 'minutes': 3.66, 'survival_pct': 56.0, 'mean_return': 68.55, 'toe_peak_bw': 1.711, 'mean_K': 309.3, 'mean_theta_deg': -7.45}
+[ent_s0]   curve: {'timesteps': 200000, 'minutes': 4.11, 'survival_pct': 62.0, 'mean_return': 68.63, 'toe_peak_bw': 1.701, 'mean_K': 307.6, 'mean_theta_deg': -7.39}
+[ent_s0]   curve: {'timesteps': 220000, 'minutes': 4.57, 'survival_pct': 62.0, 'mean_return': 69.63, 'toe_peak_bw': 1.72, 'mean_K': 322.2, 'mean_theta_deg': -8.18}
+[ent_s0]   curve: {'timesteps': 240000, 'minutes': 5.01, 'survival_pct': 64.0, 'mean_return': 69.55, 'toe_peak_bw': 1.707, 'mean_K': 328.9, 'mean_theta_deg': -8.6}
+[ent_s0]   curve: {'timesteps': 260000, 'minutes': 5.45, 'survival_pct': 64.0, 'mean_return': 69.98, 'toe_peak_bw': 1.711, 'mean_K': 327.9, 'mean_theta_deg': -8.6}
+[ent_s0]   curve: {'timesteps': 280000, 'minutes': 5.89, 'survival_pct': 64.0, 'mean_return': 69.54, 'toe_peak_bw': 1.706, 'mean_K': 338.1, 'mean_theta_deg': -9.2}
+[ent_s0]   curve: {'timesteps': 300000, 'minutes': 6.32, 'survival_pct': 64.0, 'mean_return': 69.61, 'toe_peak_bw': 1.71, 'mean_K': 335.4, 'mean_theta_deg': -9.06}
+[ent_s0] trained in 6.3 min
+[ent_s0] 
+[ent_s0] == networkA_mlp/ent_s0 [train] (200 episodes) ==
+[ent_s0]   survival_pct       60.000
+[ent_s0]   survival_ci        [53.1, 66.5]
+[ent_s0]   falls_by_reason    forward:80
+[ent_s0]   mean_steps         93.740
+[ent_s0]   toe_peak_bw        1.667
+[ent_s0]   total_peak_bw      1.939
+[ent_s0]   mean_theta_deg     -8.719
+[ent_s0]   mean_K             330.182
+[ent_s0]   mean_B             1.851
+[ent_s0]   mean_return        72.506
+[ent_s0]   return_ci          [69.17, 75.85]
+[ent_s0]   ceiling_pct        0.000
+[ent_s0]   minus_reference    -15.40 [-18.91, -11.88]
+===== END ent_s0 rc=0 seconds=407 2026-10-20 16:25:04
+===== START resid_s0 2026-10-20 16:25:04 sets: residual=True
+[std_s0] networkA_mlp/std_s0: 221,575 parameters, 300,000 steps
+[std_s0]   curve: {'timesteps': 20000, 'minutes': 0.45, 'survival_pct': 14.0, 'mean_return': 58.93, 'toe_peak_bw': 1.165, 'mean_K': 50.4, 'mean_theta_deg': 0.77}
+[std_s0]   curve: {'timesteps': 40000, 'minutes': 0.89, 'survival_pct': 16.0, 'mean_return': 59.22, 'toe_peak_bw': 1.164, 'mean_K': 46.3, 'mean_theta_deg': 1.18}
+[std_s0]   curve: {'timesteps': 60000, 'minutes': 1.36, 'survival_pct': 16.0, 'mean_return': 59.6, 'toe_peak_bw': 1.195, 'mean_K': 52.0, 'mean_theta_deg': 0.35}
+[std_s0]   curve: {'timesteps': 80000, 'minutes': 1.8, 'survival_pct': 14.0, 'mean_return': 58.93, 'toe_peak_bw': 1.211, 'mean_K': 54.4, 'mean_theta_deg': 0.18}
+[std_s0]   curve: {'timesteps': 100000, 'minutes': 2.2, 'survival_pct': 18.0, 'mean_return': 60.63, 'toe_peak_bw': 1.382, 'mean_K': 71.2, 'mean_theta_deg': -1.26}
+[std_s0]   curve: {'timesteps': 120000, 'minutes': 2.61, 'survival_pct': 20.0, 'mean_return': 60.97, 'toe_peak_bw': 1.456, 'mean_K': 79.9, 'mean_theta_deg': -0.52}
+[std_s0]   curve: {'timesteps': 140000, 'minutes': 3.02, 'survival_pct': 20.0, 'mean_return': 61.05, 'toe_peak_bw': 1.461, 'mean_K': 88.0, 'mean_theta_deg': -1.02}
+[std_s0]   curve: {'timesteps': 160000, 'minutes': 3.43, 'survival_pct': 24.0, 'mean_return': 62.75, 'toe_peak_bw': 1.539, 'mean_K': 106.0, 'mean_theta_deg': -1.89}
+[std_s0]   curve: {'timesteps': 180000, 'minutes': 3.83, 'survival_pct': 22.0, 'mean_return': 62.25, 'toe_peak_bw': 1.567, 'mean_K': 121.1, 'mean_theta_deg': -2.53}
+[std_s0]   curve: {'timesteps': 200000, 'minutes': 4.23, 'survival_pct': 24.0, 'mean_return': 64.33, 'toe_peak_bw': 1.587, 'mean_K': 171.9, 'mean_theta_deg': -3.62}
+[std_s0]   curve: {'timesteps': 220000, 'minutes': 4.64, 'survival_pct': 30.0, 'mean_return': 66.24, 'toe_peak_bw': 1.582, 'mean_K': 183.1, 'mean_theta_deg': -4.56}
+[std_s0]   curve: {'timesteps': 240000, 'minutes': 5.04, 'survival_pct': 30.0, 'mean_return': 66.26, 'toe_peak_bw': 1.57, 'mean_K': 209.4, 'mean_theta_deg': -5.36}
+[std_s0]   curve: {'timesteps': 260000, 'minutes': 5.46, 'survival_pct': 32.0, 'mean_return': 66.94, 'toe_peak_bw': 1.575, 'mean_K': 197.6, 'mean_theta_deg': -4.93}
+[std_s0]   curve: {'timesteps': 280000, 'minutes': 5.87, 'survival_pct': 38.0, 'mean_return': 69.3, 'toe_peak_bw': 1.591, 'mean_K': 246.9, 'mean_theta_deg': -5.69}
+[std_s0]   curve: {'timesteps': 300000, 'minutes': 6.28, 'survival_pct': 36.0, 'mean_return': 68.71, 'toe_peak_bw': 1.614, 'mean_K': 254.2, 'mean_theta_deg': -6.71}
+[std_s0] trained in 6.3 min
+[std_s0] 
+[std_s0] == networkA_mlp/std_s0 [train] (200 episodes) ==
+[std_s0]   survival_pct       38.500
+[std_s0]   survival_ci        [32.0, 45.4]
+[std_s0]   falls_by_reason    forward:123
+[std_s0]   mean_steps         89.700
+[std_s0]   toe_peak_bw        1.544
+[std_s0]   total_peak_bw      2.156
+[std_s0]   mean_theta_deg     -6.749
+[std_s0]   mean_K             253.215
+[std_s0]   mean_B             2.676
+[std_s0]   mean_return        70.270
+[std_s0]   return_ci          [67.18, 73.36]
+[std_s0]   ceiling_pct        1.000
+[std_s0]   minus_reference    -17.63 [-21.59, -13.67]
+===== END std_s0 rc=0 seconds=400 2026-10-20 16:31:16
+===== START resid_in_s0 2026-10-20 16:31:16 sets: residual=True anchor=[-14.0,250.6,6.38]
+[resid_s0] networkA_mlp/resid_s0: 221,575 parameters, 300,000 steps
+[resid_s0]   curve: {'timesteps': 20000, 'minutes': 0.43, 'survival_pct': 94.0, 'mean_return': 87.9, 'toe_peak_bw': 1.791, 'mean_K': 487.1, 'mean_theta_deg': -19.84}
+[resid_s0]   curve: {'timesteps': 40000, 'minutes': 0.89, 'survival_pct': 94.0, 'mean_return': 88.29, 'toe_peak_bw': 1.755, 'mean_K': 475.5, 'mean_theta_deg': -19.7}
+[resid_s0]   curve: {'timesteps': 60000, 'minutes': 1.34, 'survival_pct': 94.0, 'mean_return': 87.83, 'toe_peak_bw': 1.747, 'mean_K': 468.7, 'mean_theta_deg': -19.69}
+[resid_s0]   curve: {'timesteps': 80000, 'minutes': 1.75, 'survival_pct': 94.0, 'mean_return': 88.0, 'toe_peak_bw': 1.744, 'mean_K': 467.4, 'mean_theta_deg': -19.67}
+[resid_s0]   curve: {'timesteps': 100000, 'minutes': 2.16, 'survival_pct': 94.0, 'mean_return': 88.0, 'toe_peak_bw': 1.739, 'mean_K': 458.7, 'mean_theta_deg': -19.5}
+[resid_s0]   curve: {'timesteps': 120000, 'minutes': 2.57, 'survival_pct': 94.0, 'mean_return': 87.45, 'toe_peak_bw': 1.738, 'mean_K': 460.2, 'mean_theta_deg': -19.61}
+[resid_s0]   curve: {'timesteps': 140000, 'minutes': 2.98, 'survival_pct': 94.0, 'mean_return': 87.44, 'toe_peak_bw': 1.748, 'mean_K': 450.9, 'mean_theta_deg': -19.6}
+[resid_s0]   curve: {'timesteps': 160000, 'minutes': 3.38, 'survival_pct': 94.0, 'mean_return': 87.98, 'toe_peak_bw': 1.743, 'mean_K': 452.6, 'mean_theta_deg': -19.57}
+[resid_s0]   curve: {'timesteps': 180000, 'minutes': 3.78, 'survival_pct': 94.0, 'mean_return': 86.66, 'toe_peak_bw': 1.736, 'mean_K': 448.8, 'mean_theta_deg': -19.57}
+[resid_s0]   curve: {'timesteps': 200000, 'minutes': 4.18, 'survival_pct': 94.0, 'mean_return': 87.4, 'toe_peak_bw': 1.747, 'mean_K': 450.5, 'mean_theta_deg': -19.41}
+[resid_s0]   curve: {'timesteps': 220000, 'minutes': 4.58, 'survival_pct': 94.0, 'mean_return': 87.56, 'toe_peak_bw': 1.737, 'mean_K': 447.6, 'mean_theta_deg': -19.4}
+[resid_s0]   curve: {'timesteps': 240000, 'minutes': 5.0, 'survival_pct': 94.0, 'mean_return': 87.28, 'toe_peak_bw': 1.753, 'mean_K': 451.8, 'mean_theta_deg': -19.45}
+[resid_s0]   curve: {'timesteps': 260000, 'minutes': 5.41, 'survival_pct': 94.0, 'mean_return': 87.77, 'toe_peak_bw': 1.746, 'mean_K': 451.1, 'mean_theta_deg': -19.45}
+[resid_s0]   curve: {'timesteps': 280000, 'minutes': 5.83, 'survival_pct': 94.0, 'mean_return': 87.03, 'toe_peak_bw': 1.803, 'mean_K': 443.8, 'mean_theta_deg': -19.33}
+[resid_s0]   curve: {'timesteps': 300000, 'minutes': 6.22, 'survival_pct': 94.0, 'mean_return': 87.57, 'toe_peak_bw': 1.767, 'mean_K': 451.1, 'mean_theta_deg': -19.32}
+[resid_s0] trained in 6.2 min
+[resid_s0] 
+[resid_s0] == networkA_mlp/resid_s0 [train] (200 episodes) ==
+[resid_s0]   survival_pct       90.000
+[resid_s0]   survival_ci        [85.1, 93.4]
+[resid_s0]   falls_by_reason    forward:20
+[resid_s0]   mean_steps         99.380
+[resid_s0]   toe_peak_bw        1.714
+[resid_s0]   total_peak_bw      1.952
+[resid_s0]   mean_theta_deg     -19.391
+[resid_s0]   mean_K             452.413
+[resid_s0]   mean_B             9.325
+[resid_s0]   mean_return        88.093
+[resid_s0]   return_ci          [85.30, 90.89]
+[resid_s0]   ceiling_pct        30.500
+[resid_s0]   minus_reference    +0.19 [-1.06, +1.44]
+===== END resid_s0 rc=0 seconds=400 2026-10-20 16:31:44
+[resid_in_s0] networkA_mlp/resid_in_s0: 221,575 parameters, 300,000 steps
+[resid_in_s0]   curve: {'timesteps': 20000, 'minutes': 0.4, 'survival_pct': 80.0, 'mean_return': 85.95, 'toe_peak_bw': 1.671, 'mean_K': 296.1, 'mean_theta_deg': -14.25}
+[resid_in_s0]   curve: {'timesteps': 40000, 'minutes': 0.71, 'survival_pct': 84.0, 'mean_return': 87.73, 'toe_peak_bw': 1.667, 'mean_K': 371.6, 'mean_theta_deg': -14.31}
+[resid_in_s0]   curve: {'timesteps': 60000, 'minutes': 1.0, 'survival_pct': 86.0, 'mean_return': 88.31, 'toe_peak_bw': 1.727, 'mean_K': 410.9, 'mean_theta_deg': -14.77}
+[resid_in_s0]   curve: {'timesteps': 80000, 'minutes': 1.3, 'survival_pct': 92.0, 'mean_return': 90.63, 'toe_peak_bw': 1.716, 'mean_K': 428.1, 'mean_theta_deg': -15.63}
+[resid_in_s0]   curve: {'timesteps': 100000, 'minutes': 1.59, 'survival_pct': 90.0, 'mean_return': 89.76, 'toe_peak_bw': 1.707, 'mean_K': 437.4, 'mean_theta_deg': -16.15}
+[resid_in_s0]   curve: {'timesteps': 120000, 'minutes': 1.89, 'survival_pct': 92.0, 'mean_return': 90.42, 'toe_peak_bw': 1.685, 'mean_K': 426.6, 'mean_theta_deg': -16.14}
+[resid_in_s0]   curve: {'timesteps': 140000, 'minutes': 2.19, 'survival_pct': 92.0, 'mean_return': 90.22, 'toe_peak_bw': 1.692, 'mean_K': 424.3, 'mean_theta_deg': -16.31}
+[resid_in_s0]   curve: {'timesteps': 160000, 'minutes': 2.48, 'survival_pct': 94.0, 'mean_return': 90.01, 'toe_peak_bw': 1.689, 'mean_K': 430.0, 'mean_theta_deg': -16.57}
+[resid_in_s0]   curve: {'timesteps': 180000, 'minutes': 2.78, 'survival_pct': 94.0, 'mean_return': 90.21, 'toe_peak_bw': 1.701, 'mean_K': 446.7, 'mean_theta_deg': -16.95}
+[resid_in_s0]   curve: {'timesteps': 200000, 'minutes': 3.08, 'survival_pct': 94.0, 'mean_return': 88.95, 'toe_peak_bw': 1.698, 'mean_K': 438.0, 'mean_theta_deg': -16.7}
+[resid_in_s0]   curve: {'timesteps': 220000, 'minutes': 3.39, 'survival_pct': 94.0, 'mean_return': 89.08, 'toe_peak_bw': 1.739, 'mean_K': 463.1, 'mean_theta_deg': -16.8}
+[resid_in_s0]   curve: {'timesteps': 240000, 'minutes': 3.7, 'survival_pct': 94.0, 'mean_return': 89.35, 'toe_peak_bw': 1.725, 'mean_K': 455.1, 'mean_theta_deg': -16.89}
+[resid_in_s0]   curve: {'timesteps': 260000, 'minutes': 4.0, 'survival_pct': 94.0, 'mean_return': 88.85, 'toe_peak_bw': 1.755, 'mean_K': 465.5, 'mean_theta_deg': -17.23}
+[resid_in_s0]   curve: {'timesteps': 280000, 'minutes': 4.31, 'survival_pct': 94.0, 'mean_return': 88.16, 'toe_peak_bw': 1.8, 'mean_K': 473.9, 'mean_theta_deg': -17.57}
+[resid_in_s0]   curve: {'timesteps': 300000, 'minutes': 4.61, 'survival_pct': 94.0, 'mean_return': 87.13, 'toe_peak_bw': 1.813, 'mean_K': 465.8, 'mean_theta_deg': -17.28}
+[resid_in_s0] trained in 4.6 min
+[resid_in_s0] 
+[resid_in_s0] == networkA_mlp/resid_in_s0 [train] (200 episodes) ==
+[resid_in_s0]   survival_pct       91.500
+[resid_in_s0]   survival_ci        [86.8, 94.6]
+[resid_in_s0]   falls_by_reason    forward:17
+[resid_in_s0]   mean_steps         99.240
+[resid_in_s0]   toe_peak_bw        1.751
+[resid_in_s0]   total_peak_bw      2.066
+[resid_in_s0]   mean_theta_deg     -17.357
+[resid_in_s0]   mean_K             467.823
+[resid_in_s0]   mean_B             6.516
+[resid_in_s0]   mean_return        88.827
+[resid_in_s0]   return_ci          [86.33, 91.32]
+[resid_in_s0]   ceiling_pct        9.000
+[resid_in_s0]   minus_reference    +0.93 [-1.04, +2.89]
+===== END resid_in_s0 rc=0 seconds=297 2026-10-20 16:36:13
+===== ALL DONE 2026-10-20 16:36:13
