@@ -23,16 +23,16 @@ learning happens.
 Run from the `Network/` folder.
 
 ```bash
-python -m pytest agent common -q
-python -m common.evaluate --show-info                         # the environment's info keys
-python -m common.evaluate --reference                         # the best fixed action
-python -m agent.train --network mlp --smoke
-python -m agent.train --network mlp --run-name resid --set residual=True
-python -m agent.train --network mlp --run-name lowlr --set learning_rate=1e-4 n_epochs=5
-python -m agent.train --network mlp --run-name g995 --set gamma=0.995
-python -m agent.train --network mlp --run-name nonr --set norm_reward=False
-python -m agent.train --network mlp --run-name long --set total_steps=1000000
-python -m agent.train --eval-only runs/networkA_mlp/resid_s0 --test-split
+env -u PYTHONPATH python -m pytest agent common -q
+env -u PYTHONPATH python -m common.evaluate --show-info                         # the environment's info keys
+env -u PYTHONPATH python -m common.evaluate --reference                         # the best fixed action
+env -u PYTHONPATH python -m agent.train --network mlp --smoke
+env -u PYTHONPATH python -m agent.train --network mlp --run-name resid --set residual=True
+env -u PYTHONPATH python -m agent.train --network mlp --run-name lowlr --set learning_rate=1e-4 n_epochs=5
+env -u PYTHONPATH python -m agent.train --network mlp --run-name g995 --set gamma=0.995
+env -u PYTHONPATH python -m agent.train --network mlp --run-name nonr --set norm_reward=False
+env -u PYTHONPATH python -m agent.train --network mlp --run-name long --set total_steps=1000000
+env -u PYTHONPATH python -m agent.train --eval-only runs/networkA_mlp/resid_s0 --test-split
 ```
 
 `--set` changes any key from `agent/config.py` or from the network's `CONFIG` for one run. Use Network A (`mlp`)

@@ -95,9 +95,9 @@ folders are laid out differently, set `STANCE_GYM_PATH` to the folder that conta
 ```bash
 pip install -r requirements.txt
 env -u PYTHONPATH python -m pytest -q # If you have ROS installed
-python -m pytest -q                              # all tests; up to a minute the first time
-python -m agent.train --network mlp --smoke      # tiny run of the whole pipeline
-python -m agent.train --network lstm --smoke
+env -u PYTHONPATH python -m pytest -q                              # all tests; up to a minute the first time
+env -u PYTHONPATH python -m agent.train --network mlp --smoke      # tiny run of the whole pipeline
+env -u PYTHONPATH python -m agent.train --network lstm --smoke
 ```
 
 If ROS is sourced in your shell, put `env -u PYTHONPATH` in front of each command.
