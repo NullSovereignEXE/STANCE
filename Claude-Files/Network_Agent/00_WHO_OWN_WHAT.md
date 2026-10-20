@@ -89,7 +89,7 @@ and any value can be changed for one run on the command line: `--set "key=value"
 
 ## Setup (everyone, 10 minutes)
 
-Run every command from inside the `Network/` folder. It finds `../Gym/stance_env` by itself. If your
+Run every command from inside the `Network_Agent/` folder. It finds `../Gym/stance_env` by itself. If your
 folders are laid out differently, set `STANCE_GYM_PATH` to the folder that contains `stance_env/`.
 
 ```bash
