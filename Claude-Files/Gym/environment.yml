@@ -1,0 +1,14 @@
+name: stance
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.10.22
+  - pip
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cpu  # CPU-only torch, skips CUDA downloads
+      - numpy==2.2.6
+      - mujoco==3.16.0
+      - gymnasium==1.4.0
+      - torch==2.14.1+cpu
+      - stable-baselines3==2.9.0
