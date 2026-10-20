@@ -1,2 +1,0 @@
-run,split,seed,steps,params,n,survival_pct,survival_ci,falls_by_reason,mean_steps,toe_peak_bw,total_peak_bw,mean_theta_deg,mean_K,mean_B,mean_return,return_ci,ceiling_pct,minus_reference
-smoke_base_s0,train,0,4096,221575,5,40.0000,"[11.8, 76.9]",back:1 forward:2,74.8000,nan,3.1354,3.3187,67.1641,2.8206,-38.5218,"[-129.97, 52.92]",0.0000,"-68.36 [-158.96, +22.23]"
