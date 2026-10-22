@@ -10,7 +10,7 @@ Keys
     gamma            discount factor; how much later reward and the fall penalty count
     gae_lambda       smoothing of the advantage estimate
     clip_range       PPO's limit on how far one update may change the policy
-    ent_coef         weight of twhe entropy bonus in the loss (more exploration)
+    ent_coef         weight of the entropy bonus in the loss (more exploration)
     vf_coef          weight of the value-function error in the loss
     max_grad_norm    gradients are clipped to this length before each Adam step
     norm_obs         normalise observations with running statistics (VecNormalize)
