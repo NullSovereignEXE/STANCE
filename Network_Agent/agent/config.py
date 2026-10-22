@@ -1,12 +1,4 @@
-"""Every setting that belongs to the learning agent. OWNER: P3.
-
-The agent is the main program (train.py). The network files define the network
-only; everything about HOW it is trained lives here: the PPO hyperparameters, the
-loss weights, normalisation, the optional residual action, and the logging budget.
-A network file's own CONFIG must not repeat any key from this file (train.py checks).
-
-Any value can be overridden for one run without editing this file:
-    python -m agent.train --network mlp --set learning_rate=1e-4 gamma=0.995
+"""Every setting that belongs to the learning agent.
 
 Keys
     total_steps      environment steps to train for
@@ -24,8 +16,10 @@ Keys
     norm_obs         normalise observations with running statistics (VecNormalize)
     norm_reward      scale rewards by a running estimate of their size (VecNormalize)
     subproc          True runs each environment in its own process (faster with many cores)
-    residual         True makes the policy output an offset from `anchor` (see actions.py)
+    residual         True (default since config v1) makes the policy output an offset from
+                     `anchor` (see actions.py); False gives plain PPO
     anchor           the fixed action the residual starts from: degrees, N.m/rad, N.m.s/rad
+                     (config v1: -14.0 deg, 250.6, 6.38, inside the action range)
     scale            largest offset per action dimension, in normalised units
     curve_every      steps between learning-curve points (written to curve.csv)
     curve_episodes   episodes per learning-curve point, on seeds 2000 and up
@@ -52,8 +46,8 @@ AGENT_CONFIG = {
     "norm_obs": True,
     "norm_reward": True,
     "subproc": False,
-    "residual": False,
-    "anchor": [-20.0, 500.0, 10.0],
+    "residual": True,
+    "anchor": [-14.0, 250.6, 6.38],
     "scale": [0.3, 0.3, 0.3],
     "curve_every": 20_000,
     "curve_episodes": 50,
@@ -69,4 +63,4 @@ SMOKE = {
     "curve_episodes": 3,
     "eval_episodes": 5,
 }
-"""Settings applied by --smoke: a tiny run that only checks the pipeline works end to end."""
+

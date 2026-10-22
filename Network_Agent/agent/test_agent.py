@@ -42,6 +42,6 @@ def test_offsets_are_scaled_and_clipped():
 
 def test_residual_is_applied_only_when_asked():
     net = load_network("mlp")
-    plain = make_wrappers(merged_config(net), net)
+    plain = make_wrappers(merged_config(net, overrides=["residual=False"]), net)
     residual = make_wrappers(merged_config(net, overrides=["residual=True"]), net)
     assert len(residual) == len(plain) + 1
