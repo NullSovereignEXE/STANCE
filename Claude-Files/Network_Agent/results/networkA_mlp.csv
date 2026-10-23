@@ -1,0 +1,3 @@
+run,split,seed,steps,params,n,survival_pct,survival_ci,falls_by_reason,mean_steps,toe_peak_bw,total_peak_bw,mean_theta_deg,mean_K,mean_B,mean_return,return_ci,ceiling_pct,minus_reference
+base_s0,train,0,300000,221575,200,88.5000,"[83.3, 92.2]",forward:23,98.2700,1.9383,2.0732,-18.6605,480.9051,0.8503,85.2541,"[81.65, 88.86]",33.5000,"-2.65 [-3.91, -1.39]"
+nb_base_s0,train,0,8192,221575,10,20.0000,"[5.7, 51.0]",forward:8,86.4000,0.8446,2.0559,0.0671,51.5683,2.1415,66.0483,"[54.35, 77.75]",20.0000,"-33.92 [-45.63, -22.22]"

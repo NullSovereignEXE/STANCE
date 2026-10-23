@@ -1,0 +1,47 @@
+{
+  "network": "mlp",
+  "seed": 0,
+  "config": {
+    "total_steps": 300000,
+    "n_envs": 8,
+    "n_steps": 256,
+    "batch_size": 512,
+    "n_epochs": 10,
+    "learning_rate": 0.0003,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_range": 0.2,
+    "ent_coef": 0.0,
+    "vf_coef": 0.5,
+    "max_grad_norm": 0.5,
+    "norm_obs": true,
+    "norm_reward": false,
+    "subproc": false,
+    "residual": false,
+    "anchor": [
+      -20.0,
+      500.0,
+      10.0
+    ],
+    "scale": [
+      0.3,
+      0.3,
+      0.3
+    ],
+    "curve_every": 20000,
+    "curve_episodes": 50,
+    "eval_episodes": 200,
+    "frames": 10,
+    "drop_sensors": [],
+    "hidden": [
+      256,
+      256
+    ],
+    "activation": "tanh",
+    "layer_norm": false,
+    "head": [
+      64
+    ],
+    "log_std_init": 0.0
+  }
+}

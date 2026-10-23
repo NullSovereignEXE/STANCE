@@ -1,49 +1,40 @@
-"""
-STANCE environment package.
-
-Importing this module REGISTERS the environment with Gymnasium, which is what
-lets you write:
-
-    import gymnasium as gym
-    import stance_env                      # noqa: F401  (the import does the work)
-    env = gym.make("StanceAnkle-v0")
-
-rather than importing the class by hand. Registration is what makes it a
-first-class Gym environment: Stable-Baselines3, the env checker, and the
-vectorised wrappers all look environments up by their string id.
-"""
 import os as _os
 import sys as _sys
 
-# Headless Linux (lab server, WSL, CI) has no X display and MuJoCo's default
-# GLFW backend fails with "no OpenGL platform library". EGL works without one.
-# This MUST run before mujoco is imported anywhere, which is why it sits at the
-# top of the package __init__ rather than in viz.py.
 if _sys.platform.startswith("linux") and not _os.environ.get("DISPLAY"):
     _os.environ.setdefault("MUJOCO_GL", "egl")
 
 from gymnasium.envs.registration import register
 
-from stance_env.ankle_env import AnkleEnv          # noqa: F401
-from stance_env.ground import normal_force, friction_force, GroundModel  # noqa: F401
+from stance_env.ankle_gym_env import AnkleEnv
+from stance_env.ground import normal_force, friction_force, GroundModel
 
-# ---------------------------------------------------------------------------
-# Training distribution: ground the agent learns on.
-# ---------------------------------------------------------------------------
+
+# Training distribution
+'''
+This is the training environment for the stance ankle environment. 
+It is used to train the agent on a variety of ground conditions. 
+The agent should be trained on this environment, and evaluated on the test environment.
+'''
+
 register(
-    id="StanceAnkle-v0",
-    entry_point="stance_env.ankle_env:AnkleEnv",
-    max_episode_steps=100,            # Gym enforces this -> sets `truncated`
+    id="StanceAnkle-v0", # This is the training environment for the stance ankle environment. It is used to train the agent on a variety of ground conditions. The agent should be trained on this environment, and evaluated on the test environment.
+    entry_point="stance_env.ankle_gym_env:AnkleEnv",
+    max_episode_steps=100,  # If the leg doesn't fall in 100 steps, the episode is considered TRUNCATED and ends.
     kwargs={"ground_split": "train"},
 )
 
-# ---------------------------------------------------------------------------
-# Held-out distribution: NEVER train on this. Evaluation only.
-# Separate id so you cannot mix them up by accident in a script.
-# ---------------------------------------------------------------------------
+
+# Testing distribution
+'''
+This is the test environment for the stance ankle environment. 
+It is used to evaluate the performance of the agent on unseen ground conditions. 
+The agent should not be trained on this environment, only evaluated.
+'''
+
 register(
-    id="StanceAnkleTest-v0",
-    entry_point="stance_env.ankle_env:AnkleEnv",
+    id="StanceAnkleTest-v0", 
+    entry_point="stance_env.ankle_gym_env:AnkleEnv",
     max_episode_steps=100,
     kwargs={"ground_split": "test"},
 )

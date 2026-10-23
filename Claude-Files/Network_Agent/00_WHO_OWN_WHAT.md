@@ -89,14 +89,15 @@ and any value can be changed for one run on the command line: `--set "key=value"
 
 ## Setup (everyone, 10 minutes)
 
-Run every command from inside the `Network/` folder. It finds `../Gym/stance_env` by itself. If your
+Run every command from inside the `Network_Agent/` folder. It finds `../Gym/stance_env` by itself. If your
 folders are laid out differently, set `STANCE_GYM_PATH` to the folder that contains `stance_env/`.
 
 ```bash
 pip install -r requirements.txt
-python -m pytest -q                              # all tests; up to a minute the first time
-python -m agent.train --network mlp --smoke      # tiny run of the whole pipeline
-python -m agent.train --network lstm --smoke
+env -u PYTHONPATH python -m pytest -q # If you have ROS installed
+env -u PYTHONPATH python -m pytest -q                              # all tests; up to a minute the first time
+env -u PYTHONPATH python -m agent.train --network mlp --smoke      # tiny run of the whole pipeline
+env -u PYTHONPATH python -m agent.train --network lstm --smoke
 ```
 
 If ROS is sourced in your shell, put `env -u PYTHONPATH` in front of each command.
