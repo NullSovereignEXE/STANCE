@@ -6,3 +6,8 @@ __pycache__/
 # Trained models stay local (2.6 MB each); configs, curves and episode CSVs are committed
 Claude-Files/Network_Agent/runs/**/model.zip
 Claude-Files/Network_Agent/runs/**/vecnormalize.pkl
+
+# Network_Agent: regenerated outputs (demo plots, smoke runs and their 5-seed reference cache)
+Network_Agent/demo_output/
+Network_Agent/runs/*/smoke_*/
+Network_Agent/results/reference_*_1000-1004.csv
