@@ -20,7 +20,7 @@ learning happens.
 
 ## Run it
 
-Run from the `Network/` folder.
+Run from the `Network_Agent/` folder.
 
 ```bash
 python -m pytest agent common -q
@@ -32,7 +32,7 @@ python -m agent.train --network mlp --run-name lowlr --set learning_rate=1e-4 n_
 python -m agent.train --network mlp --run-name g995 --set gamma=0.995
 python -m agent.train --network mlp --run-name nonr --set norm_reward=False
 python -m agent.train --network mlp --run-name long --set total_steps=1000000
-python -m agent.train --eval-only runs/networkA_mlp/resid_s0 --test-split
+python -m agent.train --eval-only runs/networkA_mlp/<run> --test-split
 ```
 
 `--set` changes any key from `agent/config.py` or from the network's `CONFIG` for one run. Use Network A (`mlp`)
@@ -40,12 +40,12 @@ as your test bed because it trains fastest.
 
 ## What you have to do
 
-- [ ] **16-17 Oct, day-1 checks** (details in `00_WHO_OWN_WHAT.md`): the environment ids and constants work;
+- [ ] **16-17 Oct, day-1 checks** (details in the group's overview document): the environment ids and constants work;
       pin the toe and reason keys in `INFO_KEYS`; the reference gives about 92.5% survival and 1.74 BW toe peak;
       commit the pinned keys and `results/reference_train_1000-1199.csv`; tell the group.
 - [ ] **16-17 Oct:** send the professor the three questions (Stable-Baselines3 allowed, hand-written loss needed,
       separate deadlines). If he wants hand-written code, add a PPO implementation in `agent/` behind the same contract.
-- [ ] **17 Oct:** baseline (`--network mlp --run-name base`). It should land near the earlier 26%.
+- [ ] **17 Oct:** baseline (`--network mlp --run-name base`). Plain PPO ranged from 17% to 88.5% survival across three seeds; with config v1 the default run (named base) lands near 91.5% on seed 0.
 - [ ] **17-21 Oct, the learning problem.** One change per run, 300k steps, seed 0:
   - [ ] `norm_reward=False`: reward normalisation can hide the fall penalty's size.
   - [ ] `gamma=0.995`: makes the late fall penalty count for more.
@@ -54,8 +54,8 @@ as your test bed because it trains fastest.
   - [ ] `log_std_init=-1.0`: less starting noise (a network setting, but `--set` reaches it).
   - [ ] `total_steps=1000000`: is it slow learning or no learning?
 - [ ] **18-21 Oct, the residual action.** Run `--set residual=True`. The first `curve.csv` row should already be
-      close to the best fixed action's survival (what `--reference` prints) and far above plain PPO's 11%; if it
-      starts near 11%, the offset is not active. Then solve the edge problem
+      close to the best fixed action's survival (what `--reference` prints); if it
+      starts far below that, the offset is not active. Then solve the edge problem
       described in `agent/actions.py` and test it against plain `clip`:
   - [ ] Map the policy output only inward from the anchor (edit `actions.py`).
   - [ ] Or move the anchor inside the range, for example `--set residual=True "anchor=[-15.0,300.0,6.0]"`.
@@ -80,7 +80,7 @@ as your test bed because it trains fastest.
 Anything in `agent/`. Add keys to `AGENT_CONFIG` for anything new you make tunable and document them in the
 docstring. A key must never appear in both `agent/config.py` and a network's `CONFIG` (`train.py` stops with an
 error if it does). If you change what `train.py` expects from a network, tell P1 and P2, because the contract in
-`00_WHO_OWN_WHAT.md` is the only link between you.
+the group's overview document is the only link between you.
 
 **Day-1 exception for `common/`:** `TRAIN_ID`, `TEST_ID` and `_consts()` in `env_setup.py`, and `INFO_KEYS` in
 `evaluate.py`. Make these edits once, on day 1, and tell the group.

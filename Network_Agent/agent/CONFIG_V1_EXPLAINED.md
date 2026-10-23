@@ -21,7 +21,7 @@ Before, the network chose the whole action: target angle, stiffness K and dampin
 |---|---|---|
 | `residual` | `True` | use the nudge instead of the whole action |
 | `anchor` | `[-14.0, 250.6, 6.38]` | the starting stance: angle in degrees, K, B. A network that outputs zero behaves like this |
-| `scale` | `[0.3, 0.3, 0.3]` | the largest nudge is 30% of each range, in either direction |
+| `scale` | `[0.3, 0.3, 0.3]` | the largest nudge is 0.3 in normalised units on [-1, 1], which is 15% of the full range (in log units for K and B), in either direction |
 
 The anchor sits inside the allowed range so nudges work in both directions. The best fixed action
 (-20 deg, K 500, B 10) sits on the edge of every range, where half of each nudge was cut off.

@@ -7,11 +7,13 @@ in config.py, the policy instead outputs an OFFSET from a fixed anchor action:
     env_action = clip(anchor + scale * policy_action, -1, 1)
 
 An untrained policy then outputs roughly zero, so it already behaves like the anchor
-(by default the best fixed action, -20 degrees / K 500 / B 10, which survives about
-92.5% of episodes) and learning only has to find improvements.
+and learning only has to find improvements. The anchor comes from agent/config.py
+(config v1: -14 degrees / K 250.6 / B 6.38, inside every range). The earlier anchor was
+the best fixed action, -20 degrees / K 500 / B 10 (about 92.5% survival), which sits at
+the edge of every range.
 
 Known problem to solve (P3)
-    The default anchor sits at the edge of every range: -20 degrees is the minimum, and
+    That earlier anchor sits at the edge of every range: -20 degrees is the minimum, and
     K 500 and B 10 are the maximums. The final `clip` cuts off every offset that points
     outward, so half of each action dimension does nothing. Options: map the output
     only inward from the anchor, move the anchor inside the range, or show with data

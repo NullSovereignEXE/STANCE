@@ -46,7 +46,7 @@ python demo.py --train
 python demo.py --network lstm --train
 
 # Evaluate a saved run (a folder with model.zip, vecnormalize.pkl and config.json)
-python demo.py --model runs/networkA_mlp/<run> --episodes 200
+python demo.py --model <run folder> --episodes 200
 ```
 
 | Argument | Meaning |
