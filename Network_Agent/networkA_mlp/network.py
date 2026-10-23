@@ -4,6 +4,8 @@ import torch.nn as nn
 from stable_baselines3 import PPO
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
+from common.policies import SB3Policy
+
 import gymnasium as gym
 import numpy as np
 
@@ -21,6 +23,7 @@ CONFIG = {
 NAME = "networkA_mlp"
 ALGO = PPO
 POLICY_NAME = "MlpPolicy"
+POLICY = SB3Policy
 
 
 ACTIVATIONS = {

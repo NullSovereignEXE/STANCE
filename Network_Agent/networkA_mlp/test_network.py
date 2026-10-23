@@ -3,9 +3,9 @@ import numpy as np
 import gymnasium as gym
 import pytest
 
-from network import SelectObservations
+from networkA_mlp.network import SelectObservations
 
-from network import HistoryMLP
+from networkA_mlp.network import HistoryMLP
 
 #gradient test
 def test_encoder_gradients():
@@ -215,22 +215,13 @@ def test_invalid_input_configurations(frames, drop_sensors):
 
 def test_real_environment_input_selection():
 
-    import sys
-    from pathlib import Path
-
-    import gymnasium as gym
     import numpy as np
 
-    from network import SelectObservations
+    from common.env_setup import make_env
+    from networkA_mlp.network import SelectObservations
 
-    # Locate our actual Gym environment
-    ROOT = Path(__file__).resolve().parents[3]
-    sys.path.insert(0, str(ROOT / "Gym"))
-
-    import stance_env
-
-    # STEP 1: Create the original MuJoCo environment
-    raw_env = gym.make("StanceAnkle-v0")
+    # STEP 1: Create the original MuJoCo environment (same one as the agent uses)
+    raw_env = make_env("train")
 
     # STEP 2: Create our input selector
     wrapped_env = SelectObservations(

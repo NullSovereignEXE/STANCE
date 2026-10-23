@@ -8,33 +8,19 @@ Purpose:
     4. Verify Actor and Critic weights are updated.
 
 This is only an integration test, not full training.
+
+Run from the Network_Agent folder:
+    python -m networkA_mlp.smoke_train
 """
 
-import sys
-from pathlib import Path
-
-import gymnasium as gym
 import numpy as np
 import torch
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
-from network import CONFIG, policy_kwargs, wrappers
-
-
-# ==================================================
-# STEP 1: Locate our MuJoCo environment
-# ==================================================
-
-ROOT = Path(__file__).resolve().parents[3]
-
-GYM_PATH = ROOT / "Gym"
-
-sys.path.insert(0, str(GYM_PATH))
-
-# Import registers StanceAnkle-v0
-import stance_env
+from common.env_setup import make_env
+from networkA_mlp.network import CONFIG, policy_kwargs, wrappers
 
 
 # ==================================================
@@ -43,13 +29,8 @@ import stance_env
 
 def create_env():
 
-    env = gym.make("StanceAnkle-v0")
-
-    # Apply our observation selection wrapper
-    for wrap in wrappers(CONFIG):
-        env = wrap(env)
-
-    return env
+    # Same environment as the agent, with our observation selection wrapper
+    return make_env("train", wrappers(CONFIG))
 
 
 # ==================================================
