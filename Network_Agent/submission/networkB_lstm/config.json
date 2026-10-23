@@ -31,7 +31,7 @@
     "curve_every": 20000,
     "curve_episodes": 50,
     "eval_episodes": 200,
-    "frames": 1,
+    "frames": 3,
     "drop_sensors": [],
     "frame_encoder": 64,
     "lstm_hidden": 64,
