@@ -4,8 +4,11 @@ import pytest
 
 from agent.actions import ResidualAction
 from agent.config import AGENT_CONFIG
+from agent.reward import ReweightedImpact
 from agent.train import NETWORKS, REQUIRED, load_network, make_wrappers, merged_config
-from common.env_setup import make_env, to_physical
+from common.env_setup import make_env, to_norm_action, to_physical
+from common.evaluate import EVAL_SEEDS, run_episodes
+from common.policies import FixedPolicy
 
 
 @pytest.mark.parametrize("key", sorted(NETWORKS))
@@ -45,3 +48,30 @@ def test_residual_is_applied_only_when_asked():
     plain = make_wrappers(merged_config(net, overrides=["residual=False"]), net)
     residual = make_wrappers(merged_config(net, overrides=["residual=True"]), net)
     assert len(residual) == len(plain) + 1
+
+
+def test_reweighting_with_the_original_weights_changes_nothing():
+    env = ReweightedImpact(make_env(), 2.94, 1.58)
+    rng = np.random.default_rng(0)
+    for seed in range(5):
+        env.reset(seed=seed)
+        done = False
+        while not done:
+            _, r, term, trunc, info = env.step(rng.uniform(-1, 1, 3).astype(np.float32))
+            assert abs(r - info["reward_original"]) < 1e-6
+            done = term or trunc
+
+
+def test_reweighted_fixed_action_matches_the_rescored_table():
+    env = ReweightedImpact(make_env("train"), 6.0, 1.58)
+    eps = run_episodes(FixedPolicy(to_norm_action(env, -20.0, 250.0, 2.0)), env, EVAL_SEEDS)
+    assert abs(np.mean([e["ret"] for e in eps]) - 79.61) < 0.05
+
+
+def test_reweighting_is_appended_last_only_when_both_keys_are_set():
+    net = load_network("mlp")
+    base = make_wrappers(merged_config(net), net)
+    one = make_wrappers(merged_config(net, overrides=["w_impact=6.0"]), net)
+    both = make_wrappers(merged_config(net, overrides=["w_impact=6.0", "lambda_bw=1.58"]), net)
+    assert len(one) == len(base) and len(both) == len(base) + 1
+    assert isinstance(both[-1](make_env()), ReweightedImpact)

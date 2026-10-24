@@ -21,6 +21,9 @@ Keys
     anchor           the fixed action the residual starts from: degrees, N.m/rad, N.m.s/rad
                      (config v1: -14.0 deg, 250.6, 6.38, inside the action range)
     scale            largest offset per action dimension, in normalised units
+    w_impact         new weight on the squared toe-force excess (env: 2.94); see reward.py
+    lambda_bw        new toe-force threshold in body weights (env: 1.58). None for either
+                     keeps the environment's reward unchanged
     curve_every      steps between learning-curve points (written to curve.csv)
     curve_episodes   episodes per learning-curve point, on seeds 2000 and up
     eval_episodes    episodes in the final evaluation, on seeds starting at 1000
@@ -49,6 +52,8 @@ AGENT_CONFIG = {
     "residual": True,
     "anchor": [-14.0, 250.6, 6.38],
     "scale": [0.3, 0.3, 0.3],
+    "w_impact": None,
+    "lambda_bw": None,
     "curve_every": 20_000,
     "curve_episodes": 50,
     "eval_episodes": 200,
