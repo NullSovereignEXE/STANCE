@@ -44,7 +44,7 @@ import json
 import time
 from pathlib import Path
 
-from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNormalize
 
 from agent.actions import ResidualAction
@@ -104,9 +104,25 @@ def make_wrappers(cfg, net):
 
 
 def make_venv(cfg, wrappers, seed):
-    """Parallel training environments wrapped in VecNormalize (observation and reward scaling)."""
-    venv = make_vec_env(lambda: make_env("train", wrappers), n_envs=cfg["n_envs"], seed=seed,
-                        vec_env_cls=SubprocVecEnv if cfg["subproc"] else DummyVecEnv)
+    """Parallel training environments wrapped in VecNormalize (observation and reward scaling).
+
+    The first round(n_envs * (1 - mix_test_fraction)) environments use the train ground and
+    the rest the test ground. Each one is built as SB3's make_vec_env builds it: its action
+    space seeded with seed + rank, a Monitor wrapper, and the environment itself seeded with
+    seed + rank at the first reset only (later resets continue its own random stream).
+    """
+    n_train = round(cfg["n_envs"] * (1 - cfg["mix_test_fraction"]))
+
+    def env_fn(rank):
+        def _init():
+            env = make_env("train" if rank < n_train else "test", wrappers)
+            env.action_space.seed(seed + rank)
+            return Monitor(env)
+        return _init
+
+    vec_cls = SubprocVecEnv if cfg["subproc"] else DummyVecEnv
+    venv = vec_cls([env_fn(rank) for rank in range(cfg["n_envs"])])
+    venv.seed(seed)
     return VecNormalize(venv, norm_obs=cfg["norm_obs"], norm_reward=cfg["norm_reward"],
                         clip_obs=10.0, gamma=cfg["gamma"])
 
