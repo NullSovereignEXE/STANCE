@@ -22,26 +22,33 @@ import `agent/train.py` and writes only to `demo_output/`.
 
 ## Setup
 
-1. Install the packages (Python 3.10):
+Folder layout. `Gym/` needs both `stance_env/` and `model/`, because the environment loads
+`Gym/model/leg.xml`:
 
-   ```bash
-   pip install -r requirements.txt
-   pip install matplotlib        # for the plots; not in requirements.txt
-   ```
+```
+STANCE/
+├── Gym/
+│   ├── stance_env/
+│   └── model/leg.xml
+└── Network_Agent/        <- run every command from here
+```
 
-   The environment also needs MuJoCo; install it from the environment's own files
-   (`STANCE/Gym/environment.yml`, which pins `mujoco` and `gymnasium`).
+Python 3.10. Install with either option:
 
-2. Point the code at the frozen environment, the folder that contains `stance_env/`:
+```bash
+pip install -r requirements.txt          # CPU-only torch, MuJoCo and the rest, pinned
+conda env create -f ../Gym/environment.yml && conda activate stance   # alternative
+```
 
-   ```bash
-   export STANCE_GYM_PATH=/path/to/STANCE/Gym
-   ```
+Run the demo:
 
-   Without it, `common/env_setup.py` takes the first `Gym/` folder above this one.
+```bash
+export STANCE_GYM_PATH=/path/to/STANCE/Gym   # optional: by default the first Gym/ above this folder
+python demo_network.py
+```
 
-3. Run every command from the `Network_Agent` folder. If `PYTHONPATH` is set by another
-   tool (for example ROS), run with `env -u PYTHONPATH python demo_network.py ...`.
+If `PYTHONPATH` is set by another tool (for example ROS), run
+`env -u PYTHONPATH python demo_network.py` instead.
 
 ## Commands
 
