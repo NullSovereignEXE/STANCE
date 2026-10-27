@@ -1,7 +1,7 @@
 # P3: the learning agent
 
-**Your question:** what training makes the network actually learn? Plain PPO reached only 26% survival
-after 300k steps, against 92.5% for the best fixed action, and it drifted the target angle the wrong way.
+**Your question:** what training makes the network actually learn? Plain PPO on the frozen env reached
+88.5% / 57.5% / 17.0% survival on seeds 0/1/2, against 92.5% for the best fixed action.
 You own the environment, its reward and its termination, so you know where the problem sits. The agent is
 the main program in the lecture's structure: it connects the network to the environment and decides how
 learning happens.

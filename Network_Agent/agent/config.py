@@ -1,33 +1,28 @@
-"""Every setting that belongs to the learning agent.
+"""
+Every setting that belongs to the learning agent.
 
-Keys
-    total_steps      environment steps to train for
-    n_envs           environments stepped in parallel
-    n_steps          steps per environment per update; one update uses n_envs * n_steps samples
-    batch_size       minibatch size inside an update
-    n_epochs         passes over each batch of samples
-    learning_rate    Adam step size
-    gamma            discount factor; how much later reward and the fall penalty count
-    gae_lambda       smoothing of the advantage estimate
-    clip_range       PPO's limit on how far one update may change the policy
-    ent_coef         weight of the entropy bonus in the loss (more exploration)
-    vf_coef          weight of the value-function error in the loss
-    max_grad_norm    gradients are clipped to this length before each Adam step
-    norm_obs         normalise observations with running statistics (VecNormalize)
-    norm_reward      scale rewards by a running estimate of their size (VecNormalize)
-    subproc          True runs each environment in its own process (faster with many cores)
-    residual         True (default since config v1) makes the policy output an offset from
-                     `anchor` (see actions.py); False gives plain PPO
-    anchor           the fixed action the residual starts from: degrees, N.m/rad, N.m.s/rad
-                     (config v1: -14.0 deg, 250.6, 6.38, inside the action range)
-    scale            largest offset per action dimension, in normalised units
-    curve_every      steps between learning-curve points (written to curve.csv)
-    curve_episodes   episodes per learning-curve point, on seeds 2000 and up
-    eval_episodes    episodes in the final evaluation, on seeds starting at 1000
-
-The loss PPO minimises, which the lecture assigns to the network side but which the
-library computes, is:
-    loss = -(clipped policy objective) + vf_coef * (value error)^2 - ent_coef * entropy
+total_steps      environment steps to train for
+n_envs           environments stepped in parallel
+n_steps          steps per environment per update; one update uses n_envs * n_steps samples
+batch_size       minibatch size inside an update
+n_epochs         passes over each batch of samples
+learning_rate    Adam step size
+gamma            discount factor; how much later reward and the fall penalty count
+gae_lambda       smoothing of the advantage estimate
+clip_range       PPO's limit on how far one update may change the policy
+ent_coef         weight of the entropy bonus in the loss (more exploration)
+vf_coef          weight of the value-function error in the loss
+max_grad_norm    gradients are clipped to this length before each Adam step
+norm_obs         normalise observations with running statistics (VecNormalize)
+norm_reward      scale rewards by a running estimate of their size (VecNormalize)
+subproc          True runs each environment in its own process (faster with many cores)
+mix_test_fraction  fraction of the parallel training environments that use the test-ground split
+residual         True (default since config v1) makes the policy output an offset from `anchor`. False gives plain PPO
+anchor           the fixed action the residual starts from: degrees, N.m/rad, N.m.s/rad (config v1: -14.0 deg, 250.6, 6.38, inside the action range)
+scale            largest offset per action dimension, in normalised units
+curve_every      steps between learning-curve points (written to curve.csv)
+curve_episodes   episodes per learning-curve point, on seeds 2000 and up
+eval_episodes    episodes in the final evaluation, on seeds starting at 1000
 """
 
 AGENT_CONFIG = {
@@ -46,6 +41,7 @@ AGENT_CONFIG = {
     "norm_obs": True,
     "norm_reward": True,
     "subproc": False,
+    "mix_test_fraction": 0.0,
     "residual": True,
     "anchor": [-14.0, 250.6, 6.38],
     "scale": [0.3, 0.3, 0.3],

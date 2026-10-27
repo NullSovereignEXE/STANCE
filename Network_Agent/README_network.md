@@ -1,5 +1,36 @@
 # STANCE networks: demo
 
+## How to run
+
+We trained two networks with PPO on our ankle environment: a feed-forward MLP (Network A) and an LSTM (Network B).
+The demo loads their trained weights and compares each one with the best fixed action on the same episodes.
+
+Folder layout: `Gym/stance_env/` and `Gym/model/` must sit next to `Network_Agent/` inside `STANCE/`. Run every command from `Network_Agent/`.
+
+```bash
+pip install -r requirements.txt                                      # Python 3.10, CPU-only torch
+conda env create -f ../Gym/environment.yml && conda activate stance  # alternative
+python demo_network.py    # in the submitted zip this file is named demo.py
+```
+
+What you will see, for each network:
+- Inputs and preprocessing: the observation shape, the frames and sensors the network sees, and the saved normalisation statistics.
+- Data flow: the layers as PyTorch prints them, and the parameter count of each part.
+- Outputs: what the three action values mean, their physical ranges and the residual mapping.
+- One real observation: one forward pass on the first step of an episode; for the LSTM, a check that its memory changes the action.
+- Weights: shape, mean, std, min and max of each parameter tensor, with histograms saved to `demo_output/`.
+- Learning curve: survival and toe peak against training steps, saved to `demo_output/`.
+- Evaluation: survival, toe peak, mean angle, K, B and return, next to the fixed action on the same seeds.
+- Forward and backward pass: a short rollout, the PPO loss, the gradient norm of every tensor, and Adam steps on a copy, with a check that the saved weights did not change.
+
+With both networks, a side-by-side table ends the output.
+
+If it fails:
+- If ROS or another tool sets `PYTHONPATH`, run `env -u PYTHONPATH python demo_network.py`.
+- If `Gym/` is somewhere else, run `STANCE_GYM_PATH=/path/to/Gym python demo_network.py`.
+
+The trained weights are in `submission/networkA_mlp/` and `submission/networkB_lstm/`.
+
 `demo_network.py` shows the two networks without training anything. It loads each network's
 saved weights from `submission/`, prints how the network is built and what its weights look
 like, runs it once on a real observation, and evaluates it next to the best fixed action
@@ -19,29 +50,6 @@ like, runs it once on a real observation, and evaluates it next to the best fixe
 The demo uses the project code unchanged: `common/` (environment, evaluation, policy
 adapters), `agent/actions.py` (the residual action) and the two network files. It does not
 import `agent/train.py` and writes only to `demo_output/`.
-
-## Setup
-
-1. Install the packages (Python 3.10):
-
-   ```bash
-   pip install -r requirements.txt
-   pip install matplotlib        # for the plots; not in requirements.txt
-   ```
-
-   The environment also needs MuJoCo; install it from the environment's own files
-   (`STANCE/Gym/environment.yml`, which pins `mujoco` and `gymnasium`).
-
-2. Point the code at the frozen environment, the folder that contains `stance_env/`:
-
-   ```bash
-   export STANCE_GYM_PATH=/path/to/STANCE/Gym
-   ```
-
-   Without it, `common/env_setup.py` takes the first `Gym/` folder above this one.
-
-3. Run every command from the `Network_Agent` folder. If `PYTHONPATH` is set by another
-   tool (for example ROS), run with `env -u PYTHONPATH python demo_network.py ...`.
 
 ## Commands
 
@@ -100,6 +108,16 @@ For each network, in this order:
 | mean K (N.m/rad) | ankle stiffness applied, averaged the same way |
 | mean B (N.m.s/rad) | ankle damping applied, averaged the same way |
 | mean return | total reward per episode: +1 per step, minus the toe-force, smoothness and fall penalties |
+
+8. **Forward and backward pass.** One training step's computation, without changing the saved
+   weights. It samples 128 stochastic steps from the saved policy (seed 0, train ground) and
+   computes GAE advantages and returns. It then runs `evaluate_actions` in training mode and
+   prints the PPO loss split into its policy, value and entropy terms, with every coefficient
+   read from `config.json`. After `loss.backward()` it prints the gradient norm of every
+   parameter tensor, the total norm against `max_grad_norm`, and a flag for any missing, zero
+   or non-finite gradient. Finally it takes 10 Adam steps on a copy of the policy, prints the
+   loss before and after, and confirms with a checksum that the original weights are unchanged.
+   This section takes a second or two per network.
 
 With both networks present, the demo ends with a side-by-side table of the two networks and
 the fixed action. On the test ground the toe peak is the same for every policy (it is set at

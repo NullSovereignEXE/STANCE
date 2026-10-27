@@ -11,3 +11,4 @@ Claude-Files/Network_Agent/runs/**/vecnormalize.pkl
 Network_Agent/demo_output/
 Network_Agent/runs/*/smoke_*/
 Network_Agent/results/reference_*_1000-1004.csv
+Network_Agent/runs/*/mix50_*/

@@ -1,6 +1,6 @@
 # STANCE learning agent: demo
 
-`demo.py` shows the learning agent end to end without the long training commands. It
+`demo_agent.py` shows the learning agent end to end without the long training commands. It
 either loads a saved run or trains a network from scratch, prints the network's layers and
 parameter count, then plays evaluation episodes with the trained policy and with the best
 fixed action (-20 deg, K 500, B 10) on the same seeds and prints the two side by side.
@@ -31,22 +31,22 @@ is saved to a temporary folder whose path is printed.
    be a different copy of the environment.
 
 3. Run every command from the `Network_Agent` folder. If `PYTHONPATH` is set by another
-   tool (for example ROS), run with `env -u PYTHONPATH python demo.py ...`.
+   tool (for example ROS), run with `env -u PYTHONPATH python demo_agent.py ...`.
 
 ## Commands
 
 ```bash
 # Quick check that the whole pipeline works (tiny training, about 30 s)
-python demo.py --train --smoke --episodes 3
+python demo_agent.py --train --smoke --episodes 3
 
 # Train the MLP from scratch with the agent's settings (300k steps, about 6.4 minutes)
-python demo.py --train
+python demo_agent.py --train
 
 # Same for the LSTM network
-python demo.py --network lstm --train
+python demo_agent.py --network lstm --train
 
 # Evaluate a saved run (a folder with model.zip, vecnormalize.pkl and config.json)
-python demo.py --model <run folder> --episodes 200
+python demo_agent.py --model <run folder> --episodes 200
 ```
 
 | Argument | Meaning |

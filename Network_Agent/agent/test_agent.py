@@ -4,7 +4,7 @@ import pytest
 
 from agent.actions import ResidualAction
 from agent.config import AGENT_CONFIG
-from agent.train import NETWORKS, REQUIRED, load_network, make_wrappers, merged_config
+from agent.train import NETWORKS, REQUIRED, load_network, make_venv, make_wrappers, merged_config
 from common.env_setup import make_env, to_physical
 
 
@@ -45,3 +45,14 @@ def test_residual_is_applied_only_when_asked():
     plain = make_wrappers(merged_config(net, overrides=["residual=False"]), net)
     residual = make_wrappers(merged_config(net, overrides=["residual=True"]), net)
     assert len(residual) == len(plain) + 1
+
+
+@pytest.mark.parametrize("fraction,n_test", [(0.0, 0), (0.5, 4)])
+def test_mix_test_fraction_sets_the_ground_split(fraction, n_test):
+    net = load_network("mlp")
+    cfg = merged_config(net, overrides=[f"mix_test_fraction={fraction}"])
+    venv = make_venv(cfg, make_wrappers(cfg, net), seed=0)
+    splits = [e.unwrapped.ground.split for e in venv.venv.envs]
+    venv.close()
+    assert len(splits) == cfg["n_envs"] == 8
+    assert splits == ["train"] * (8 - n_test) + ["test"] * n_test

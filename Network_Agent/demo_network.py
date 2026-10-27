@@ -9,6 +9,8 @@ MLP by P1; networkB_lstm = Network B, the LSTM by P2) it prints, in order:
     5. Weights                    shape, mean, std, min, max per layer; histograms to demo_output/
     6. Learning curve             survival and toe peak against training steps, to demo_output/
     7. Evaluation                 the network next to the best fixed action on the same seeds
+    8. Forward and backward pass  a short stochastic rollout, the PPO loss, its gradients per
+                                  tensor, and 10 Adam steps on a copy (saved weights untouched)
 With two networks it ends with a side-by-side table.
 
 A run folder holds four files written by agent/train.py: model.zip, vecnormalize.pkl,
@@ -23,17 +25,20 @@ Commands (run from the Network_Agent folder, with STANCE_GYM_PATH set; see READM
 
 Uses: common.env_setup (make_env, to_physical, to_norm_action, SENSOR_NAMES), common.evaluate
 (EVAL_SEEDS, REFERENCE, run_episodes, summarise), common.policies.FixedPolicy,
-agent.actions.ResidualAction, and the network modules networkA_mlp.network and
-networkB_lstm.network. Plots need matplotlib.
+agent.actions.ResidualAction, sb3_contrib's RNNStates, and the network modules
+networkA_mlp.network and networkB_lstm.network. Plots need matplotlib.
 """
 import argparse
+import copy
 import csv
+import hashlib
 import importlib
 import json
 from pathlib import Path
 
 import numpy as np
 import torch
+from sb3_contrib.common.recurrent.type_aliases import RNNStates
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
 from agent.actions import ResidualAction
@@ -285,9 +290,197 @@ def table(columns, seeds, split):
               " before the policy can act")
 
 
+# ---------------------------------------------------------------- section 8
+ROLLOUT_STEPS = 128
+ROLLOUT_SEED = 0
+ADAM_STEPS = 10
+
+
+def checksum(policy):
+    """sha256 of every parameter and buffer of the policy, to show the weights did not change."""
+    h = hashlib.sha256()
+    for name, t in policy.state_dict().items():
+        h.update(name.encode())
+        h.update(t.detach().cpu().numpy().tobytes())
+    return h.hexdigest()
+
+
+def rollout(model, cfg, wrappers, vn, n_steps=ROLLOUT_STEPS, seed=ROLLOUT_SEED):
+    """Sample `n_steps` from the saved policy (stochastic) on the train ground; return the batch.
+
+    Observations are normalised with the saved VecNormalize and rewards scaled by it, as in
+    training. Actions are the policy's raw Gaussian samples; the environment gets them clipped
+    to [-1, 1], as SB3 does. A time-limit end bootstraps with the critic's value of the last
+    observation, as SB3 does. Advantages are GAE(gamma, gae_lambda), normalised; returns are
+    the unnormalised advantages plus the values. For the LSTM the batch also holds the initial
+    (zero) LSTM states and the episode starts that evaluate_actions needs to replay the memory.
+    """
+    policy = model.policy
+    policy.set_training_mode(False)
+    recurrent = hasattr(policy, "lstm_actor")
+    env = make_env("train", wrappers)
+    low, high = env.action_space.low, env.action_space.high
+    if recurrent:
+        def zeros(lstm):
+            z = torch.zeros(lstm.num_layers, 1, lstm.hidden_size)
+            return z, z.clone()
+        states = RNNStates(zeros(policy.lstm_actor), zeros(policy.lstm_critic or policy.lstm_actor))
+        init = states
+
+    def value(o, start):
+        if not recurrent:
+            return policy.predict_values(o).item()
+        return policy.predict_values(o, states.vf, torch.tensor([float(start)])).item()
+
+    buf = {k: [] for k in ("obs", "actions", "logp", "values", "rewards", "starts", "dones")}
+    with torch.random.fork_rng(), torch.no_grad():
+        torch.manual_seed(seed)
+        obs, _ = env.reset(seed=seed)
+        start = True
+        for _ in range(n_steps):
+            o = torch.as_tensor(vn.normalize_obs(obs)[None], dtype=torch.float32)
+            if recurrent:
+                a, v, lp, states = policy(o, states, torch.tensor([float(start)]))
+            else:
+                a, v, lp = policy(o)
+            obs, r, term, trunc, _ = env.step(np.clip(a[0].numpy(), low, high))
+            r = float(vn.normalize_reward(np.array([r]))[0])
+            if trunc and not term:
+                r += cfg["gamma"] * value(torch.as_tensor(vn.normalize_obs(obs)[None], dtype=torch.float32), False)
+            for k, x in zip(buf, (o[0], a[0], lp.item(), v.item(), r, float(start), float(term or trunc))):
+                buf[k].append(x)
+            start = term or trunc
+            if start:
+                obs, _ = env.reset()
+        last = value(torch.as_tensor(vn.normalize_obs(obs)[None], dtype=torch.float32), start)
+    env.close()
+
+    values, rewards, dones = (np.array(buf[k]) for k in ("values", "rewards", "dones"))
+    adv, gae = np.zeros(n_steps), 0.0
+    for t in reversed(range(n_steps)):
+        next_value = last if t == n_steps - 1 else values[t + 1]
+        delta = rewards[t] + cfg["gamma"] * next_value * (1 - dones[t]) - values[t]
+        gae = delta + cfg["gamma"] * cfg["gae_lambda"] * (1 - dones[t]) * gae
+        adv[t] = gae
+    batch = {
+        "obs": torch.stack(buf["obs"]), "actions": torch.stack(buf["actions"]),
+        "old_logp": torch.tensor(buf["logp"]), "starts": torch.tensor(buf["starts"]),
+        "returns": torch.tensor(adv + values, dtype=torch.float32),
+        "adv": torch.tensor((adv - adv.mean()) / (adv.std() + 1e-8), dtype=torch.float32),
+        "episodes": int(sum(buf["starts"])),
+    }
+    if recurrent:
+        batch["lstm_states"] = init
+    return batch
+
+
+def ppo_loss(policy, batch, cfg):
+    """PPO loss on `batch` (forward pass through evaluate_actions); returns (loss, parts)."""
+    if "lstm_states" in batch:
+        values, logp, entropy = policy.evaluate_actions(batch["obs"], batch["actions"],
+                                                        batch["lstm_states"], batch["starts"])
+    else:
+        values, logp, entropy = policy.evaluate_actions(batch["obs"], batch["actions"])
+    ratio = torch.exp(logp - batch["old_logp"])
+    c, adv = cfg["clip_range"], batch["adv"]
+    policy_loss = -torch.min(ratio * adv, torch.clamp(ratio, 1 - c, 1 + c) * adv).mean()
+    value_loss = torch.nn.functional.mse_loss(values.flatten(), batch["returns"])
+    entropy = entropy.mean()
+    loss = policy_loss + cfg["vf_coef"] * value_loss - cfg["ent_coef"] * entropy
+    return loss, {"policy": policy_loss.item(), "value": value_loss.item(), "entropy": entropy.item(),
+                  "ratio_dev": (ratio - 1).abs().max().item()}
+
+
+def gradients(policy, batch, cfg):
+    """One forward pass in training mode and loss.backward(); returns (loss, parts, grads).
+
+    grads: (name, shape, gradient or None) per trainable tensor. The gradients are cleared
+    from the policy afterwards; no weight is changed.
+    """
+    policy.set_training_mode(True)
+    policy.zero_grad(set_to_none=True)
+    loss, parts = ppo_loss(policy, batch, cfg)
+    loss.backward()
+    grads = [(n, tuple(p.shape), None if p.grad is None else p.grad.detach().clone())
+             for n, p in policy.named_parameters() if p.requires_grad]
+    policy.zero_grad(set_to_none=True)
+    policy.set_training_mode(False)
+    return loss.item(), parts, grads
+
+
+def adam_steps(clone, batch, cfg, n=ADAM_STEPS):
+    """Take `n` Adam steps on `clone`, a deepcopy of the policy, on the same batch; return (before, after).
+
+    Make the copy before any backward pass: afterwards the policy holds the last action
+    distribution, whose tensors are part of the autograd graph and cannot be deep-copied. The optimiser is the one the policy was trained with (class and kwargs, e.g. eps), at the
+    config's learning_rate, with the gradient clipped to max_grad_norm as in PPO.
+    """
+    clone.set_training_mode(True)
+    opt = clone.optimizer_class(clone.parameters(), lr=cfg["learning_rate"], **clone.optimizer_kwargs)
+    with torch.no_grad():
+        before = ppo_loss(clone, batch, cfg)[0].item()
+    for _ in range(n):
+        opt.zero_grad()
+        ppo_loss(clone, batch, cfg)[0].backward()
+        torch.nn.utils.clip_grad_norm_(clone.parameters(), cfg["max_grad_norm"])
+        opt.step()
+    with torch.no_grad():
+        after = ppo_loss(clone, batch, cfg)[0].item()
+    return before, after
+
+
+def flag(g):
+    """Why a gradient is unusable, or None if it is finite and non-zero."""
+    if g is None:
+        return "missing: the tensor is not on the path from the loss (not used by evaluate_actions)"
+    if not torch.isfinite(g).all():
+        return "non-finite: an overflow or a log/exp of an extreme value in the forward pass"
+    if not g.abs().sum() > 0:
+        return "zero: the tensor is used but every contribution cancels (e.g. saturated tanh)"
+    return None
+
+
+def show_forward_backward(model, cfg, wrappers, vn):
+    """8. Rollout, PPO loss, gradients per tensor, then Adam steps on a copy."""
+    header("8. Forward and backward pass")
+    policy = model.policy
+    before_sum = checksum(policy)
+    batch = rollout(model, cfg, wrappers, vn)
+    clone = copy.deepcopy(policy)
+    print(f"rollout: {ROLLOUT_STEPS} steps, stochastic actions, seed {ROLLOUT_SEED}, train ground,"
+          f" {batch['episodes']} episode(s) started")
+    print(f"GAE: gamma {cfg['gamma']}, lambda {cfg['gae_lambda']}, rewards scaled by the saved"
+          f" VecNormalize; advantages normalised to mean 0, std 1")
+    loss, parts, grads = gradients(policy, batch, cfg)
+    print(f"forward (training mode, evaluate_actions): max |ratio - 1| = {parts['ratio_dev']:.2e}"
+          " (the rollout's log-probs are reproduced)")
+    print(f"loss = policy {parts['policy']:.4f} + {cfg['vf_coef']} * value {parts['value']:.4f}"
+          f" - {cfg['ent_coef']} * entropy {parts['entropy']:.4f} = {loss:.4f}")
+    print("  (the policy term is 0 before any update: the ratio is 1 and the advantages have mean 0;"
+          " its gradient is not)")
+    print(f"gradients after loss.backward():\n  {'parameter':42s} {'shape':>14s} {'grad norm':>11s}")
+    for name, shape, g in grads:
+        print(f"  {name:42s} {str(shape):>14s} {'-' if g is None else f'{g.norm().item():11.4e}':>11s}")
+    total = torch.norm(torch.stack([g.norm() for _, _, g in grads if g is not None])).item()
+    clip = cfg["max_grad_norm"]
+    print(f"total gradient norm {total:.4f}; max_grad_norm {clip}:"
+          + (f" PPO would scale it by {clip / total:.3f}" if total > clip else " no clipping needed"))
+    flagged = [(n, flag(g)) for n, _, g in grads if flag(g)]
+    for name, why in flagged:
+        print(f"  FLAG {name}: {why}")
+    if not flagged:
+        print("flags: none; every trainable tensor has a finite, non-zero gradient")
+    before, after = adam_steps(clone, batch, cfg)
+    print(f"{ADAM_STEPS} Adam steps on a copy (lr {cfg['learning_rate']}, clip {clip}), same batch:"
+          f" loss {before:.4f} -> {after:.4f}")
+    after_sum = checksum(policy)
+    print(f"saved weights unchanged: {'yes' if after_sum == before_sum else 'NO'}"
+          f" (sha256 {before_sum[:16]} before, {after_sum[:16]} after)")
+
+
 # ---------------------------------------------------------------- main
 def main():
-    """Parse the arguments, then run the seven sections for each network found."""
+    """Parse the arguments, then run the eight sections for each network found."""
     p = argparse.ArgumentParser(description="Demo of the STANCE networks (no training).")
     p.add_argument("--networks", nargs="+", choices=sorted(NETWORKS), help="default: all found")
     p.add_argument("--episodes", type=int, default=20, help="evaluation episodes, seeds 1000 and up")
@@ -331,6 +524,7 @@ def main():
         results[net.NAME] = evaluate(net, wrappers, model, vn, seeds, a.split)
         ref = reference(seeds, a.split)
         table({net.NAME: results[net.NAME], "fixed action": ref}, seeds, a.split)
+        show_forward_backward(model, cfg, wrappers, vn)
 
     if len(results) > 1:
         print("\n" + "=" * 78 + "\nSide by side\n" + "=" * 78)

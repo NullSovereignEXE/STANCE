@@ -17,6 +17,7 @@
     "norm_obs": true,
     "norm_reward": true,
     "subproc": false,
+    "mix_test_fraction": 0.0,
     "residual": true,
     "anchor": [
       -14.0,

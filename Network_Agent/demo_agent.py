@@ -12,9 +12,9 @@ What this file does, in order
 Nothing is written to results/ or runs/; a trained model goes to a temporary folder.
 
 Commands (run from the Network_Agent folder, with STANCE_GYM_PATH set; see README_agent.md)
-    python demo.py --train --smoke --episodes 3       quick check that everything works
-    python demo.py --train                            full training (300k steps, a few minutes)
-    python demo.py --model runs/networkA_mlp/<run>    evaluate a saved run
+    python demo_agent.py --train --smoke --episodes 3      quick check that everything works
+    python demo_agent.py --train                           full training (300k steps, a few minutes)
+    python demo_agent.py --model runs/networkA_mlp/<run>   evaluate a saved run
 
 Uses: agent.train (network loading, config, wrappers, model building, architecture print),
 agent.curve.CurveCallback, common.env_setup, common.evaluate and common.policies.
@@ -99,8 +99,8 @@ def main():
         net, model, vn, wrappers = train_run(a.network, a.smoke)
     else:
         print("Nothing to do. Choose one of:\n"
-              "  python demo.py --model runs/networkA_mlp/<run>   evaluate a saved run\n"
-              "  python demo.py --train [--smoke]                 train from scratch, then evaluate\n"
+              "  python demo_agent.py --model runs/networkA_mlp/<run>   evaluate a saved run\n"
+              "  python demo_agent.py --train [--smoke]                 train from scratch, then evaluate\n"
               "See README_agent.md.")
         return
 

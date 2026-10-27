@@ -6,8 +6,8 @@ table seeds) and appends one row to runs/<network>/<run>/curve.csv:
 
     timesteps, minutes, survival_pct, mean_return, toe_peak_bw, mean_K, mean_theta_deg
 
-Watching mean_theta_deg as well as survival matters: the known failure is the angle
-drifting positive while survival stays low.
+Watching mean_theta_deg as well as survival shows what the policy does, not only how
+well. Plain PPO on the frozen env reached 88.5% / 57.5% / 17.0% survival on seeds 0/1/2.
 
 Uses: stable_baselines3's BaseCallback, evaluate.run_episodes and evaluate.summarise,
 and the same environment wrappers as training.
