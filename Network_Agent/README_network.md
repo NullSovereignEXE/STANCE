@@ -108,6 +108,16 @@ For each network, in this order:
 | mean B (N.m.s/rad) | ankle damping applied, averaged the same way |
 | mean return | total reward per episode: +1 per step, minus the toe-force, smoothness and fall penalties |
 
+8. **Forward and backward pass.** One training step's computation, without changing the saved
+   weights. It samples 128 stochastic steps from the saved policy (seed 0, train ground) and
+   computes GAE advantages and returns. It then runs `evaluate_actions` in training mode and
+   prints the PPO loss split into its policy, value and entropy terms, with every coefficient
+   read from `config.json`. After `loss.backward()` it prints the gradient norm of every
+   parameter tensor, the total norm against `max_grad_norm`, and a flag for any missing, zero
+   or non-finite gradient. Finally it takes 10 Adam steps on a copy of the policy, prints the
+   loss before and after, and confirms with a checksum that the original weights are unchanged.
+   This section takes a second or two per network.
+
 With both networks present, the demo ends with a side-by-side table of the two networks and
 the fixed action. On the test ground the toe peak is the same for every policy (it is set at
 touchdown, before the policy can act), so compare survival there, not toe peak. Use
