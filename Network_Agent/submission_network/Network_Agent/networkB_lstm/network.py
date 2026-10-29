@@ -19,6 +19,10 @@ Output:
 
 The Loss is measured with RecurrentPPO, just like for Network A (MLP) (vf_coef 0.5, ent_coef 0.0,
 clip_range 0.2, max_grad_norm 0.5).
+
+Sources: PPO is from Schulman et al. (2017) and the LSTM from Hochreiter and Schmidhuber (1997).
+RecurrentPPO and the policy classes come from sb3-contrib and Stable-Baselines3 (Raffin et al.,
+2021). The residual action follows the idea of residual policy learning (Silver et al., 2018).
 """
 import torch.nn as nn
 from sb3_contrib import RecurrentPPO
@@ -47,6 +51,7 @@ CONFIG = {
 
 # This class is the first layer of the network. It takes the 11 sensor readings from the current
 # step, passes them through one linear layer with 64 units, and applies tanh. The 64 numbers that come out go into the LSTM
+# This follows the way Stable-Baselines3 documents adding a custom features extractor.
 class FrameEncoder(BaseFeaturesExtractor):
     #Linear layer and tanh applied at every step before the LSTM.
 
