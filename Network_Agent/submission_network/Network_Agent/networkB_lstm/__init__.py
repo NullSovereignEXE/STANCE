@@ -1,1 +1,1 @@
-"""Network B: the LSTM (P2)."""
+"""Network B: the LSTM (Mukul Yadav)."""

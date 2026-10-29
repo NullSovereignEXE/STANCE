@@ -1,9 +1,17 @@
-"""Network A: a feed-forward MLP that reads a fixed window of recent sensor frames. OWNER: P1.
+"""
+Network A: Feed-forward MLP for prosthetic ankle control.
 
-This file defines the network only. It was trained with PPO; demo.py loads the trained weights.
-The observation is the last 10 frames of 11 sensors; `wrappers()` keeps the newest
-`frames` frames and drops the sensor columns in `drop_sensors`. The actor and the critic
-each get their own HistoryMLP feature extractor followed by a small head (`head`).
+This module defines the neural network architecture and its configuration
+used by the PPO agent.
+
+The network receives recent sensor observations from the 
+environment and extracts features that help the agent choose
+ankle control parameters.
+
+The actor selects the target ankle angle, stiffness, and damping.
+The critic estimates the expected future discounted reward.
+
+Training and weight updates are handled separately by the PPO agent.
 """
 import torch
 import torch.nn as nn
@@ -17,6 +25,9 @@ import gymnasium as gym
 import numpy as np
 
 # Network configuration
+"""The network configuration allows us to change the number of history
+frames, remove selected sensor inputs, and adjust the hidden layers
+and activation functions for different experiments."""
 CONFIG = {
     "frames": 10,
     "drop_sensors": [],
@@ -40,7 +51,7 @@ ACTIVATIONS = {
 }
 
 class SelectObservations(gym.ObservationWrapper):
-    """Keep only the newest `frames` frames and drop the sensor columns listed in `drop_sensors`."""
+    """Keep only the newest frames and remove the selected sensor channels listed in `drop_sensors`."""
 
     def __init__(self, env, frames=10, drop_sensors=None):
 
@@ -57,11 +68,11 @@ class SelectObservations(gym.ObservationWrapper):
         if not 1 <= self.frames <= self.total_frames:
             raise ValueError("Invalid history length")
 
-        if any(i not in range(11) for i in self.drop_sensors):
+        if any(i not in range(self.total_sensors) for i in self.drop_sensors):
             raise ValueError("Invalid sensor index")
 
         self.keep = [
-            i for i in range(11)
+            i for i in range(self.total_sensors)
             if i not in self.drop_sensors
         ]
 
@@ -107,8 +118,7 @@ def wrappers(cfg):
     ]
 
 class HistoryMLP(BaseFeaturesExtractor):
-    """Fully connected layers (optionally with LayerNorm) that turn the frame window into features."""
-
+    """Extract features from the selected sensor history using fully connected layers."""
     def __init__(
         self,
         observation_space,
@@ -128,7 +138,7 @@ class HistoryMLP(BaseFeaturesExtractor):
         # Number of sensor inputs
         input_dim = observation_space.shape[0]
 
-        # Build hidden layers
+        # Each layer takes the output size of the previous layer as its input.
         for neurons in hidden:
 
             layers.append(
@@ -147,7 +157,7 @@ class HistoryMLP(BaseFeaturesExtractor):
         self.network = nn.Sequential(*layers)
 
     def forward(self, observations):
-        """Return the features for a batch of observations."""
+        """Pass the observations through the feature extractor."""
 
         return self.network(observations)
 
@@ -163,8 +173,9 @@ def policy_kwargs(cfg):
             "layer_norm": cfg["layer_norm"],
         },
 
-        "share_features_extractor": False,
+        "share_features_extractor": False, #Actor and Critic have separate feature extractors.
 
+        #SB3 creates separate 64-neuron heads for the Actor and Critic
         "net_arch": {
             "pi": list(cfg["head"]),
             "vf": list(cfg["head"]),
