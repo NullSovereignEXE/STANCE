@@ -4,12 +4,12 @@ These are the two networks we trained with PPO to control a powered prosthetic a
 Network A is an MLP that reads the last 10 sensor frames, and Network B is an LSTM that builds its own memory of the stance.
 
 This folder holds:
-- `Gym/`: the STANCE environment (`stance_env/`) and the MuJoCo leg model (`model/leg.xml`)
+- `Gym/`: the STANCE environment (`stance_env/`) and the MuJoCo leg model (`model/leg.xml`) from our previous submission
 - `Network_Agent/networkA_mlp/`, `Network_Agent/networkB_lstm/`: the two network definitions
-- `Network_Agent/agent/`, `Network_Agent/common/`: the residual action, environment setup, policy adapters and evaluation used by the demo
+- `Network_Agent/agent/`, `Network_Agent/common/`: the residual action, environment setup, policy adapters and evaluation
 - `Network_Agent/trained_networks/`: our trained networks (weights, normalisation statistics, config and learning curve)
-- `Network_Agent/demo.py`: the demo
-- `environment.yml`: the conda environment (CPU-only PyTorch)
+- `Network_Agent/demo.py`
+- `environment.yml`
 
 ## Setup and running
 
@@ -18,11 +18,21 @@ conda env create -f environment.yml
 conda activate stance
 cd Network_Agent
 python demo.py
+#or 
+python3 demo.py
 ```
 
-## What the demo prints
+## If you want to train a fresh network:
+```bash
+cd Network_Agent
+conda env create -f environment.yml # If you havent already
+conda activate stance
+python -m agent.train --network mlp
+python -m agent.train --network lstm
+```
 
-For each network, nothing is trained:
+## What the demo shows:
+
 - Inputs and preprocessing: observation shape, frames, sensors and normalisation statistics
 - Data flow: the layers and the parameter count of each part
 - Outputs: what the three action values mean and their physical ranges
@@ -34,7 +44,7 @@ For each network, nothing is trained:
 
 It ends with a side-by-side table of both networks and the fixed action.
 
-## Troubleshooting
+## Notes:
 
-- If ROS is sourced in your shell, its `PYTHONPATH` can shadow the conda packages: run `env -u PYTHONPATH python demo.py`.
-- If the environment is not found, set `STANCE_GYM_PATH` to the `Gym/` folder of this package.
+- If ROS is sourced in your shell: run `env -u PYTHONPATH python demo.py`.
+- If the environment is not found: set `STANCE_GYM_PATH` to the `Gym/` folder of this package.
