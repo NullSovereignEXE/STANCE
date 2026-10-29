@@ -1,18 +1,6 @@
-"""Chooses which part of the observation a network sees. Shared and frozen.
+# This file decides which part of the observation a network gets to see. The environment gives
+# 10 frames of 11 sensor readings, and each network can keep fewer frames or drop some sensors.
 
-The environment gives one flat vector of 110 numbers: 10 frames of 11 sensor
-values, oldest frame first (see SENSOR_NAMES in env_setup.py for the 11 channels).
-`SelectInputs` reshapes that vector to (frames, sensors), keeps the newest
-`frames` frames, removes the sensor columns listed in `drop`, and flattens it again.
-
-Both networks use it through their `wrappers(cfg)` function, controlled by the
-config keys `frames` and `drop_sensors`:
-    frames=10, drop=[]       the full observation (Network A default)
-    frames=1                 newest frame only (Network B default; its memory is the LSTM)
-    drop=[7]                 remove one channel from every frame (e.g. vertical acceleration)
-
-Uses: gymnasium.ObservationWrapper, numpy.
-"""
 import gymnasium as gym
 import numpy as np
 
@@ -20,35 +8,32 @@ from common.env_setup import N_SENSORS
 
 
 class SelectInputs(gym.ObservationWrapper):
-    """Keep the newest `frames` frames and all sensor columns except those in `drop`.
-
-    frames: number of frames to keep (1 to the environment's history length). None keeps all.
-    drop: sensor indices (0-10) to remove from every frame.
-    The new observation space is the old bounds reshaped and cut the same way, so the
-    wrapped environment still passes Gymnasium's checks.
-    """
+    # This wrapper keeps the newest `frames` frames, and every sensor except the ones listed in `drop`.
 
     def __init__(self, env, frames=None, drop=()):
+        # This works out which frames and sensors to keep, checks that the settings make sense,
+        # and tells Gymnasium what shape the trimmed observation has.
         super().__init__(env)
+
         self.total = env.observation_space.shape[0] // N_SENSORS
+        # If frames is not given we keep the whole history, which is what Network A uses.
         self.frames = self.total if frames is None else int(frames)
+
+        self.keep = [i for i in range(N_SENSORS) if i not in drop]
+        # We check frames ourselves because frames=0 would not raise an error. It would quietly
+        # keep every frame instead, and we would never notice.
         if not 1 <= self.frames <= self.total:
             raise ValueError(f"frames must be between 1 and {self.total}, got {frames}")
-        bad = [d for d in drop if not 0 <= d < N_SENSORS]
-        if bad:
-            raise ValueError(f"drop_sensors must be between 0 and {N_SENSORS - 1}, got {bad}")
-        self.keep = [i for i in range(N_SENSORS) if i not in set(drop)]
-        if not self.keep:
-            raise ValueError("drop_sensors removes every sensor")
-        low = self._cut(env.observation_space.low)
-        high = self._cut(env.observation_space.high)
-        self.observation_space = gym.spaces.Box(low, high, dtype=np.float32)
+        if not self.keep or any(not 0 <= d < N_SENSORS for d in drop):
+            raise ValueError(f"drop must be sensor indices 0-{N_SENSORS - 1} and leave one sensor")
 
-    def _cut(self, flat):
-        """Reshape to (frames, sensors), keep the newest frames and chosen columns, flatten."""
-        grid = np.asarray(flat).reshape(self.total, N_SENSORS)
-        return grid[-self.frames:, self.keep].reshape(-1).astype(np.float32)
+        space = env.observation_space
+        # The min and max values go through observation() as well, so the declared space
+        # always matches the observations we actually return.
+        self.observation_space = gym.spaces.Box(
+            self.observation(space.low), self.observation(space.high), dtype=np.float32)
 
     def observation(self, obs):
-        """Apply the same cut to a real observation."""
-        return self._cut(obs)
+        # The frames are stored oldest first, so the newest ones are the last rows.
+        grid = np.asarray(obs).reshape(self.total, N_SENSORS)
+        return grid[-self.frames:, self.keep].reshape(-1).astype(np.float32)
