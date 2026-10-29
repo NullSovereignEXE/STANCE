@@ -38,6 +38,8 @@ class SB3Policy:
         return action
 
 
+# The state and episode_start handling below follows the usage example in the sb3-contrib
+# RecurrentPPO documentation.
 class RecurrentSB3Policy(SB3Policy):
     def __init__(self, model, vecnorm=None):
         super().__init__(model, vecnorm)

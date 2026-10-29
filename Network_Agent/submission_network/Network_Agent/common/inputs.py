@@ -8,6 +8,7 @@ from common.env_setup import N_SENSORS
 
 
 class SelectInputs(gym.ObservationWrapper):
+    # Built on Gymnasium's ObservationWrapper. Which frames and sensors to keep is our own choice.
     # This wrapper keeps the newest `frames` frames, and every sensor except the ones listed in `drop`.
 
     def __init__(self, env, frames=None, drop=()):

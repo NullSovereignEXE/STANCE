@@ -55,6 +55,8 @@ def _consts(env):
     return module.ANKLE_RANGE, module.K_RANGE, module.B_RANGE
 
 
+# These two helpers, and the two conversion functions below, copy the mapping that the environment
+# itself uses (Gym/stance_env/ankle_gym_env.py): the angle is linear, K and B are log-spaced.
 def _to_unit(x, lo, hi):
     return 2 * (x - lo) / (hi - lo) - 1
 
