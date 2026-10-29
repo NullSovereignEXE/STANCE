@@ -131,49 +131,59 @@ def show_forward_backward(model, config_load, wrappers, vn, key):
 
 
 def print_table(columns, seeds, split):
-    print(f"\n{len(seeds)} episodes, seeds {seeds[0]}-{seeds[-1]}, {split} ground, deterministic")
+    print(f"\n{len(seeds)} episodes per seed, seeds {seeds[0]}-{seeds[-1]}, {split} ground, deterministic")
     print(f"{'':16s}" + "".join(f"{name:>20s}" for name in columns))
     for k, label in ROWS:
         print(f"{label:16s}" + "".join(f"{c[k]:20.2f}" for c in columns.values()))
     if split == "test":
         print("note: toe peak is not informative on the test ground (set at touchdown, before the policy acts)")
 
+
+def mean_rows(rows):
+    """Average the per-seed summaries (every seed uses the same episodes)."""
+    return {k: float(np.mean([r[k] for r in rows])) for k, _ in ROWS}
+
 # Main
 
 def main():
-    p = argparse.ArgumentParser(description="Demo of The STANCE Networks (no training).")
-    p.add_argument("--episodes", type=int, default=200, help="evaluation episodes per ground")
+    p = argparse.ArgumentParser(description="Demo of the STANCE networks (no training).")
+    p.add_argument("--episodes", type=int, default=200, help="evaluation episodes per ground and seed")
     p.add_argument("--submission", default="trained_networks", help="folder with the run folders")
     a = p.parse_args()
 
+    # One list of run folders (seed0, seed1, ...) per network.
     runs = {}
-    for i in sorted(Path(a.submission).glob("*/")):
-        if all((i / f).exists() for f in REQUIRED_FILES):
-            runs[json.loads((i / "config.json").read_text())["network"]] = i
+    for d in sorted(Path(a.submission).glob("*/*/")):
+        if all((d / f).exists() for f in REQUIRED_FILES):
+            runs.setdefault(json.loads((d / "config.json").read_text())["network"], []).append(d)
     if not runs:
-        print("Required Training Files Missing")
+        print(f"No run folder with {', '.join(REQUIRED_FILES)} found under '{a.submission}/'. See README.md.")
         return
-        
+
     seeds = EVAL_SEEDS[: a.episodes]
-    loaded = {}
-    for key, run_dir in runs.items():
-        loaded[key] = load_run(run_dir)
-        net, config_load, wrappers, model, vn = loaded[key]
+    loaded = {key: [load_run(d) for d in dirs] for key, dirs in runs.items()}
+
+    # Forward and backward pass: shown for the first seed of each network only.
+    for key, group in loaded.items():
+        net, config_load, wrappers, model, vn = group[0]
         show_forward_backward(model, config_load, wrappers, vn, key)
 
-    print("\nComparison: The Networks and The Best Fixed Action (please give it some time)\n")
+    print("\nComparison: The Networks (mean over their seeds) and The Best Fixed Action (please give it some time)\n")
     for split in ("train", "test"):
-        cols = {}
-        for key, (net, config_load, wrappers, model, vn) in loaded.items():
-            env = make_env(split, wrappers)
-            cols[net.NAME] = summarise(run_episodes(net.POLICY(model, vn), env, seeds))
-            env.close()
+        per_seed = {}                       # network name -> one summary per seed
+        for group in loaded.values():
+            for net, config_load, wrappers, model, vn in group:
+                env = make_env(split, wrappers)
+                per_seed.setdefault(net.NAME, []).append(summarise(run_episodes(net.POLICY(model, vn), env, seeds)))
+                env.close()
+        cols = {name: mean_rows(rows) for name, rows in per_seed.items()}
         env = make_env(split)
         cols["fixed action"] = summarise(run_episodes(FixedPolicy(to_norm_action(env, *REFERENCE)), env, seeds))
         env.close()
         print_table(cols, seeds, split)
+        for name, rows in per_seed.items():
+            print(f"  return per seed, {name}: " + " / ".join(f"{r['mean_return']:.2f}" for r in rows))
     print(f"\n(fixed action = {REFERENCE[0]:g} deg, K {REFERENCE[1]:g}, B {REFERENCE[2]:g})")
-
 
 # Run main
 if __name__ == "__main__":
