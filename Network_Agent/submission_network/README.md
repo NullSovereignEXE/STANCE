@@ -48,3 +48,7 @@ It ends with a side-by-side table of both networks and the fixed action.
 
 - If ROS is sourced in your shell: run `env -u PYTHONPATH python demo.py`.
 - If the environment is not found: set `STANCE_GYM_PATH` to the `Gym/` folder of this package.
+
+## AI Declreation:
+
+We used Claude (Anthropic) to draft a template code for us such that if we worked on it induvidually, there were keys that made sure our tests remained common across files. Additionally we used it to help debug our code and to flag discrepencies during merges.
