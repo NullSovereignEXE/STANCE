@@ -1,6 +1,6 @@
 """Demo of the two STANCE networks: load the saved weights, show the design, evaluate.
 
-Nothing is trained. For each run folder under submission_network/ (networkA_mlp = Network A, the
+Nothing is trained. For each run folder under trained_networks/ (networkA_mlp = Network A, the
 MLP by P1; networkB_lstm = Network B, the LSTM by P2) it prints, in order:
     1. Inputs and preprocessing   observation shape, frames and sensors, normalisation statistics
     2. Data flow                  the layers (PyTorch print) and parameters per part
@@ -19,7 +19,7 @@ the training script does when it evaluates a run: the network's own wrappers, th
 action if the config says so, then the network's ALGO.load and VecNormalize.load.
 
 Commands (run from the Network_Agent folder; see README.md in the package root)
-    python demo.py                                      every network under submission_network/
+    python demo.py                                      every network under trained_networks/
     python demo.py --networks mlp --episodes 200
     python demo.py --split test --no-plots
 
@@ -489,7 +489,7 @@ def main():
     p.add_argument("--episodes", type=int, default=20, help="evaluation episodes, seeds 1000 and up")
     p.add_argument("--split", choices=["train", "test"], default="train", help="ground to evaluate on")
     p.add_argument("--no-plots", action="store_true", help="do not write demo_output/*.png")
-    p.add_argument("--submission", default="submission_network", help="folder holding the run folders")
+    p.add_argument("--submission", default="trained_networks", help="folder holding the run folders")
     a = p.parse_args()
 
     runs = find_runs(a.submission, a.networks)

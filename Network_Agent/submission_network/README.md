@@ -7,7 +7,7 @@ This folder holds:
 - `Gym/`: the STANCE environment (`stance_env/`) and the MuJoCo leg model (`model/leg.xml`)
 - `Network_Agent/networkA_mlp/`, `Network_Agent/networkB_lstm/`: the two network definitions
 - `Network_Agent/agent/`, `Network_Agent/common/`: the residual action, environment setup, policy adapters and evaluation used by the demo
-- `Network_Agent/submission_network/`: our trained weights for both networks
+- `Network_Agent/trained_networks/`: our trained networks (weights, normalisation statistics, config and learning curve)
 - `Network_Agent/demo.py`: the demo
 - `environment.yml`: the conda environment (CPU-only PyTorch)
 
