@@ -1,72 +1,54 @@
-"""Adapters that give every policy the same two-method interface. Shared and frozen.
+# The evaluator needs to run every controller in the same way: call reset() at the start of an
+# episode, then act(obs) at every step. Each class below wraps one kind of controller so it
+# offers exactly those two methods.
+#
+# There are only three classes because the project only compares three controllers:
+#   FixedPolicy          the reference action that both networks are compared against
+#   SB3Policy            Network A (MLP), where each action depends only on the current observation
+#   RecurrentSB3Policy   Network B (LSTM), which also has to carry its memory from step to step
+#
+# Another type of controller would only need its own class with the same two methods.
 
-The evaluator (evaluate.py) only needs `reset()` at the start of an episode and
-`act(obs)` once per step. Each adapter wraps one kind of policy to provide those:
-
-    FixedPolicy          always returns the same action (the reference controller)
-    SB3Policy            a feed-forward Stable-Baselines3 model (PPO)
-    RecurrentSB3Policy   a recurrent model (sb3-contrib RecurrentPPO); it carries the
-                         LSTM state through the episode and clears it on `reset()`
-
-SB3 models were trained on normalised observations, so the adapters apply the
-saved VecNormalize statistics before predicting. Predictions are deterministic,
-meaning the mean of the action distribution with no exploration noise.
-"""
 import numpy as np
 
 
 class FixedPolicy:
-    """Always returns `action` (normalised, shape (3,))."""
-
     def __init__(self, action):
         self.action = np.asarray(action, dtype=np.float32)
 
     def reset(self):
-        """Nothing to clear."""
+        pass
 
     def act(self, obs):
-        """Ignore the observation and return the fixed action."""
         return self.action
 
 
 class SB3Policy:
-    """Wraps a feed-forward SB3 model.
-
-    model: a trained Stable-Baselines3 model.
-    vecnorm: the VecNormalize object holding the observation statistics, or None.
-    """
-
     def __init__(self, model, vecnorm=None):
         self.model, self.vecnorm = model, vecnorm
 
     def reset(self):
-        """Nothing to clear."""
+        pass
+
+    def _normalise(self, obs):
+        return obs if self.vecnorm is None else self.vecnorm.normalize_obs(obs)
 
     def act(self, obs):
-        """Normalise the observation, then return the model's deterministic action."""
-        if self.vecnorm is not None:
-            obs = self.vecnorm.normalize_obs(obs)
-        action, _ = self.model.predict(obs, deterministic=True)
+        action, _ = self.model.predict(self._normalise(obs), deterministic=True)
         return action
 
 
 class RecurrentSB3Policy(SB3Policy):
-    """Wraps a recurrent SB3 model and carries its LSTM state between steps."""
-
     def __init__(self, model, vecnorm=None):
         super().__init__(model, vecnorm)
         self.reset()
 
     def reset(self):
-        """Clear the LSTM state; call at the start of every episode."""
         self.state = None
         self.start = np.ones((1,), dtype=bool)
 
     def act(self, obs):
-        """Return the deterministic action and update the LSTM state."""
-        if self.vecnorm is not None:
-            obs = self.vecnorm.normalize_obs(obs)
         action, self.state = self.model.predict(
-            obs, state=self.state, episode_start=self.start, deterministic=True)
+            self._normalise(obs), state=self.state, episode_start=self.start, deterministic=True)
         self.start = np.zeros((1,), dtype=bool)
         return action
