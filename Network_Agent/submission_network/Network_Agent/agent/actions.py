@@ -25,7 +25,7 @@ anchor from physical units to the normalised action.
 import gymnasium as gym
 import numpy as np
 
-from common.env_setup import to_norm_action
+from STANCE.Network_Agent.submission_network.Network_Agent.common.env_setup import to_norm_action
 
 
 class ResidualAction(gym.ActionWrapper):

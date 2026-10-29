@@ -11,7 +11,7 @@ import torch.nn as nn
 from stable_baselines3 import PPO
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
-from common.policies import SB3Policy
+from STANCE.Network_Agent.submission_network.Network_Agent.common.policies import SB3Policy
 
 import gymnasium as gym
 import numpy as np

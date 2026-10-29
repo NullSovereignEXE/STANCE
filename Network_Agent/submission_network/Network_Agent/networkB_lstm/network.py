@@ -35,8 +35,8 @@ import torch.nn as nn
 from sb3_contrib import RecurrentPPO
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
-from common.inputs import SelectInputs
-from common.policies import RecurrentSB3Policy
+from STANCE.Network_Agent.submission_network.Network_Agent.common.inputs import SelectInputs
+from STANCE.Network_Agent.submission_network.Network_Agent.common.policies import RecurrentSB3Policy
 
 NAME = "networkB_lstm"
 ALGO = RecurrentPPO

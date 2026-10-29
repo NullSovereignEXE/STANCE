@@ -18,8 +18,8 @@ from pathlib import Path
 
 from stable_baselines3.common.callbacks import BaseCallback
 
-from common.env_setup import make_env
-from common.evaluate import CURVE_SEEDS, run_episodes, summarise
+from STANCE.Network_Agent.submission_network.Network_Agent.common.env_setup import make_env
+from STANCE.Network_Agent.submission_network.Network_Agent.common.evaluate import CURVE_SEEDS, run_episodes, summarise
 
 
 class CurveCallback(BaseCallback):

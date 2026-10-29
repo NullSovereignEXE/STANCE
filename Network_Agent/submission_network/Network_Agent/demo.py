@@ -41,10 +41,10 @@ import torch
 from sb3_contrib.common.recurrent.type_aliases import RNNStates
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
-from agent.actions import ResidualAction
-from common.env_setup import SENSOR_NAMES, make_env, to_norm_action, to_physical
-from common.evaluate import EVAL_SEEDS, REFERENCE, run_episodes, summarise
-from common.policies import FixedPolicy
+from STANCE.Network_Agent.submission_network.Network_Agent.agent.actions import ResidualAction
+from STANCE.Network_Agent.submission_network.Network_Agent.common.env_setup import SENSOR_NAMES, make_env, to_norm_action, to_physical
+from STANCE.Network_Agent.submission_network.Network_Agent.common.evaluate import EVAL_SEEDS, REFERENCE, run_episodes, summarise
+from STANCE.Network_Agent.submission_network.Network_Agent.common.policies import FixedPolicy
 
 NETWORKS = {"mlp": "networkA_mlp.network", "lstm": "networkB_lstm.network"}
 LABELS = {"mlp": "Network A (MLP, P1)", "lstm": "Network B (LSTM, P2)"}

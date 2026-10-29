@@ -27,8 +27,8 @@ from pathlib import Path
 
 import numpy as np
 
-from common.env_setup import make_env, to_norm_action, to_physical
-from common.policies import FixedPolicy
+from STANCE.Network_Agent.submission_network.Network_Agent.common.env_setup import make_env, to_norm_action, to_physical
+from STANCE.Network_Agent.submission_network.Network_Agent.common.policies import FixedPolicy
 
 EVAL_SEEDS = list(range(1000, 1200))
 CURVE_SEEDS = list(range(2000, 2050))

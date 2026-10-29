@@ -47,11 +47,11 @@ from pathlib import Path
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNormalize
 
-from agent.actions import ResidualAction
-from agent.config import AGENT_CONFIG, SMOKE
-from agent.curve import CurveCallback
-from common.env_setup import make_env
-from common.evaluate import evaluate_and_record
+from STANCE.Network_Agent.submission_network.Network_Agent.agent.actions import ResidualAction
+from STANCE.Network_Agent.submission_network.Network_Agent.agent.config import AGENT_CONFIG, SMOKE
+from STANCE.Network_Agent.submission_network.Network_Agent.agent.curve import CurveCallback
+from STANCE.Network_Agent.submission_network.Network_Agent.common.env_setup import make_env
+from STANCE.Network_Agent.submission_network.Network_Agent.common.evaluate import evaluate_and_record
 
 NETWORKS = {"mlp": "networkA_mlp.network", "lstm": "networkB_lstm.network"}
 REQUIRED = ("NAME", "CONFIG", "ALGO", "POLICY_NAME", "POLICY", "wrappers", "policy_kwargs")

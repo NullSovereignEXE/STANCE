@@ -6,7 +6,7 @@ import mujoco
 import gymnasium as gym
 from gymnasium import spaces
 
-from stance_env.ground import GroundModel
+from STANCE.Network_Agent.submission_network.Gym.stance_env.ground import GroundModel
 
 # Leg geometry is defined in the MuJoCo XML file, but we need to know some of the dimensions here for computing the ankle torque and leg tilt.
 HEEL_OFFSET = np.array([-0.07, -0.05])

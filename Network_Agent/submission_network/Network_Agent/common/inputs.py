@@ -16,7 +16,7 @@ Uses: gymnasium.ObservationWrapper, numpy.
 import gymnasium as gym
 import numpy as np
 
-from common.env_setup import N_SENSORS
+from STANCE.Network_Agent.submission_network.Network_Agent.common.env_setup import N_SENSORS
 
 
 class SelectInputs(gym.ObservationWrapper):
