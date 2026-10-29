@@ -2,12 +2,12 @@
 
 Without it, the policy's output is the environment's action directly: three numbers in
 [-1, 1] for the target angle, the stiffness K and the damping B. With `residual: True`
-in config.py, the policy instead outputs an OFFSET from a fixed anchor action:
+in the run's config.json, the policy instead outputs an OFFSET from a fixed anchor action:
 
     env_action = clip(anchor + scale * policy_action, -1, 1)
 
 An untrained policy then outputs roughly zero, so it already behaves like the anchor
-and learning only has to find improvements. The anchor comes from agent/config.py
+and learning only has to find improvements. The anchor comes from the run's config.json
 (config v1: -14 degrees / K 250.6 / B 6.38, inside every range). The earlier anchor was
 the best fixed action, -20 degrees / K 500 / B 10 (about 92.5% survival), which sits at
 the edge of every range.
@@ -25,7 +25,7 @@ anchor from physical units to the normalised action.
 import gymnasium as gym
 import numpy as np
 
-from STANCE.Network_Agent.submission_network.Network_Agent.common.env_setup import to_norm_action
+from common.env_setup import to_norm_action
 
 
 class ResidualAction(gym.ActionWrapper):

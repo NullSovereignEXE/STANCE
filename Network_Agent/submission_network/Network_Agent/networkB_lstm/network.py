@@ -1,6 +1,6 @@
 """Network B: a recurrent (LSTM) network that builds its own memory of the stance. OWNER: P2.
 
-This file defines the network only. The agent (agent/train.py) trains it.
+This file defines the network only. It was trained with RecurrentPPO; demo.py loads the trained weights.
 
 Why recurrent
     The ground's stiffness, yield point and dent history never appear in a single sensor
@@ -27,7 +27,7 @@ Outputs
 Losses and gradients
     Not defined in this file. RecurrentPPO, run by the agent, computes the same PPO loss
     as Network A, with gradients flowing back through time inside each stored sequence.
-    Weights are set in agent/config.py. Describe them in Report 2.
+    The loss weights used (vf_coef, ent_coef, clip_range) are stored in each run's config.json.
 
 Uses: sb3_contrib (RecurrentPPO), torch, common.inputs, common.policies.
 """
@@ -35,8 +35,8 @@ import torch.nn as nn
 from sb3_contrib import RecurrentPPO
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
-from STANCE.Network_Agent.submission_network.Network_Agent.common.inputs import SelectInputs
-from STANCE.Network_Agent.submission_network.Network_Agent.common.policies import RecurrentSB3Policy
+from common.inputs import SelectInputs
+from common.policies import RecurrentSB3Policy
 
 NAME = "networkB_lstm"
 ALGO = RecurrentPPO

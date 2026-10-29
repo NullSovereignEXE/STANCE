@@ -1,1 +1,1 @@
-"""The agent: training, configuration, residual actions and learning curves (P3)."""
+"""The residual action wrapper that the demo applies to the network output (P3)."""

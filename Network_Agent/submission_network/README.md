@@ -6,7 +6,7 @@ Network A is an MLP that reads the last 10 sensor frames, and Network B is an LS
 This folder holds:
 - `Gym/`: the STANCE environment (`stance_env/`) and the MuJoCo leg model (`model/leg.xml`)
 - `Network_Agent/networkA_mlp/`, `Network_Agent/networkB_lstm/`: the two network definitions
-- `Network_Agent/agent/`, `Network_Agent/common/`: the PPO agent, environment setup and evaluation
+- `Network_Agent/agent/`, `Network_Agent/common/`: the residual action, environment setup, policy adapters and evaluation used by the demo
 - `Network_Agent/submission_network/`: our trained weights for both networks
 - `Network_Agent/demo.py`: the demo
 - `environment.yml`: the conda environment (CPU-only PyTorch)
@@ -33,15 +33,6 @@ For each network, nothing is trained:
 - Forward and backward pass: a short rollout, the PPO loss, its gradients, and 10 Adam steps on a copy
 
 It ends with a side-by-side table of both networks and the fixed action.
-
-## Retraining
-
-```bash
-python -m agent.train --network mlp --run-name final --seed 0
-python -m agent.train --network lstm --run-name final --seed 0
-```
-
-The runs are written to `runs/<network>/final_s0/`. To demo one, copy its files into `submission_network/<network>/`.
 
 ## Troubleshooting
 

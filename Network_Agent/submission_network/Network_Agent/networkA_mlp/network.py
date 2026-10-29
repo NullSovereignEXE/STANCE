@@ -1,6 +1,6 @@
 """Network A: a feed-forward MLP that reads a fixed window of recent sensor frames. OWNER: P1.
 
-This file defines the network only. The agent (agent/train.py) trains it with PPO.
+This file defines the network only. It was trained with PPO; demo.py loads the trained weights.
 The observation is the last 10 frames of 11 sensors; `wrappers()` keeps the newest
 `frames` frames and drops the sensor columns in `drop_sensors`. The actor and the critic
 each get their own HistoryMLP feature extractor followed by a small head (`head`).
@@ -11,7 +11,7 @@ import torch.nn as nn
 from stable_baselines3 import PPO
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
-from STANCE.Network_Agent.submission_network.Network_Agent.common.policies import SB3Policy
+from common.policies import SB3Policy
 
 import gymnasium as gym
 import numpy as np

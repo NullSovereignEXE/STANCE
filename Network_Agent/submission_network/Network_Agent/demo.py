@@ -13,9 +13,9 @@ MLP by P1; networkB_lstm = Network B, the LSTM by P2) it prints, in order:
                                   tensor, and 10 Adam steps on a copy (saved weights untouched)
 With two networks it ends with a side-by-side table.
 
-A run folder holds four files written by agent/train.py: model.zip, vecnormalize.pkl,
+A run folder holds four files written by our training script: model.zip, vecnormalize.pkl,
 config.json and curve.csv. The model is rebuilt from config.json exactly as
-`python -m agent.train --eval-only` does it: the network's own wrappers, then the residual
+the training script does when it evaluates a run: the network's own wrappers, then the residual
 action if the config says so, then the network's ALGO.load and VecNormalize.load.
 
 Commands (run from the Network_Agent folder; see README.md in the package root)
@@ -41,10 +41,10 @@ import torch
 from sb3_contrib.common.recurrent.type_aliases import RNNStates
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
-from STANCE.Network_Agent.submission_network.Network_Agent.agent.actions import ResidualAction
-from STANCE.Network_Agent.submission_network.Network_Agent.common.env_setup import SENSOR_NAMES, make_env, to_norm_action, to_physical
-from STANCE.Network_Agent.submission_network.Network_Agent.common.evaluate import EVAL_SEEDS, REFERENCE, run_episodes, summarise
-from STANCE.Network_Agent.submission_network.Network_Agent.common.policies import FixedPolicy
+from agent.actions import ResidualAction
+from common.env_setup import SENSOR_NAMES, make_env, to_norm_action, to_physical
+from common.evaluate import EVAL_SEEDS, REFERENCE, run_episodes, summarise
+from common.policies import FixedPolicy
 
 NETWORKS = {"mlp": "networkA_mlp.network", "lstm": "networkB_lstm.network"}
 LABELS = {"mlp": "Network A (MLP, P1)", "lstm": "Network B (LSTM, P2)"}
@@ -81,7 +81,7 @@ def find_runs(submission, wanted):
 
 
 def load_run(run_dir):
-    """Load one run folder the same way `agent.train --eval-only` does.
+    """Load one run folder the same way the training script does when it evaluates a run.
 
     1. config.json gives the network key and the full config (agent and network settings).
     2. The wrappers are the network's input selection, then ResidualAction if cfg["residual"].
