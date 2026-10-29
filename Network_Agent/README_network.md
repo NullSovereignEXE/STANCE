@@ -29,23 +29,20 @@ If it fails:
 - If ROS or another tool sets `PYTHONPATH`, run `env -u PYTHONPATH python demo_network.py`.
 - If `Gym/` is somewhere else, run `STANCE_GYM_PATH=/path/to/Gym python demo_network.py`.
 
-The trained weights are in `submission/networkA_mlp/` and `submission/networkB_lstm/`.
+The trained weights are in `submission_network/networkA_mlp/` and `submission_network/networkB_lstm/`.
 
 `demo_network.py` shows the two networks without training anything. It loads each network's
-saved weights from `submission/`, prints how the network is built and what its weights look
+saved weights from `submission_network/`, prints how the network is built and what its weights look
 like, runs it once on a real observation, and evaluates it next to the best fixed action
 (-20 deg, K 500, B 10) on the same seeds.
 
 | Folder | Network | Owner |
 |---|---|---|
-| `submission/networkA_mlp/` | Network A: feed-forward MLP on the last 10 sensor frames | P1 |
-| `submission/networkB_lstm/` | Network B: LSTM that builds its own memory of the stance | P2 |
+| `submission_network/networkA_mlp/` | Network A: feed-forward MLP on the last 10 sensor frames | P1 |
+| `submission_network/networkB_lstm/` | Network B: LSTM that builds its own memory of the stance | P2 |
 
-> **PLACEHOLDERS.** The files in `submission/` are not the final networks. They were copied
-> from existing config v1 runs so the demo can be built and tested now:
-> `submission/networkA_mlp/` from `runs/networkA_mlp/integ_s0` (300k steps, seed 0) and
-> `submission/networkB_lstm/` from `runs/networkB_lstm/base_s0` (300k steps, seed 0).
-> Each owner replaces them with their final run folder (see below).
+The files in `submission_network/` are the final seed-0 runs, copied unchanged from
+`runs/networkA_mlp/final_s0` and `runs/networkB_lstm/final_s0`.
 
 The demo uses the project code unchanged: `common/` (environment, evaluation, policy
 adapters), `agent/actions.py` (the residual action) and the two network files. It does not
@@ -71,7 +68,7 @@ python demo_network.py --split test --no-plots
 | `--episodes N` | evaluation episodes on seeds 1000 to 1000+N-1 (default 20) |
 | `--split {train,test}` | ground to evaluate on (default `train`) |
 | `--no-plots` | do not write `demo_output/*.png` |
-| `--submission DIR` | folder holding the run folders (default `submission`) |
+| `--submission DIR` | folder holding the run folders (default `submission_network`) |
 
 If no usable folder is found, the demo says where to put the files and exits.
 
@@ -125,17 +122,17 @@ touchdown, before the policy can act), so compare survival there, not toe peak. 
 `--episodes 200` for numbers that can be compared with the report; 5 or 20 episodes only
 show that it works.
 
-## Replacing a placeholder with the final network
+## Replacing a submitted network
 
 Each owner copies four files from their final run folder (written by
-`python -m agent.train ... --run-name <name>`) into their submission folder:
+`python -m agent.train ... --run-name <name>`) into their folder under `submission_network/`:
 
 ```bash
 # P1, Network A
-cp runs/networkA_mlp/<final run>/{model.zip,vecnormalize.pkl,config.json,curve.csv} submission/networkA_mlp/
+cp runs/networkA_mlp/<final run>/{model.zip,vecnormalize.pkl,config.json,curve.csv} submission_network/networkA_mlp/
 
 # P2, Network B
-cp runs/networkB_lstm/<final run>/{model.zip,vecnormalize.pkl,config.json,curve.csv} submission/networkB_lstm/
+cp runs/networkB_lstm/<final run>/{model.zip,vecnormalize.pkl,config.json,curve.csv} submission_network/networkB_lstm/
 ```
 
 Then run `python demo_network.py --networks mlp` (or `lstm`) to check it loads. The demo

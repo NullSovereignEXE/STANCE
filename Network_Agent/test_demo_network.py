@@ -6,7 +6,7 @@ import torch
 
 import demo_network as demo
 
-RUNS = {"mlp": Path("submission/networkA_mlp"), "lstm": Path("submission/networkB_lstm")}
+RUNS = {"mlp": Path("submission_network/networkA_mlp"), "lstm": Path("submission_network/networkB_lstm")}
 
 
 @pytest.fixture(scope="module", params=sorted(RUNS))
