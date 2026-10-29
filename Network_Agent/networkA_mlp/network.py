@@ -1,3 +1,10 @@
+"""Network A: a feed-forward MLP that reads a fixed window of recent sensor frames. OWNER: P1.
+
+This file defines the network only. The agent (agent/train.py) trains it with PPO.
+The observation is the last 10 frames of 11 sensors; `wrappers()` keeps the newest
+`frames` frames and drops the sensor columns in `drop_sensors`. The actor and the critic
+each get their own HistoryMLP feature extractor followed by a small head (`head`).
+"""
 import torch
 import torch.nn as nn
 
@@ -33,6 +40,7 @@ ACTIVATIONS = {
 }
 
 class SelectObservations(gym.ObservationWrapper):
+    """Keep only the newest `frames` frames and drop the sensor columns listed in `drop_sensors`."""
 
     def __init__(self, env, frames=10, drop_sensors=None):
 
@@ -70,6 +78,7 @@ class SelectObservations(gym.ObservationWrapper):
         )
 
     def _select(self, observation):
+        """Reshape the flat history to (frames, sensors), cut it, and flatten it again."""
 
         history = np.asarray(observation).reshape(
             self.total_frames,
@@ -81,11 +90,13 @@ class SelectObservations(gym.ObservationWrapper):
         return selected.flatten().astype(np.float32)
 
     def observation(self, observation):
+        """Gymnasium hook: apply the cut to every observation."""
 
         return self._select(observation)
 
 
 def wrappers(cfg):
+    """Environment wrappers for this network: select the frames and sensors it sees."""
 
     return [
         lambda env: SelectObservations(
@@ -96,6 +107,7 @@ def wrappers(cfg):
     ]
 
 class HistoryMLP(BaseFeaturesExtractor):
+    """Fully connected layers (optionally with LayerNorm) that turn the frame window into features."""
 
     def __init__(
         self,
@@ -135,10 +147,12 @@ class HistoryMLP(BaseFeaturesExtractor):
         self.network = nn.Sequential(*layers)
 
     def forward(self, observations):
+        """Return the features for a batch of observations."""
 
         return self.network(observations)
 
 def policy_kwargs(cfg):
+    """Keyword arguments that tell SB3 how to build the actor and critic from CONFIG."""
 
     return {
         "features_extractor_class": HistoryMLP,

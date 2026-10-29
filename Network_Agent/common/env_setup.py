@@ -89,6 +89,7 @@ def to_norm_action(env, theta_deg, K, B):
     (a_lo, a_hi), k_range, b_range = _consts(env)
 
     def inverse_log(r, x):
+        """Map x on a log scale over range r to [-1, 1]."""
         lo, hi = np.log10(r[0]), np.log10(r[1])
         return 2 * (np.log10(x) - lo) / (hi - lo) - 1
 
@@ -106,6 +107,7 @@ def to_physical(env, a):
     a = np.clip(np.asarray(a, dtype=np.float64), -1, 1)
 
     def log_span(r, x):
+        """Map x in [-1, 1] back to a value on a log scale over range r."""
         lo, hi = np.log10(r[0]), np.log10(r[1])
         return 10 ** (lo + (x + 1) / 2 * (hi - lo))
 

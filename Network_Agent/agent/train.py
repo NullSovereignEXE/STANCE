@@ -114,6 +114,7 @@ def make_venv(cfg, wrappers, seed):
     n_train = round(cfg["n_envs"] * (1 - cfg["mix_test_fraction"]))
 
     def env_fn(rank):
+        """Return a function that builds environment number `rank` (train or test ground)."""
         def _init():
             env = make_env("train" if rank < n_train else "test", wrappers)
             env.action_space.seed(seed + rank)

@@ -3,9 +3,9 @@
 This file defines the network only. The agent (agent/train.py) trains it.
 
 Why recurrent
-    Te ground's stiffness, yield point and dent history never appear in a single sensor
+    The ground's stiffness, yield point and dent history never appear in a single sensor
     frame. A recurrent network keeps a hidden state that can accumulate evidence across
-    the whole 100-step stance, so it can in principle work out hohw the ground is behaving.
+    the whole 100-step stance, so it can in principle work out how the ground is behaving.
     Network A instead gives the network a fixed window of the last 10 frames.
 
 Inputs and preprocessing

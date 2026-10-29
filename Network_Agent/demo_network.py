@@ -56,6 +56,7 @@ ROWS = [("survival_pct", "survival (%)"), ("toe_peak_bw", "toe peak (BW)"),
 
 
 def header(text):
+    """Print a section heading padded with dashes."""
     print(f"\n--- {text} " + "-" * max(0, 70 - len(text)))
 
 
@@ -322,12 +323,14 @@ def rollout(model, cfg, wrappers, vn, n_steps=ROLLOUT_STEPS, seed=ROLLOUT_SEED):
     low, high = env.action_space.low, env.action_space.high
     if recurrent:
         def zeros(lstm):
+            """Zero hidden and cell states for one environment."""
             z = torch.zeros(lstm.num_layers, 1, lstm.hidden_size)
             return z, z.clone()
         states = RNNStates(zeros(policy.lstm_actor), zeros(policy.lstm_critic or policy.lstm_actor))
         init = states
 
     def value(o, start):
+        """The critic's value estimate for observation o (carrying the LSTM state if recurrent)."""
         if not recurrent:
             return policy.predict_values(o).item()
         return policy.predict_values(o, states.vf, torch.tensor([float(start)])).item()
